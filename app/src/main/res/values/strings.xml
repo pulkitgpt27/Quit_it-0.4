@@ -1,0 +1,46 @@
+<resources>
+    <string name="app_name">QuitIt</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="disease_1">Diabetes</string>
+    <string name="disease_2">High BloodPressure</string>
+    <string name="disease_3">Heart Problem</string>
+    <string name="disease_4">Disease 4</string>
+    <string name="disease_5">Disease5</string>
+    <string name="disease_6">Disease6</string>
+    <string name="disease_7">Disease7</string>
+    <string name="interests_1">Interest1</string>
+    <string name="interests_2">Interest2</string>
+    <string name="interests_3">Interest3</string>
+    <string name="interests_4">Interest4</string>
+    <string name="interests_5">Interest5</string>
+    <string name="interests_6">Interest6</string>
+    <string-array name="future_array">
+        <item>Aspiring to do a Job?</item>
+        <item>Thinking to start a family?</item>
+        <item>Item3</item>
+        <item>item4</item>
+        <item>item5</item>
+        <item>item6</item>
+        <item>item7</item>
+        <item>item8</item>
+    </string-array>
+    <string name ="email">Email Address</string>
+    <string name ="contact_number">Contact number</string>
+    <string name="cigarettes_one_day">Cigarettes Smoked in a Day</string>
+    <string name="name">Name :</string>
+    <string name="sex">Sex :</string>
+    <string name="businessEditTest">Profession :</string>
+    <string name="rupees">In Rupees</string>
+    <string name="age">Age :</string>
+    <string name="bussiness">Profession :</string>
+    <string name="marital_status">Marital Status :</string>
+    <string name="consumption">Cigarettes consumed per day :</string>
+    <string name="fractionSpent">Fraction of salary spent :</string>
+    <string name="future_prompt">Choose One :</string>
+
+
+    <string name="print">Print Report</string>
+
+</resources>

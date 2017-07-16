@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "435044736040",
+    "firebase_url": "https://quitit-f602e.firebaseio.com",
+    "project_id": "quitit-f602e",
+    "storage_bucket": "quitit-f602e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:435044736040:android:0416b960a579c2c4",
+        "android_client_info": {
+          "package_name": "com.example.android.quitit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "435044736040-5b6mrbv3dnlmrd8ea3koa3shqomlc6su.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.android.quitit",
+            "certificate_hash": "eef31a8e7b5807467a84efedf384b90efbd04a04"
+          }
+        },
+        {
+          "client_id": "435044736040-n0t48ru5htfpqdf7ksc4nk97qoi4pph8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyByartPya8lL3A3MvRYRNwcCoKImYFU02M"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "435044736040-n0t48ru5htfpqdf7ksc4nk97qoi4pph8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
