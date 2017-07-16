@@ -4,8 +4,12 @@ package com.example.android.quitit;
  * Created by Pulkit on 03-07-2017.
  */
 
+import android.content.Context;
 import android.os.Bundle;
+import android.print.PrintManager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 /**
@@ -14,13 +18,16 @@ import android.widget.TextView;
 
 public class ReportActivity extends AppCompatActivity {
 
+    Entry ClickedEntry;
+    String disp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
 
         Bundle B = this.getIntent().getExtras();
-        Entry ClickedEntry = B.getParcelable("ClickedEntry");
+        ClickedEntry = B.getParcelable("ClickedEntry");
 
         //patient name
         TextView Name = (TextView) findViewById(R.id.nameView);
@@ -53,12 +60,34 @@ public class ReportActivity extends AppCompatActivity {
         float earn=(float) (ClickedEntry.getSalary());
         float save=earn-spent;
         float percent=((float)spent/earn)*100;
-        String disp=Float.toString(percent)+"%";
+
+        disp=Float.toString(percent)+"%";
         TextView fSpenView=(TextView) findViewById(R.id.fractionSpentView);
         fSpenView.setText(disp);
-
-
-
-
+        Button printButton = (Button) findViewById(R.id.print_report_button);
+        printButton.setOnClickListener(new Button.OnClickListener() {
+                                           @Override
+                                           public void onClick(View v) {
+                                               printDocument(v);
+                                           }
+                                       }
+        );
     }
+    public void printDocument(View view)
+    {
+        PrintManager printManager = (PrintManager) this
+                .getSystemService(Context.PRINT_SERVICE);
+
+        String jobName = this.getString(R.string.app_name) +
+                " Document";
+
+        printManager.print(jobName, new
+                        MyPrintDocumentAdapter(this,ClickedEntry.getName(),ClickedEntry.getSex(),ClickedEntry.getAge(),ClickedEntry.getBusiness(),ClickedEntry.getMarry_status(),ClickedEntry.getSmoke_freq(),disp),
+                null);
+
+
+
+
+
+ }
 }
