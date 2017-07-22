@@ -23,7 +23,10 @@ import com.google.firebase.storage.FirebaseStorage;
 
 import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static android.os.Build.VERSION_CODES.M;
@@ -177,8 +180,18 @@ public class NewEntryActivity  extends AppCompatActivity {
                 EditText salaryView=(EditText)findViewById(R.id.salary_edit_text);
                 int salary= Integer.parseInt(salaryView.getText().toString());
 
+                //For Current time
+                Calendar c = Calendar.getInstance();
+                SimpleDateFormat df = new SimpleDateFormat("hh:mm a");
+                //SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                String formattedtime1 = df.format(c.getTime());
 
-                Entry patient=new Entry(name,age,sex,interest,med_history,contact,days,freq,cost,m_status,future,business,salary);
+                //For current date
+                SimpleDateFormat df1 = new SimpleDateFormat("dd-MMM-yyyy");
+                String formattedDate1 = df1.format(c.getTime());
+
+
+                Entry patient=new Entry(name,age,sex,interest,med_history,contact,days,freq,cost,m_status,future,business,salary,formattedtime1,formattedDate1);
                 mPatientDatabaseReference.push().setValue(patient);
                 Intent i=new Intent(NewEntryActivity.this,MainActivity.class);
                 startActivity(i);

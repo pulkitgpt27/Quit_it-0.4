@@ -44,6 +44,13 @@ public class EntriesListAdapter extends ArrayAdapter<Entry>{
         TextView interestTextView = (TextView) convertView.findViewById(R.id.interest);
         interestTextView.setText(current.getInterest());
 
+        TextView dateTextView=(TextView) convertView.findViewById(R.id.date);
+        dateTextView.setText(current.getFormattedDate());
+
+
+        TextView timeTextView=(TextView) convertView.findViewById(R.id.time);
+        timeTextView.setText(current.getTime());
+
         return convertView;
     }
 }

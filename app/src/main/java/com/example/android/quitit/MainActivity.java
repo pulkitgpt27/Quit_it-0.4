@@ -44,8 +44,10 @@ public class MainActivity extends AppCompatActivity {
 
         patientList=new ArrayList<Entry>();
         mPatientAdapter=new EntriesListAdapter(MainActivity.this,R.layout.list_item,patientList);
-       // View emptyView=findViewById(R.id.empty_view);
-        // mPatientListView.setEmptyView(emptyView);
+
+        View emptyView=findViewById(R.id.empty_view);
+         mPatientListView.setEmptyView(emptyView);
+
         mPatientListView.setAdapter(mPatientAdapter);
 
         mChildEventListener=new ChildEventListener() {

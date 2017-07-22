@@ -3,6 +3,8 @@ package com.example.android.quitit;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Date;
+
 /**
  * Created by Ayush vaid on 12-06-2017.
  */
@@ -21,6 +23,8 @@ public class Entry implements Parcelable {
     private String future;
     private String business;
     private int salary;
+    private String time;
+    private String formattedDate;
     public Entry(){
 
     }
@@ -33,7 +37,7 @@ public class Entry implements Parcelable {
     }*/
    // Entry patient=new Entry(name,age,sex,interest,med_history,contact,days,freq,cost,m_status,future);
 
-    public Entry(String name,int age,String sex,String interest,String med,String contact,int days,int freq,float cost,String marry_status,String future,String business,int salary){
+    public Entry(String name,int age,String sex,String interest,String med,String contact,int days,int freq,float cost,String marry_status,String future,String business,int salary,String time,String date){
         this.name=name;
         this.age=age;
         this.sex=sex;
@@ -47,6 +51,8 @@ public class Entry implements Parcelable {
         this.future=future;
         this.business=business;
         this.salary=salary;
+        this.time=time;
+        this.formattedDate=date;
     }
 
     //getter methods
@@ -63,6 +69,8 @@ public class Entry implements Parcelable {
     public String getFuture(){return  future;}
     public String getBusiness(){return business;}
     public int getSalary(){return salary;}
+    public String getTime(){return time;}
+    public String getFormattedDate(){return formattedDate;}
 
 
     //parcealable stuff
@@ -80,7 +88,8 @@ public class Entry implements Parcelable {
         future=in.readString();
         business=in.readString();
         salary=in.readInt();
-
+        formattedDate=in.readString();
+        time=in.readString();
     }
 
     @Override
@@ -113,5 +122,7 @@ public class Entry implements Parcelable {
         parcel.writeString(future);
         parcel.writeString(business);
         parcel.writeInt(salary);
+        parcel.writeString(formattedDate);
+        parcel.writeString(time);
     }
 }
