@@ -25,6 +25,7 @@ public class Entry implements Parcelable {
     private int salary;
     private String time;
     private String formattedDate;
+    private int id;
     public Entry(){
 
     }
@@ -37,7 +38,7 @@ public class Entry implements Parcelable {
     }*/
    // Entry patient=new Entry(name,age,sex,interest,med_history,contact,days,freq,cost,m_status,future);
 
-    public Entry(String name,int age,String sex,String interest,String med,String contact,int days,int freq,float cost,String marry_status,String future,String business,int salary,String time,String date){
+    public Entry(String name,int age,String sex,String interest,String med,String contact,int days,int freq,float cost,String marry_status,String future,String business,int salary,String time,String date,int id){
         this.name=name;
         this.age=age;
         this.sex=sex;
@@ -53,6 +54,7 @@ public class Entry implements Parcelable {
         this.salary=salary;
         this.time=time;
         this.formattedDate=date;
+        this.id=id;
     }
 
     //getter methods
@@ -71,6 +73,7 @@ public class Entry implements Parcelable {
     public int getSalary(){return salary;}
     public String getTime(){return time;}
     public String getFormattedDate(){return formattedDate;}
+    public int getId(){return id;}
 
 
     //parcealable stuff
@@ -90,6 +93,7 @@ public class Entry implements Parcelable {
         salary=in.readInt();
         formattedDate=in.readString();
         time=in.readString();
+        id=in.readInt();
     }
 
     @Override
@@ -124,5 +128,6 @@ public class Entry implements Parcelable {
         parcel.writeInt(salary);
         parcel.writeString(formattedDate);
         parcel.writeString(time);
+        parcel.writeInt(id);
     }
 }

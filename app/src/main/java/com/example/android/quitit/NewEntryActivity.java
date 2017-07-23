@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -19,6 +20,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 import org.w3c.dom.Text;
@@ -44,6 +47,7 @@ public class NewEntryActivity  extends AppCompatActivity {
     public static final String ANONYMOUS = "anonymous";
 
     private String mUsername;
+    private int id;
 
     private FirebaseStorage mFirebaseStorage;
     private FirebaseDatabase mFirebaseDatabase;
@@ -63,10 +67,7 @@ public class NewEntryActivity  extends AppCompatActivity {
         mFirebaseDatabase=FirebaseDatabase.getInstance();
         mPatientDatabaseReference=mFirebaseDatabase.getReference().child("patient");
 
-        //mPatientListView = (ListView) findViewById(R.id.listView);
-        //List<Entry> patient=new ArrayList<>();
-        /*mPatientAdapter=new EntriesListAdapter(this,R.layout.list_item,patient);
-        mPatientListView.setAdapter(mPatientAdapter);*/
+
         mSaveButton=(Button) findViewById(R.id.save);
 
         mSaveButton.setOnClickListener(new View.OnClickListener() {
@@ -190,8 +191,35 @@ public class NewEntryActivity  extends AppCompatActivity {
                 SimpleDateFormat df1 = new SimpleDateFormat("dd-MMM-yyyy");
                 String formattedDate1 = df1.format(c.getTime());
 
+                //For id
+                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+                Query lastQuery = databaseReference.child("patient").orderByKey().limitToLast(1);
+                lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
 
-                Entry patient=new Entry(name,age,sex,interest,med_history,contact,days,freq,cost,m_status,future,business,salary,formattedtime1,formattedDate1);
+
+
+                        /*if(dataSnapshot==null)
+                        {
+                            id=1;
+                        }
+                        else
+                        {
+                            id = (dataSnapshot!=null)? (int) dataSnapshot.child("id").getValue() :1;
+                            id++;
+                        }*/
+                    }
+
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    //Handle possible errors.
+                }
+            });
+
+
+                Entry patient=new Entry(name,age,sex,interest,med_history,contact,days,freq,cost,m_status,future,business,salary,formattedtime1,formattedDate1,id);
                 mPatientDatabaseReference.push().setValue(patient);
                 Intent i=new Intent(NewEntryActivity.this,MainActivity.class);
                 startActivity(i);
