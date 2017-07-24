@@ -28,7 +28,7 @@
     </string-array>
     <string name ="email">Email Address</string>
     <string name ="contact_number">Contact number</string>
-    <string name="cigarettes_one_day">Cigarettes Smoked in a Day</string>
+
     <string name="name">Name :</string>
     <string name="sex">Sex :</string>
     <string name="businessEditTest">Profession :</string>
@@ -36,11 +36,28 @@
     <string name="age">Age :</string>
     <string name="bussiness">Profession :</string>
     <string name="marital_status">Marital Status :</string>
-    <string name="consumption">Cigarettes consumed per day :</string>
     <string name="fractionSpent">Fraction of salary spent :</string>
     <string name="future_prompt">Choose One :</string>
+    <string name= "address">Address :</string>
 
 
+    <string name="chewing_history">Chewing History</string>
+    <string name="chewing_history_time">How long have you been chewing?</string>
+    <string name="often_chewing_text_view">How many times do you chew in a day?</string>
+    <string name="cost_of_one_packet">What is the cost of one packet?</string>
+    <string name="consumption_tumbakoo">Packets per day :</string>
+    <string name="packets_one_day">Packets in one day</string>
+
+    <string name="smoking_history">Smoking History</string>
+    <string name="consumption">Cigarettes consumed per day :</string>
+    <string name="cigarettes_one_day">Cigarettes Smoked in a Day</string>
+    <string name="smoking_history_time">How long have you been smoking?</string>
+    <string name="often_smoking_text_view">How many times do you smoke in a day?</string>
+    <string name="cost_of_one_ciggrete">What is the cost of one ciggerete?</string>
+
+
+    <string name="smoker">Ciggerates/Bidi/Hukkah</string>
+    <string name="chewer">Tambakoo/Gutka/Pan</string>
     <string name="print">Print Report</string>
 
     <!-- Title text for the empty view, which describes the empty dog house image [CHAR LIMIT=50] -->

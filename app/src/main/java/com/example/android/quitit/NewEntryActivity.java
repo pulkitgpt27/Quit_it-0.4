@@ -8,11 +8,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.firebase.database.ChildEventListener;
@@ -56,17 +59,103 @@ public class NewEntryActivity  extends AppCompatActivity {
     //private EntriesListAdapter mPatientAdapter;
     private Button mSaveButton;
     private ChildEventListener mChildEventListener;
-
+    private int chew_days;
+    private int chew_freq;
+    private int smoke_days;
+    private int smoke_freq;
+    private float chew_cost;
+    private float smoke_cost;
+    private String morning_status="";
+    private String family_status="";
+    private String habit_reason="";
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_entry);
+
         mUsername=ANONYMOUS;
         mFirebaseDatabase=FirebaseDatabase.getInstance();
         mPatientDatabaseReference=mFirebaseDatabase.getReference().child("patient");
 
+
+        final CheckBox chewer = (CheckBox) findViewById(R.id.chewer);
+        final CheckBox smoker = (CheckBox) findViewById(R.id.smoker);
+
+
+        final TextView chewing_heading = (TextView) findViewById(R.id.chewing_history_heading);
+        final TextView time_chewing = (TextView) findViewById(R.id.chewing_time_text_view);
+        final EditText years_chewing_input = (EditText) findViewById(R.id.years_chewing_edit_text);
+        final EditText months_chewing_input = (EditText) findViewById(R.id.months_chewing_edit_text);
+        final TextView often_chewing = (TextView) findViewById(R.id.often_chewing_text_view);
+        final EditText often_chewing_input = (EditText) findViewById(R.id.often_chewing_edit_text);
+        final TextView cost_packet = (TextView) findViewById(R.id.cost_of_one_packet); //textView
+        final EditText cost_packet_input = (EditText) findViewById(R.id.cost_chewing_edit_text);
+
+
+        final TextView smoking_heading = (TextView) findViewById(R.id.smoking_history_heading);
+        final TextView time_smoking = (TextView) findViewById(R.id.smoking_time_text_view);
+        final EditText years_smoking_input = (EditText) findViewById(R.id.smoking_years_edit_text);
+        final EditText months_smoking_input = (EditText) findViewById(R.id.smoking_months_edit_text);
+        final TextView often_smoking = (TextView) findViewById(R.id.often_smoking_text_view);
+        final EditText often_smoking_input = (EditText) findViewById(R.id.often_edit_text);
+        final TextView cost_ciggartte = (TextView) findViewById(R.id.cost_smoking_text_view); //textView
+        final EditText cost_ciggartte_input = (EditText) findViewById(R.id.cost_smoking_edit_text);
+
+
+        chewer.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+                if(!isChecked){
+                    chewing_heading.setVisibility(View.GONE);
+                    time_chewing.setVisibility(View.GONE);
+                    years_chewing_input.setVisibility(View.GONE);
+                    months_chewing_input.setVisibility(View.GONE);
+                    often_chewing.setVisibility(View.GONE);
+                    often_chewing_input.setVisibility(View.GONE);
+                    cost_packet.setVisibility(View.GONE);
+                    cost_packet_input.setVisibility(View.GONE);
+                }
+                else
+                {
+                    chewing_heading.setVisibility(View.VISIBLE);
+                    time_chewing.setVisibility(View.VISIBLE);
+                    years_chewing_input.setVisibility(View.VISIBLE);
+                    months_chewing_input.setVisibility(View.VISIBLE);
+                    often_chewing.setVisibility(View.VISIBLE);
+                    often_chewing_input.setVisibility(View.VISIBLE);
+                    cost_packet.setVisibility(View.VISIBLE);
+                    cost_packet_input.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        smoker.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+                if(!isChecked){
+                    smoking_heading.setVisibility(View.GONE);
+                    time_smoking.setVisibility(View.GONE);
+                    years_smoking_input.setVisibility(View.GONE);
+                    months_smoking_input.setVisibility(View.GONE);
+                    often_smoking.setVisibility(View.GONE);
+                    often_smoking_input.setVisibility(View.GONE);
+                    cost_ciggartte.setVisibility(View.GONE);
+                    cost_ciggartte_input.setVisibility(View.GONE);
+                }
+                else {
+                    smoking_heading.setVisibility(View.VISIBLE);
+                    time_smoking.setVisibility(View.VISIBLE);
+                    years_smoking_input.setVisibility(View.VISIBLE);
+                    months_smoking_input.setVisibility(View.VISIBLE);
+                    often_smoking.setVisibility(View.VISIBLE);
+                    often_smoking_input.setVisibility(View.VISIBLE);
+                    cost_ciggartte.setVisibility(View.VISIBLE);
+                    cost_ciggartte_input.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         mSaveButton=(Button) findViewById(R.id.save);
 
@@ -82,7 +171,6 @@ public class NewEntryActivity  extends AppCompatActivity {
                 int age= parseInt(ageView.getText().toString());
 
                 //For Med History
-
                 String med_history="";
                 CheckBox med1=(CheckBox) findViewById(R.id.disease_1);
                 CheckBox med2=(CheckBox) findViewById(R.id.disease_2);
@@ -119,49 +207,42 @@ public class NewEntryActivity  extends AppCompatActivity {
                 EditText contactView=(EditText)findViewById(R.id.contact_edit_text);
                 String contact= (contactView.getText().toString());
 
-                //For smoking history
-                EditText yearView=(EditText)findViewById(R.id.years_edit_text);
-                int years= Integer.parseInt(yearView.getText().toString());
+                if(chewer.isChecked()) {
+                    //For chewing history
+                    EditText chew_yearView = (EditText) findViewById(R.id.years_chewing_edit_text);
+                    int chew_years = Integer.parseInt(chew_yearView.getText().toString());
 
-                EditText monthView=(EditText)findViewById(R.id.months_edit_text);
-                int months= Integer.parseInt(monthView.getText().toString());
+                    EditText chew_monthView = (EditText) findViewById(R.id.months_chewing_edit_text);
+                    int chew_months = Integer.parseInt(chew_monthView.getText().toString());
 
-                int days=(years*365)+(months*30);
+                    chew_days = (chew_years * 365) + (chew_months * 30);
 
-                //For smoking frequency(in a day)
-                EditText frequencyView=(EditText)findViewById(R.id.often_edit_text);
-                int freq= Integer.parseInt(frequencyView.getText().toString());
+                    //For chewing frequency(in a day)
+                    EditText chew_frequencyView = (EditText) findViewById(R.id.often_chewing_edit_text);
+                    chew_freq = Integer.parseInt(chew_frequencyView.getText().toString());
 
-                //For avg cost of each cigarette
-                EditText costView=(EditText)findViewById(R.id.cost_edit_text);
-                float cost=Float.parseFloat(costView.getText().toString());
-
-                //For Interest
-                String interest=" ";
-                CheckBox int1=(CheckBox) findViewById(R.id.interest_1);
-                CheckBox int2=(CheckBox) findViewById(R.id.interest_2);
-                CheckBox int3=(CheckBox) findViewById(R.id.interest_3);
-                CheckBox int4=(CheckBox) findViewById(R.id.interest_4);
-                CheckBox int5=(CheckBox) findViewById(R.id.interest_5);
-                if(int1.isChecked())
-                {
-                    interest+=int1.getText().toString()+" ";
+                    //For avg cost of each chewing thing
+                    EditText chew_costView = (EditText) findViewById(R.id.cost_chewing_edit_text);
+                    chew_cost = Float.parseFloat(chew_costView.getText().toString());
                 }
-                if(int2.isChecked())
-                {
-                    interest+=int2.getText().toString()+" ";
-                }
-                if(int3.isChecked())
-                {
-                    interest+=int3.getText().toString()+" ";
-                }
-                if(int4.isChecked())
-                {
-                    interest+=int4.getText().toString()+" ";
-                }
-                if(int5.isChecked())
-                {
-                    interest+=int5.getText().toString()+" ";
+
+                if(smoker.isChecked()){
+                    //For chewing history
+                    EditText smoke_yearView = (EditText) findViewById(R.id.smoking_years_edit_text);
+                    int smoke_years = Integer.parseInt(smoke_yearView.getText().toString());
+
+                    EditText smoke_monthView = (EditText) findViewById(R.id.smoking_months_edit_text);
+                    int smoke_months = Integer.parseInt(smoke_monthView.getText().toString());
+
+                    smoke_days = (smoke_years * 365) + (smoke_months * 30);
+
+                    //For chewing frequency(in a day)
+                    EditText smoke_frequencyView = (EditText) findViewById(R.id.often_edit_text);
+                    chew_freq = Integer.parseInt(smoke_frequencyView.getText().toString());
+
+                    //For avg cost of each chewing thing
+                    EditText smoke_costView = (EditText) findViewById(R.id.cost_smoking_edit_text);
+                    smoke_cost = Float.parseFloat(smoke_costView.getText().toString());
                 }
 
 
@@ -170,8 +251,8 @@ public class NewEntryActivity  extends AppCompatActivity {
                 String m_status = ((RadioButton)findViewById(rg1.getCheckedRadioButtonId())).getText().toString();
 
                 //For Future Plans
-                Spinner futurespinner = (Spinner)findViewById(R.id.future_spinner);
-                String future = futurespinner.getSelectedItem().toString();
+                //Spinner futurespinner = (Spinner)findViewById(R.id.future_spinner);
+                //String future = futurespinner.getSelectedItem().toString();
 
                 //For Business
                 EditText businessView=(EditText)findViewById(R.id.business_edit_text);
@@ -192,15 +273,15 @@ public class NewEntryActivity  extends AppCompatActivity {
                 String formattedDate1 = df1.format(c.getTime());
 
                 //For id
-                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-                Query lastQuery = databaseReference.child("patient").orderByKey().limitToLast(1);
-                lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
+               // DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+                //Query lastQuery = databaseReference.child("patient").orderByKey().limitToLast(1);
+                //lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                  /*  @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
 
 
-                        /*if(dataSnapshot==null)
+                        if(dataSnapshot==null)
                         {
                             id=1;
                         }
@@ -208,7 +289,7 @@ public class NewEntryActivity  extends AppCompatActivity {
                         {
                             id = (dataSnapshot!=null)? (int) dataSnapshot.child("id").getValue() :1;
                             id++;
-                        }*/
+                        }
                     }
 
 
@@ -216,10 +297,92 @@ public class NewEntryActivity  extends AppCompatActivity {
                 public void onCancelled(DatabaseError databaseError) {
                     //Handle possible errors.
                 }
-            });
+            });*/
+
+            //For fill more
+                Switch S = (Switch) findViewById(R.id.mySwitch);
+                final LinearLayout morning_consumer = (LinearLayout) findViewById(R.id.morning_consumer_layout);
+                final LinearLayout family_consumes = (LinearLayout) findViewById(R.id.family_consumes_layout);
+                final LinearLayout started_how = (LinearLayout) findViewById(R.id.started_how_layout);
+                final LinearLayout other_habit = (LinearLayout) findViewById(R.id.other_habit_layout);
+                final LinearLayout aware_harms = (LinearLayout) findViewById(R.id.aware_harms_layout);
+                final LinearLayout disease_aware = (LinearLayout) findViewById(R.id.disease_aware_layout);
+                final LinearLayout quit = (LinearLayout) findViewById(R.id.quit_layout);
+                final LinearLayout reasonforquitting = (LinearLayout) findViewById(R.id.reasonofquitting_layout);
+                final LinearLayout tried_quitting = (LinearLayout) findViewById(R.id.tried_quitting_layout);
+                final LinearLayout craving = (LinearLayout) findViewById(R.id.craving_layout);
 
 
-                Entry patient=new Entry(name,age,sex,interest,med_history,contact,days,freq,cost,m_status,future,business,salary,formattedtime1,formattedDate1,id);
+                S.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                        if(!isChecked)
+                        {
+
+                            morning_consumer.setVisibility(LinearLayout.GONE);
+                            family_consumes.setVisibility(LinearLayout.GONE);
+                            started_how.setVisibility(LinearLayout.GONE);
+                            other_habit.setVisibility(LinearLayout.GONE);
+                            aware_harms.setVisibility(LinearLayout.GONE);
+                            disease_aware.setVisibility(LinearLayout.GONE);
+                            quit.setVisibility(LinearLayout.GONE);
+                            reasonforquitting.setVisibility(LinearLayout.GONE);
+                            tried_quitting.setVisibility(LinearLayout.GONE);
+                            craving.setVisibility(LinearLayout.GONE);
+                        }
+                        else
+                        {
+                            morning_consumer.setVisibility(LinearLayout.VISIBLE);
+                            family_consumes.setVisibility(LinearLayout.VISIBLE);
+                            started_how.setVisibility(LinearLayout.VISIBLE);
+                            other_habit.setVisibility(LinearLayout.VISIBLE);
+                            aware_harms.setVisibility(LinearLayout.VISIBLE);
+                            disease_aware.setVisibility(LinearLayout.VISIBLE);
+                            quit.setVisibility(LinearLayout.VISIBLE);
+                            reasonforquitting.setVisibility(LinearLayout.VISIBLE);
+                            tried_quitting.setVisibility(LinearLayout.VISIBLE);
+                            craving.setVisibility(LinearLayout.VISIBLE);
+                            //Morning consumer
+                            RadioGroup rg1 = (RadioGroup)findViewById(R.id.within_30_mins);
+                            morning_status = ((RadioButton)findViewById(rg1.getCheckedRadioButtonId())).getText().toString();
+
+                            //Anyone in Family consume tobacco
+                            RadioGroup rg2 = (RadioGroup)findViewById(R.id.family_consumes_RG);
+                            family_status = ((RadioButton)findViewById(rg1.getCheckedRadioButtonId())).getText().toString();
+
+                            //how did start consuming
+
+                            CheckBox res1=(CheckBox) findViewById(R.id.habit_started_with_friends);
+                            CheckBox res2=(CheckBox) findViewById(R.id.habit_started_for_hunger);
+                            CheckBox res3=(CheckBox) findViewById(R.id.habbit_started_social_issues);
+                            CheckBox res4=(CheckBox) findViewById(R.id.habit_started_other);
+
+                            if(res1.isChecked())
+                            {
+                                habit_reason+=res1.getText().toString()+" ";
+                            }
+                            if(res2.isChecked())
+                            {
+                                habit_reason+=res2.getText().toString()+" ";
+                            }
+                            if(res3.isChecked())
+                            {
+                                habit_reason+=res3.getText().toString()+" ";
+                            }
+                            if(res4.isChecked())
+                            {
+                                habit_reason+=res4.getText().toString()+" ";
+                            }
+                            
+                        }
+                    }
+                });
+
+
+                String interest = "";
+                String future = "";
+                Entry patient=new Entry(name,age,sex,interest,med_history,contact,chew_days,chew_freq,chew_cost,m_status,future,business,salary,formattedtime1,formattedDate1,id);
                 mPatientDatabaseReference.push().setValue(patient);
                 Intent i=new Intent(NewEntryActivity.this,MainActivity.class);
                 startActivity(i);
