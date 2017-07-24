@@ -129,42 +129,47 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
         int leftMargin = 54;*/
 
         Paint paint = new Paint();
+        paint.setColor(Color.GRAY);
+        paint.setTextSize(20);
+        canvas.drawRect(35,30,600,80,paint);
         paint.setColor(Color.BLACK);
+        canvas.drawText("REPORT",265,60,paint);
+        paint.setTextSize(30);
+        canvas.drawText(
+                name,
+                50,
+                130,
+                paint);
         paint.setTextSize(20);
         canvas.drawText(
-                "Name: " + name,
+                sex,
                 50,
-                80,
+                160,
                 paint);
         canvas.drawText(
-                "Sex: " + sex,
-                50,
-                110,
-                paint);
-        canvas.drawText(
-                "Age: " + age,
-                50,
-                140,
+                String.valueOf(age),
+                100,
+                160,
                 paint);
         canvas.drawText(
                 "Bussiness: " + bussiness,
                 50,
-                170,
+                220,
                 paint);
         canvas.drawText(
                 "Marrital Status: " + marrital_status,
                 50,
-                200,
+                250,
                 paint);
         canvas.drawText(
                 "Cigarettes consumed per day: " + consumption,
                 50,
-                230,
+                280,
                 paint);
         canvas.drawText(
                 "Fraction of salary spent: " + spent,
                 50,
-                260,
+                310,
                 paint);
         /*paint.setTextSize(14);
         canvas.drawText("This is some test content to verify that custom document printing works", leftMargin, titleBaseLine + 35, paint);*/
