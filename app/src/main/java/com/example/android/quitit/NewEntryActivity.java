@@ -68,6 +68,11 @@ public class NewEntryActivity  extends AppCompatActivity {
     private String morning_status="";
     private String family_status="";
     private String habit_reason="";
+    private String habbit="";
+    private String aware_status="";
+    private String aware_diseases="";
+    private String quit_status="";
+    private String quit_reason="";
 
 
     @Override
@@ -102,6 +107,54 @@ public class NewEntryActivity  extends AppCompatActivity {
         final EditText often_smoking_input = (EditText) findViewById(R.id.often_edit_text);
         final TextView cost_ciggartte = (TextView) findViewById(R.id.cost_smoking_text_view); //textView
         final EditText cost_ciggartte_input = (EditText) findViewById(R.id.cost_smoking_edit_text);
+
+        final Switch S = (Switch) findViewById(R.id.mySwitch);
+        final LinearLayout morning_consumer = (LinearLayout) findViewById(R.id.morning_consumer_layout);
+        final LinearLayout family_consumes = (LinearLayout) findViewById(R.id.family_consumes_layout);
+        final LinearLayout started_how = (LinearLayout) findViewById(R.id.started_how_layout);
+        final LinearLayout other_habit = (LinearLayout) findViewById(R.id.other_habit_layout);
+        final LinearLayout aware_harms = (LinearLayout) findViewById(R.id.aware_harms_layout);
+        final LinearLayout disease_aware = (LinearLayout) findViewById(R.id.disease_aware_layout);
+        final LinearLayout quit = (LinearLayout) findViewById(R.id.quit_layout);
+        final LinearLayout reasonforquitting = (LinearLayout) findViewById(R.id.reasonofquitting_layout);
+        final LinearLayout tried_quitting = (LinearLayout) findViewById(R.id.tried_quitting_layout);
+        final LinearLayout craving = (LinearLayout) findViewById(R.id.craving_layout);
+
+
+        S.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if(!isChecked)
+                {
+
+                    morning_consumer.setVisibility(LinearLayout.GONE);
+                    family_consumes.setVisibility(LinearLayout.GONE);
+                    started_how.setVisibility(LinearLayout.GONE);
+                    other_habit.setVisibility(LinearLayout.GONE);
+                    aware_harms.setVisibility(LinearLayout.GONE);
+                    disease_aware.setVisibility(LinearLayout.GONE);
+                    quit.setVisibility(LinearLayout.GONE);
+                    reasonforquitting.setVisibility(LinearLayout.GONE);
+                    tried_quitting.setVisibility(LinearLayout.GONE);
+                    craving.setVisibility(LinearLayout.GONE);
+                }
+                else
+                {
+                    morning_consumer.setVisibility(LinearLayout.VISIBLE);
+                    family_consumes.setVisibility(LinearLayout.VISIBLE);
+                    started_how.setVisibility(LinearLayout.VISIBLE);
+                    other_habit.setVisibility(LinearLayout.VISIBLE);
+                    aware_harms.setVisibility(LinearLayout.VISIBLE);
+                    disease_aware.setVisibility(LinearLayout.VISIBLE);
+                    quit.setVisibility(LinearLayout.VISIBLE);
+                    reasonforquitting.setVisibility(LinearLayout.VISIBLE);
+                    tried_quitting.setVisibility(LinearLayout.VISIBLE);
+                    craving.setVisibility(LinearLayout.VISIBLE);
+                }
+            }
+        });
+
 
 
         chewer.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -300,84 +353,158 @@ public class NewEntryActivity  extends AppCompatActivity {
             });*/
 
             //For fill more
-                Switch S = (Switch) findViewById(R.id.mySwitch);
-                final LinearLayout morning_consumer = (LinearLayout) findViewById(R.id.morning_consumer_layout);
-                final LinearLayout family_consumes = (LinearLayout) findViewById(R.id.family_consumes_layout);
-                final LinearLayout started_how = (LinearLayout) findViewById(R.id.started_how_layout);
-                final LinearLayout other_habit = (LinearLayout) findViewById(R.id.other_habit_layout);
-                final LinearLayout aware_harms = (LinearLayout) findViewById(R.id.aware_harms_layout);
-                final LinearLayout disease_aware = (LinearLayout) findViewById(R.id.disease_aware_layout);
-                final LinearLayout quit = (LinearLayout) findViewById(R.id.quit_layout);
-                final LinearLayout reasonforquitting = (LinearLayout) findViewById(R.id.reasonofquitting_layout);
-                final LinearLayout tried_quitting = (LinearLayout) findViewById(R.id.tried_quitting_layout);
-                final LinearLayout craving = (LinearLayout) findViewById(R.id.craving_layout);
+                if(S.isChecked())
+                {
+                    //Morning consumer
+                    RadioGroup rg2 = (RadioGroup)findViewById(R.id.within_30_mins);
+                    morning_status = ((RadioButton)findViewById(rg2.getCheckedRadioButtonId())).getText().toString();
 
+                    //Anyone in Family consume tobacco
+                    RadioGroup rg3 = (RadioGroup)findViewById(R.id.family_consumes_RG);
+                    family_status = ((RadioButton)findViewById(rg3.getCheckedRadioButtonId())).getText().toString();
 
-                S.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    //how did start consuming
 
-                        if(!isChecked)
-                        {
+                    CheckBox res1=(CheckBox) findViewById(R.id.habit_started_with_friends);
+                    CheckBox res2=(CheckBox) findViewById(R.id.habit_started_for_hunger);
+                    CheckBox res3=(CheckBox) findViewById(R.id.habbit_started_social_issues);
+                    CheckBox res4=(CheckBox) findViewById(R.id.habit_started_other);
 
-                            morning_consumer.setVisibility(LinearLayout.GONE);
-                            family_consumes.setVisibility(LinearLayout.GONE);
-                            started_how.setVisibility(LinearLayout.GONE);
-                            other_habit.setVisibility(LinearLayout.GONE);
-                            aware_harms.setVisibility(LinearLayout.GONE);
-                            disease_aware.setVisibility(LinearLayout.GONE);
-                            quit.setVisibility(LinearLayout.GONE);
-                            reasonforquitting.setVisibility(LinearLayout.GONE);
-                            tried_quitting.setVisibility(LinearLayout.GONE);
-                            craving.setVisibility(LinearLayout.GONE);
-                        }
-                        else
-                        {
-                            morning_consumer.setVisibility(LinearLayout.VISIBLE);
-                            family_consumes.setVisibility(LinearLayout.VISIBLE);
-                            started_how.setVisibility(LinearLayout.VISIBLE);
-                            other_habit.setVisibility(LinearLayout.VISIBLE);
-                            aware_harms.setVisibility(LinearLayout.VISIBLE);
-                            disease_aware.setVisibility(LinearLayout.VISIBLE);
-                            quit.setVisibility(LinearLayout.VISIBLE);
-                            reasonforquitting.setVisibility(LinearLayout.VISIBLE);
-                            tried_quitting.setVisibility(LinearLayout.VISIBLE);
-                            craving.setVisibility(LinearLayout.VISIBLE);
-                            //Morning consumer
-                            RadioGroup rg1 = (RadioGroup)findViewById(R.id.within_30_mins);
-                            morning_status = ((RadioButton)findViewById(rg1.getCheckedRadioButtonId())).getText().toString();
-
-                            //Anyone in Family consume tobacco
-                            RadioGroup rg2 = (RadioGroup)findViewById(R.id.family_consumes_RG);
-                            family_status = ((RadioButton)findViewById(rg1.getCheckedRadioButtonId())).getText().toString();
-
-                            //how did start consuming
-
-                            CheckBox res1=(CheckBox) findViewById(R.id.habit_started_with_friends);
-                            CheckBox res2=(CheckBox) findViewById(R.id.habit_started_for_hunger);
-                            CheckBox res3=(CheckBox) findViewById(R.id.habbit_started_social_issues);
-                            CheckBox res4=(CheckBox) findViewById(R.id.habit_started_other);
-
-                            if(res1.isChecked())
-                            {
-                                habit_reason+=res1.getText().toString()+" ";
-                            }
-                            if(res2.isChecked())
-                            {
-                                habit_reason+=res2.getText().toString()+" ";
-                            }
-                            if(res3.isChecked())
-                            {
-                                habit_reason+=res3.getText().toString()+" ";
-                            }
-                            if(res4.isChecked())
-                            {
-                                habit_reason+=res4.getText().toString()+" ";
-                            }
-                            
-                        }
+                    if(res1.isChecked())
+                    {
+                        habit_reason+=res1.getText().toString()+" ";
                     }
-                });
+                    if(res2.isChecked())
+                    {
+                        habit_reason+=res2.getText().toString()+" ";
+                    }
+                    if(res3.isChecked())
+                    {
+                        habit_reason+=res3.getText().toString()+" ";
+                    }
+                    if(res4.isChecked())
+                    {
+                        habit_reason+=res4.getText().toString()+" ";
+                    }
+
+                    //For other Habbits
+                    CheckBox hab1_checkbox=(CheckBox) findViewById(R.id.drugs_habit);
+                    CheckBox hab2_checkbox=(CheckBox) findViewById(R.id.alchohol_habit);
+                    if(hab1_checkbox.isChecked())
+                    {
+                        habbit+=hab1_checkbox.getText().toString()+" ";
+                    }
+                    if(hab2_checkbox.isChecked())
+                    {
+                        habbit+=hab2_checkbox.getText().toString()+" ";
+
+                    }
+                    //Aware or not
+                    RadioGroup rg4 = (RadioGroup)findViewById(R.id.aware_checkbox_group);
+                    aware_status = ((RadioButton)findViewById(rg4.getCheckedRadioButtonId())).getText().toString();
+
+                    //Which diseases
+                    CheckBox disease_checkbox1=(CheckBox) findViewById(R.id.disease_aware_1);
+                    CheckBox disease_checkbox2=(CheckBox) findViewById(R.id.disease_aware_2);
+                    CheckBox disease_checkbox3=(CheckBox) findViewById(R.id.disease_aware_3);
+                    CheckBox disease_checkbox4=(CheckBox) findViewById(R.id.disease_aware_4);
+                    CheckBox disease_checkbox5=(CheckBox) findViewById(R.id.disease_aware_5);
+                    CheckBox disease_checkbox6=(CheckBox) findViewById(R.id.disease_aware_6);
+                    CheckBox disease_checkbox7=(CheckBox) findViewById(R.id.disease_aware_7);
+                    CheckBox disease_checkbox8=(CheckBox) findViewById(R.id.disease_aware_8);
+                    CheckBox disease_checkbox9=(CheckBox) findViewById(R.id.disease_aware_9);
+                    CheckBox disease_checkbox10=(CheckBox) findViewById(R.id.disease_aware_10);
+                    if(disease_checkbox1.isChecked())
+                    {
+                        aware_diseases+=disease_checkbox1.getText().toString() + "";
+                    }
+
+                    if(disease_checkbox2.isChecked())
+                    {
+                        aware_diseases+=disease_checkbox2.getText().toString() + "";
+                    }
+
+                    if(disease_checkbox3.isChecked())
+                    {
+                        aware_diseases+=disease_checkbox3.getText().toString() + "";
+                    }
+
+                    if(disease_checkbox4.isChecked())
+                    {
+                        aware_diseases+=disease_checkbox4.getText().toString() + "";
+                    }
+
+                    if(disease_checkbox5.isChecked())
+                    {
+                        aware_diseases+=disease_checkbox5.getText().toString() + "";
+                    }
+
+                    if(disease_checkbox6.isChecked())
+                    {
+                        aware_diseases+=disease_checkbox6.getText().toString() + "";
+                    }
+
+                    if(disease_checkbox7.isChecked())
+                    {
+                        aware_diseases+=disease_checkbox7.getText().toString() + "";
+                    }
+
+                    if(disease_checkbox8.isChecked())
+                    {
+                        aware_diseases+=disease_checkbox8.getText().toString() + "";
+                    }
+
+                    if(disease_checkbox9.isChecked())
+                    {
+                        aware_diseases+=disease_checkbox9.getText().toString() + "";
+                    }
+
+                    if(disease_checkbox10.isChecked())
+                    {
+                        aware_diseases+=disease_checkbox10.getText().toString() + "";
+                    }
+
+                    //Want to quit yes or no
+                    RadioGroup rg5 = (RadioGroup)findViewById(R.id.quit_checkbox_group);
+                    quit_status = ((RadioButton)findViewById(rg5.getCheckedRadioButtonId())).getText().toString();
+
+                    //Why Quit
+                    CheckBox reason_quit_checkbox1=(CheckBox) findViewById(R.id.quitting_1);
+                    CheckBox reason_quit_checkbox2=(CheckBox) findViewById(R.id.quitting_2);
+                    CheckBox reason_quit_checkbox3=(CheckBox) findViewById(R.id.quitting_3);
+                    CheckBox reason_quit_checkbox4=(CheckBox) findViewById(R.id.quitting_4);
+
+                    if(reason_quit_checkbox1.isChecked())
+                    {
+                        quit_reason+=reason_quit_checkbox1.getText().toString() + "";
+                    }
+
+                    if(reason_quit_checkbox2.isChecked())
+                    {
+                        quit_reason+=reason_quit_checkbox2.getText().toString() + "";
+                    }
+
+                    if(reason_quit_checkbox2.isChecked())
+                    {
+                        quit_reason+=reason_quit_checkbox2.getText().toString() + "";
+                    }
+
+                    if(reason_quit_checkbox3.isChecked())
+                    {
+                        quit_reason+=reason_quit_checkbox3.getText().toString() + "";
+                    }
+
+
+                    if(reason_quit_checkbox4.isChecked())
+                    {
+                        quit_reason+=reason_quit_checkbox4.getText().toString() + "";
+                    }
+
+
+
+
+
+                }
 
 
                 String interest = "";

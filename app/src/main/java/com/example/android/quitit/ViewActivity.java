@@ -64,7 +64,7 @@ public class ViewActivity extends AppCompatActivity {
         name_text_view.setText(ClickedEntry.getAge());
 
         final TextView years_chewing_input = (TextView) findViewById(R.id.years_chewing_text_view);
-        years_chewing_input.setText(ClickedEntry.get);
+        years_chewing_input.setText(ClickedEntry.getSmokeHistory());
         final EditText months_chewing_input = (EditText) findViewById(R.id.months_chewing_edit_text);
         final EditText often_chewing_input = (EditText) findViewById(R.id.often_chewing_edit_text);
         final EditText cost_packet_input = (EditText) findViewById(R.id.cost_chewing_edit_text);
