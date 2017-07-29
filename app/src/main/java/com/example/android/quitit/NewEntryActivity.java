@@ -50,7 +50,7 @@ public class NewEntryActivity  extends AppCompatActivity {
     public static final String ANONYMOUS = "anonymous";
 
     private String mUsername;
-    private int id;
+    private int id=1;
 
     private FirebaseStorage mFirebaseStorage;
     private FirebaseDatabase mFirebaseDatabase;
@@ -73,6 +73,15 @@ public class NewEntryActivity  extends AppCompatActivity {
     private String aware_diseases="";
     private String quit_status="";
     private String quit_reason="";
+    private String quit_before_status="";
+    private String craving_time="";
+    private String name="";
+    private int age;
+    private String sex="";
+    private String contact="";
+    private String m_status="";
+    private String business="";
+    private int salary=1;
 
 
     @Override
@@ -217,11 +226,11 @@ public class NewEntryActivity  extends AppCompatActivity {
             public void onClick(View v) {
                 //For Name
                 EditText nameView=(EditText)findViewById(R.id.name_edit_text);
-                String name=nameView.getText().toString();
+                name=nameView.getText().toString();
 
                 //For Age
                 EditText ageView=(EditText)findViewById(R.id.age_edit_text);
-                int age= parseInt(ageView.getText().toString());
+                age= parseInt(ageView.getText().toString());
 
                 //For Med History
                 String med_history="";
@@ -254,11 +263,11 @@ public class NewEntryActivity  extends AppCompatActivity {
 
                 //For Sex
                 RadioGroup rg = (RadioGroup)findViewById(R.id.sex_group);
-                String sex = ((RadioButton)findViewById(rg.getCheckedRadioButtonId())).getText().toString();
+                sex = ((RadioButton)findViewById(rg.getCheckedRadioButtonId())).getText().toString();
 
                 //For Contact No
                 EditText contactView=(EditText)findViewById(R.id.contact_edit_text);
-                String contact= (contactView.getText().toString());
+                contact= (contactView.getText().toString());
 
                 if(chewer.isChecked()) {
                     //For chewing history
@@ -280,7 +289,7 @@ public class NewEntryActivity  extends AppCompatActivity {
                 }
 
                 if(smoker.isChecked()){
-                    //For chewing history
+                    //For smoking history
                     EditText smoke_yearView = (EditText) findViewById(R.id.smoking_years_edit_text);
                     int smoke_years = Integer.parseInt(smoke_yearView.getText().toString());
 
@@ -289,11 +298,11 @@ public class NewEntryActivity  extends AppCompatActivity {
 
                     smoke_days = (smoke_years * 365) + (smoke_months * 30);
 
-                    //For chewing frequency(in a day)
+                    //For smoking frequency(in a day)
                     EditText smoke_frequencyView = (EditText) findViewById(R.id.often_edit_text);
                     chew_freq = Integer.parseInt(smoke_frequencyView.getText().toString());
 
-                    //For avg cost of each chewing thing
+                    //For avg cost of each smoking thing
                     EditText smoke_costView = (EditText) findViewById(R.id.cost_smoking_edit_text);
                     smoke_cost = Float.parseFloat(smoke_costView.getText().toString());
                 }
@@ -301,7 +310,7 @@ public class NewEntryActivity  extends AppCompatActivity {
 
                 //For marital status m=marriage
                 RadioGroup rg1 = (RadioGroup)findViewById(R.id.m_status_group);
-                String m_status = ((RadioButton)findViewById(rg1.getCheckedRadioButtonId())).getText().toString();
+                m_status = ((RadioButton)findViewById(rg1.getCheckedRadioButtonId())).getText().toString();
 
                 //For Future Plans
                 //Spinner futurespinner = (Spinner)findViewById(R.id.future_spinner);
@@ -309,11 +318,11 @@ public class NewEntryActivity  extends AppCompatActivity {
 
                 //For Business
                 EditText businessView=(EditText)findViewById(R.id.business_edit_text);
-                String business= (businessView.getText().toString());
+                business= (businessView.getText().toString());
 
                 //For Salary
                 EditText salaryView=(EditText)findViewById(R.id.salary_edit_text);
-                int salary= Integer.parseInt(salaryView.getText().toString());
+                salary= Integer.parseInt(salaryView.getText().toString());
 
                 //For Current time
                 Calendar c = Calendar.getInstance();
@@ -500,6 +509,66 @@ public class NewEntryActivity  extends AppCompatActivity {
                         quit_reason+=reason_quit_checkbox4.getText().toString() + "";
                     }
 
+                    //Tried Quiting Before
+                    RadioGroup rg6 = (RadioGroup)findViewById(R.id.quit_checkbox_group);
+                    quit_before_status = ((RadioButton)findViewById(rg5.getCheckedRadioButtonId())).getText().toString();
+
+                    //Craving timings
+                    CheckBox craving_chackbox1=(CheckBox) findViewById(R.id.craving_1);
+                    CheckBox craving_chackbox2=(CheckBox) findViewById(R.id.craving_2);
+                    CheckBox craving_chackbox3=(CheckBox) findViewById(R.id.craving_3);
+                    CheckBox craving_chackbox4=(CheckBox) findViewById(R.id.craving_4);
+                    CheckBox craving_chackbox5=(CheckBox) findViewById(R.id.craving_5);
+                    CheckBox craving_chackbox6=(CheckBox) findViewById(R.id.craving_6);
+                    CheckBox craving_chackbox7=(CheckBox) findViewById(R.id.craving_7);
+                    CheckBox craving_chackbox8=(CheckBox) findViewById(R.id.craving_8);
+                    CheckBox craving_chackbox9=(CheckBox) findViewById(R.id.craving_9);
+
+                    if(craving_chackbox1.isChecked())
+                    {
+                        craving_time+=craving_chackbox1.getText().toString() + "";
+                    }
+
+                    if(craving_chackbox2.isChecked())
+                    {
+                        craving_time+=craving_chackbox2.getText().toString() + "";
+                    }
+
+                    if(craving_chackbox3.isChecked())
+                    {
+                        craving_time+=craving_chackbox3.getText().toString() + "";
+                    }
+
+                    if(craving_chackbox4.isChecked())
+                    {
+                        craving_time+=craving_chackbox4.getText().toString() + "";
+                    }
+
+                    if(craving_chackbox5.isChecked())
+                    {
+                        craving_time+=craving_chackbox5.getText().toString() + "";
+                    }
+
+                    if(craving_chackbox6.isChecked())
+                    {
+                        craving_time+=craving_chackbox6.getText().toString() + "";
+                    }
+
+                    if(craving_chackbox7.isChecked())
+                    {
+                        craving_time+=craving_chackbox7.getText().toString() + "";
+                    }
+
+                    if(craving_chackbox8.isChecked())
+                    {
+                        craving_time+=craving_chackbox8.getText().toString() + "";
+                    }
+
+                    if(craving_chackbox9.isChecked())
+                    {
+                        craving_time+=craving_chackbox9.getText().toString() + "";
+                    }
+
 
 
 
@@ -509,7 +578,8 @@ public class NewEntryActivity  extends AppCompatActivity {
 
                 String interest = "";
                 String future = "";
-                Entry patient=new Entry(name,age,sex,interest,med_history,contact,chew_days,chew_freq,chew_cost,m_status,future,business,salary,formattedtime1,formattedDate1,id);
+                Entry patient=new Entry(name,age,sex,interest,med_history,contact,chew_days,chew_freq,chew_cost,smoke_days,smoke_freq,smoke_cost,m_status,business,salary,formattedtime1,formattedDate1,morning_status,
+                        family_status,habit_reason,habbit,aware_status,aware_diseases,quit_status,quit_reason,quit_before_status,craving_time,id);
                 mPatientDatabaseReference.push().setValue(patient);
                 Intent i=new Intent(NewEntryActivity.this,MainActivity.class);
                 startActivity(i);
