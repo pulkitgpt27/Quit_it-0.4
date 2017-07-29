@@ -578,9 +578,13 @@ public class NewEntryActivity  extends AppCompatActivity {
 
                 String interest = "";
                 String future = "";
+                String key=mPatientDatabaseReference.push().getKey();
+
                 Entry patient=new Entry(name,age,sex,interest,med_history,contact,chew_days,chew_freq,chew_cost,smoke_days,smoke_freq,smoke_cost,m_status,business,salary,formattedtime1,formattedDate1,morning_status,
-                        family_status,habit_reason,habbit,aware_status,aware_diseases,quit_status,quit_reason,quit_before_status,craving_time,id);
+                        family_status,habit_reason,habbit,aware_status,aware_diseases,quit_status,quit_reason,quit_before_status,craving_time,key);
+
                 mPatientDatabaseReference.push().setValue(patient);
+
                 Intent i=new Intent(NewEntryActivity.this,MainActivity.class);
                 startActivity(i);
 

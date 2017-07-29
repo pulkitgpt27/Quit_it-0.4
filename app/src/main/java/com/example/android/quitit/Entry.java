@@ -27,7 +27,7 @@ public class Entry implements Parcelable {
     private int salary;
     private String time;
     private String formattedDate;
-    private int id;
+    private String id;
     private String morning_status;
     private String family_status;
     private String habit_reason;
@@ -54,7 +54,7 @@ public class Entry implements Parcelable {
    // Entry patient=new Entry(name,age,sex,interest,med_history,contact,days,freq,cost,m_status,future);
 
     public Entry(String name,int age,String sex,String interest,String med,String contact,int chew_days,int chew_freq,float chew_cost,int smoke_days,int smoke_freq,float smoke_cost,String marry_status,String business,int salary,String time,String date,
-                 String morning_status,String family_status,String habit_reason,String habit,String aware_status,String aware_diseases,String quit_status,String quit_reason,String quit_before_status,String craving_time,int id){
+                 String morning_status,String family_status,String habit_reason,String habit,String aware_status,String aware_diseases,String quit_status,String quit_reason,String quit_before_status,String craving_time,String id){
         this.name=name;
         this.age=age;
         this.sex=sex;
@@ -113,7 +113,7 @@ public class Entry implements Parcelable {
     public String getQuit_reason(){return quit_reason;}
     public String getQuit_before_status(){return quit_before_status;}
     public String getCraving_time(){return craving_time;}
-    public int getId(){return id;}
+    public String getId(){return id;}
 
 
     //parcealable stuff
@@ -147,7 +147,7 @@ public class Entry implements Parcelable {
         quit_reason=in.readString();
         quit_before_status=in.readString();
         craving_time=in.readString();
-        id=in.readInt();
+        id=in.readString();
     }
 
     @Override
@@ -198,6 +198,6 @@ public class Entry implements Parcelable {
         parcel.writeString(quit_reason);
         parcel.writeString(quit_before_status);
         parcel.writeString(craving_time);
-        parcel.writeInt(id);
+        parcel.writeString(id);
     }
 }

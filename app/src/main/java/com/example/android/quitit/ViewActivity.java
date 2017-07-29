@@ -51,11 +51,11 @@ public class ViewActivity extends AppCompatActivity {
         ClickedEntry = B.getParcelable("ClickedEntry");
 
         mUsername=ANONYMOUS;
-        mFirebaseDatabase=FirebaseDatabase.getInstance();
-        mPatientDatabaseReference=mFirebaseDatabase.getReference().child("patient");
+        TextView name=(TextView)findViewById(R.id.name_text_view);
+        name.setText(ClickedEntry.getName());
 
 
-        final CheckBox chewer = (CheckBox) findViewById(R.id.chewer);
+        /*final CheckBox chewer = (CheckBox) findViewById(R.id.chewer);
         final CheckBox smoker = (CheckBox) findViewById(R.id.smoker);
 
         final TextView name_text_view = (TextView) findViewById(R.id.name_text_view);
@@ -72,7 +72,7 @@ public class ViewActivity extends AppCompatActivity {
         final EditText years_smoking_input = (EditText) findViewById(R.id.smoking_years_edit_text);
         final EditText months_smoking_input = (EditText) findViewById(R.id.smoking_months_edit_text);
         final EditText often_smoking_input = (EditText) findViewById(R.id.often_edit_text);
-        final EditText cost_ciggartte_input = (EditText) findViewById(R.id.cost_smoking_edit_text);
+        final EditText cost_ciggartte_input = (EditText) findViewById(R.id.cost_smoking_edit_text);*/
 
     }
 }
