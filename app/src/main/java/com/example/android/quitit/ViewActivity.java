@@ -1,3 +1,4 @@
+
 package com.example.android.quitit;
 
 import android.os.Bundle;
@@ -51,10 +52,6 @@ public class ViewActivity extends AppCompatActivity {
         ClickedEntry = B.getParcelable("ClickedEntry");
 
         mUsername=ANONYMOUS;
-        mFirebaseDatabase=FirebaseDatabase.getInstance();
-        mPatientDatabaseReference=mFirebaseDatabase.getReference().child("patient");
-
-
         final TextView name_text_view = (TextView) findViewById(R.id.name_text_view);
         name_text_view.setText(ClickedEntry.getName());
         final TextView age_text_view = (TextView) findViewById(R.id.age_text_view);
