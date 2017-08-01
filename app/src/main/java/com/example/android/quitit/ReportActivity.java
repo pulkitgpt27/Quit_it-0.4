@@ -1,14 +1,15 @@
 package com.example.android.quitit;
 
-/**
- * Created by Pulkit on 03-07-2017.
- */
 
+
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.print.PrintManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -16,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -40,6 +42,7 @@ public class ReportActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
 
+        //Receiving bundle
         Bundle B = this.getIntent().getExtras();
         ClickedEntry = B.getParcelable("ClickedEntry");
 
@@ -70,7 +73,7 @@ public class ReportActivity extends AppCompatActivity {
         cigarettes_day.setText(Integer.toString(ClickedEntry.getSmoke_freq()));
 
         //for fraction of salary
-        float spent=(ClickedEntry.getSmoke_freq())*30*((float)(ClickedEntry.getCost()));
+        float spent=(ClickedEntry.getSmoke_freq())*30*((float)(ClickedEntry.getSmoke_cost()));
         float earn=(float) (ClickedEntry.getSalary());
         float save=earn-spent;
         float percent=((float)spent/earn)*100;
@@ -113,27 +116,50 @@ public class ReportActivity extends AppCompatActivity {
         switch (item.getItemId())
         {
             case R.id.delete:
-                deletepatient();
-                Intent i = new Intent(ReportActivity.this, MainActivity.class);
-                startActivity(i);
+                new AlertDialog.Builder(this)
+                        .setTitle("Delete")
+                        .setMessage("Do you really want to delete")
+                       // .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                deletepatient();
+                                Intent i = new Intent(ReportActivity.this, MainActivity.class);
+                                startActivity(i);
+                            }})
+                        .setNegativeButton(android.R.string.no, null).show();
+
                 return true;
             case R.id.view_all:
                 Intent intent = new Intent(ReportActivity.this,ViewActivity.class);
-                //public Entry(String name,int age,String sex,String interest,String med,String contact,int days,int freq,float cost,String marry_status,String future,String business,int salary,String time,String date)
-                Entry temp = new Entry(ClickedEntry.getName(),ClickedEntry.getAge(),ClickedEntry.getSex(),ClickedEntry.getInterest(),ClickedEntry.getMed_history(),ClickedEntry.getContact(),ClickedEntry.getSmokeHistory(),ClickedEntry.getSmoke_freq(),ClickedEntry.getCost(),ClickedEntry.getMarry_status(),ClickedEntry.getFuture(),ClickedEntry.getBusiness(),ClickedEntry.getSalary(),ClickedEntry.getTime(),ClickedEntry.getFormattedDate(),ClickedEntry.getId());
+              /*  Entry(String name,int age,String sex,String interest,String med,String contact,int chew_days,int chew_freq,float chew_cost,int smoke_days,int smoke_freq,float smoke_cost,String marry_status,
+               String future,String business,int salary,String time,String date,
+                    String morning_status,String family_status,String habit_reason,String habit,String aware_status,String aware_diseases,String quit_status,String quit_reason,String quit_before_status,String craving_time,int id){
+                */
+
+                Entry temp = new Entry(ClickedEntry.getName(),ClickedEntry.getAge(),ClickedEntry.getSex(),ClickedEntry.getInterest(),ClickedEntry.getMed_history(),ClickedEntry.getContact(),ClickedEntry.getChew_history(),
+                        ClickedEntry.getChew_freq(),ClickedEntry.getChew_cost(),ClickedEntry.getSmokeHistory(),ClickedEntry.getSmoke_freq(),ClickedEntry.getSmoke_cost(),ClickedEntry.getMarry_status(),
+                        ClickedEntry.getBusiness(),ClickedEntry.getSalary(),ClickedEntry.getTime(),ClickedEntry.getFormattedDate(),ClickedEntry.getMorning_status(),ClickedEntry.getFamily_status(),
+                        ClickedEntry.getHabit_reason(),ClickedEntry.getHabit(),ClickedEntry.getAware_status(),ClickedEntry.getAware_disease(),ClickedEntry.getQuit_status(),ClickedEntry.getQuit_reason(),ClickedEntry.getQuit_before_status(),
+                        ClickedEntry.getCraving_time(),ClickedEntry.getId());
                 Bundle B = new Bundle();
+
+                //passing bundle
                 B.putParcelable("ClickedEntry", (Parcelable) temp);
                 intent.putExtras(B);
                 startActivity(intent);
+                return true;
             case R.id.update:
-                Intent intent2 = new Intent(ReportActivity.this,NewEntryActivity.class);
-                //public Entry(String name,int age,String sex,String interest,String med,String contact,int days,int freq,float cost,String marry_status,String future,String business,int salary,String time,String date)
-                Entry temp2 = new Entry(ClickedEntry.getName(),ClickedEntry.getAge(),ClickedEntry.getSex(),ClickedEntry.getInterest(),ClickedEntry.getMed_history(),ClickedEntry.getContact(),ClickedEntry.getSmokeHistory(),ClickedEntry.getSmoke_freq(),ClickedEntry.getCost(),ClickedEntry.getMarry_status(),ClickedEntry.getFuture(),ClickedEntry.getBusiness(),ClickedEntry.getSalary(),ClickedEntry.getTime(),ClickedEntry.getFormattedDate(),ClickedEntry.getId());
+                Intent intent2 = new Intent(ReportActivity.this,UpdateActivity.class);
+                Entry temp2 = new Entry(ClickedEntry.getName(),ClickedEntry.getAge(),ClickedEntry.getSex(),ClickedEntry.getInterest(),ClickedEntry.getMed_history(),ClickedEntry.getContact(),ClickedEntry.getChew_history(),
+                    ClickedEntry.getChew_freq(),ClickedEntry.getChew_cost(),ClickedEntry.getSmokeHistory(),ClickedEntry.getSmoke_freq(),ClickedEntry.getSmoke_cost(),ClickedEntry.getMarry_status(),
+                    ClickedEntry.getBusiness(),ClickedEntry.getSalary(),ClickedEntry.getTime(),ClickedEntry.getFormattedDate(),ClickedEntry.getMorning_status(),ClickedEntry.getFamily_status(),
+                    ClickedEntry.getHabit_reason(),ClickedEntry.getHabit(),ClickedEntry.getAware_status(),ClickedEntry.getAware_disease(),ClickedEntry.getQuit_status(),ClickedEntry.getQuit_reason(),ClickedEntry.getQuit_before_status(),
+                    ClickedEntry.getCraving_time(),ClickedEntry.getId());
                 Bundle B1 = new Bundle();
                 B1.putParcelable("ClickedEntry", (Parcelable) temp2);
                 intent2.putExtras(B1);
                 startActivity(intent2);
-
                 return true;
         }
         return super.onOptionsItemSelected(item);

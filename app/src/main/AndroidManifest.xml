@@ -28,6 +28,10 @@
             android:parentActivityName=".ReportActivity">
         </activity>
 
+        <activity android:name=".UpdateActivity"
+            android:parentActivityName=".MainActivity">
+        </activity>
+
     </application>
 
 </manifest>

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
     android:layout_width="match_parent">
@@ -78,7 +77,6 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:layout_marginTop="6dp"
                     android:layout_weight="1"
                     android:text="Sex :"
                     android:textSize="18sp"
@@ -89,7 +87,6 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:layout_marginTop="6dp"
                     android:layout_weight="3"
                     android:textSize="18sp" />
 
@@ -108,6 +105,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:layout_marginTop="10dp"
                     android:text="Contact :"
                     android:textSize="18sp"
                     android:textStyle="italic" />
@@ -117,6 +115,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
+                    android:layout_marginTop="6dp"
                     android:paddingLeft="24dp"
                     android:textSize="18sp"/>
 
@@ -250,10 +249,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="top"
                     android:layout_marginBottom="10dp"
-                    android:text="Smoking History :"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:visibility="gone" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/smoking_time_text_view"
@@ -261,8 +257,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
                     android:text="How long have you been smoking?"
-                    android:textSize="18sp"
-                    android:visibility="gone" />
+                    android:textSize="18sp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -275,14 +270,13 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:visibility="gone" />
+                        android:paddingLeft="24dp"/>
 
                     <TextView
                         android:id="@+id/smoking_months_text_view"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:visibility="gone" />
+                        android:layout_weight="1" />
                 </LinearLayout>
 
                 <TextView
@@ -292,16 +286,14 @@
                     android:layout_marginBottom="6dp"
                     android:layout_marginTop="12dp"
                     android:text="How many times do you smoke in a day?"
-                    android:textSize="18sp"
-                    android:visibility="gone" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/often_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="6dp"
-                    android:paddingLeft="24dp"
-                    android:visibility="gone" />
+                    android:paddingLeft="24dp" />
 
                 <TextView
                     android:id="@+id/cost_smoking_text_view"
@@ -309,16 +301,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
                     android:text="Average cost of each ciggerate :"
-                    android:textSize="18sp"
-                    android:visibility="gone" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/cost_smoking_text_view_value"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
-                    android:paddingLeft="24dp"
-                    android:visibility="gone" />
+                    android:paddingLeft="24dp" />
             </LinearLayout>
 
             <LinearLayout
@@ -338,8 +328,7 @@
                     android:layout_marginBottom="10dp"
                     android:text="@string/chewing_history"
                     android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:visibility="gone" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/chewing_time_text_view"
@@ -347,8 +336,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
                     android:text="@string/chewing_history_time"
-                    android:textSize="18sp"
-                    android:visibility="gone" />
+                    android:textSize="18sp"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -361,14 +349,13 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:visibility="gone" />
+                        android:paddingLeft="24dp"/>
 
                     <TextView
                         android:id="@+id/months_chewing_text_view"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:visibility="gone" />
+                        android:layout_weight="1" />
                 </LinearLayout>
 
                 <TextView
@@ -378,16 +365,14 @@
                     android:layout_marginBottom="6dp"
                     android:layout_marginTop="12dp"
                     android:text="@string/often_chewing_text_view"
-                    android:textSize="18sp"
-                    android:visibility="gone" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/often_chewing_text_view_value"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="6dp"
-                    android:paddingLeft="24dp"
-                    android:visibility="gone" />
+                    android:paddingLeft="24dp" />
 
                 <TextView
                     android:id="@+id/cost_of_one_packet"
@@ -395,16 +380,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
                     android:text="@string/cost_of_one_packet"
-                    android:textSize="18sp"
-                    android:visibility="gone" />
+                    android:textSize="18sp"/>
 
                 <TextView
                     android:id="@+id/cost_chewing_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
-                    android:paddingLeft="24dp"
-                    android:visibility="gone" />
+                    android:paddingLeft="24dp" />
             </LinearLayout>
 
 
@@ -431,9 +414,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="top"
                     android:layout_weight="3"
-                    android:text="@string/marital_status"
-                    android:textSize="18sp"
-                    android:textStyle="italic" />
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
@@ -449,12 +430,12 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
-                    android:text="Profession"
+                    android:text="Profession:"
                     android:textSize="18sp"
                     android:textStyle="italic" />
 
                 <TextView
-                    android:id="@+id/business_edit_text"
+                    android:id="@+id/business_text_view"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
@@ -478,31 +459,12 @@
                     android:textStyle="italic" />
 
                 <TextView
-                    android:id="@+id/salary_edit_text"
+                    android:id="@+id/salary_text_view"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
                     android:paddingLeft="24dp" />
             </LinearLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/activity_horizontal_margin"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:orientation="horizontal">
-
-                <Switch
-                    android:id="@+id/mySwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentTop="true"
-                    android:text="Fill More   "
-                    android:textSize="18sp" />
-            </RelativeLayout>
-
             <LinearLayout
                 android:id="@+id/morning_consumer_layout"
                 android:layout_width="match_parent"
@@ -510,8 +472,7 @@
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/activity_horizontal_margin"
-                android:visibility="gone">
+                android:paddingBottom="@dimen/activity_horizontal_margin">
 
                 <TextView
                     android:id="@+id/morning_consumer"
@@ -529,8 +490,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="top"
                     android:layout_marginBottom="10dp"
-                    android:textSize="18sp"
-                    android:textStyle="italic" />
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
@@ -541,8 +501,7 @@
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/activity_horizontal_margin"
-                android:visibility="gone">
+                android:paddingBottom="@dimen/activity_horizontal_margin">
 
                 <TextView
                     android:id="@+id/family_consumes"
@@ -560,8 +519,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="top"
                     android:layout_marginBottom="10dp"
-                    android:textSize="18sp"
-                    android:textStyle="italic" />
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
@@ -573,8 +531,7 @@
                 android:layout_marginBottom="@dimen/activity_horizontal_margin"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:orientation="horizontal"
-                android:visibility="gone">
+                android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="0dp"
@@ -593,8 +550,7 @@
                     android:layout_gravity="top"
                     android:layout_marginTop="6dp"
                     android:layout_weight="3"
-                    android:textSize="18sp"
-                    android:textStyle="italic" />
+                    android:textSize="18sp" />
 
 
             </LinearLayout>
@@ -606,8 +562,7 @@
                 android:layout_marginBottom="@dimen/activity_horizontal_margin"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:orientation="horizontal"
-                android:visibility="gone">
+                android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="0dp"
@@ -626,8 +581,7 @@
                     android:layout_gravity="top"
                     android:layout_marginTop="6dp"
                     android:layout_weight="3"
-                    android:textSize="18sp"
-                    android:textStyle="italic" />
+                    android:textSize="18sp"/>
 
             </LinearLayout>
 
@@ -638,8 +592,7 @@
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/activity_horizontal_margin"
-                android:visibility="gone">
+                android:paddingBottom="@dimen/activity_horizontal_margin">
 
                 <TextView
                     android:id="@+id/aware_harms"
@@ -657,8 +610,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="top"
                     android:layout_marginBottom="10dp"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
@@ -669,8 +621,7 @@
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:orientation="horizontal"
-                android:paddingBottom="@dimen/activity_horizontal_margin"
-                android:visibility="gone">
+                android:paddingBottom="@dimen/activity_horizontal_margin">
 
                 <TextView
                     android:layout_width="0dp"
@@ -689,10 +640,7 @@
                     android:layout_gravity="top"
                     android:layout_marginTop="6dp"
                     android:layout_weight="3"
-                    android:textSize="18sp"
-                    android:textStyle="italic" />
-
-
+                    android:textSize="18sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -702,8 +650,7 @@
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/activity_horizontal_margin"
-                android:visibility="gone">
+                android:paddingBottom="@dimen/activity_horizontal_margin">
 
                 <TextView
                     android:id="@+id/aware_quitting"
@@ -721,8 +668,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="top"
                     android:layout_marginBottom="10dp"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
@@ -733,8 +679,7 @@
                 android:layout_marginBottom="@dimen/activity_horizontal_margin"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:orientation="horizontal"
-                android:visibility="gone">
+                android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="0dp"
@@ -753,8 +698,7 @@
                     android:layout_gravity="top"
                     android:layout_marginTop="6dp"
                     android:layout_weight="3"
-                    android:textSize="18sp"
-                    android:textStyle="italic" />
+                    android:textSize="18sp" />
 
 
             </LinearLayout>
@@ -766,8 +710,7 @@
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/activity_horizontal_margin"
-                android:visibility="gone">
+                android:paddingBottom="@dimen/activity_horizontal_margin">
 
                 <TextView
                     android:id="@+id/tried_quitting"
@@ -785,8 +728,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="top"
                     android:layout_marginBottom="10dp"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
@@ -797,8 +739,7 @@
                 android:layout_marginBottom="@dimen/activity_horizontal_margin"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:orientation="horizontal"
-                android:visibility="gone">
+                android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="0dp"
@@ -817,8 +758,7 @@
                     android:layout_gravity="top"
                     android:layout_marginTop="6dp"
                     android:layout_weight="3"
-                    android:textSize="18sp"
-                    android:textStyle="italic" />
+                    android:textSize="18sp" />
 
 
             </LinearLayout>
