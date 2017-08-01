@@ -409,7 +409,7 @@ public class NewEntryActivity  extends AppCompatActivity {
 
                     }
                     //Aware or not
-                    RadioGroup rg4 = (RadioGroup)findViewById(R.id.aware_checkbox_group);
+                    RadioGroup rg4 = (RadioGroup)findViewById(R.id.aware_radio_group);
                     aware_status = ((RadioButton)findViewById(rg4.getCheckedRadioButtonId())).getText().toString();
 
                     //Which diseases
@@ -474,7 +474,7 @@ public class NewEntryActivity  extends AppCompatActivity {
                     }
 
                     //Want to quit yes or no
-                    RadioGroup rg5 = (RadioGroup)findViewById(R.id.quit_checkbox_group);
+                    RadioGroup rg5 = (RadioGroup)findViewById(R.id.quit_radiogroup);
                     quit_status = ((RadioButton)findViewById(rg5.getCheckedRadioButtonId())).getText().toString();
 
                     //Why Quit
@@ -510,7 +510,7 @@ public class NewEntryActivity  extends AppCompatActivity {
                     }
 
                     //Tried Quiting Before
-                    RadioGroup rg6 = (RadioGroup)findViewById(R.id.quit_checkbox_group);
+                    RadioGroup rg6 = (RadioGroup)findViewById(R.id.quit_before_radiogroup);
                     quit_before_status = ((RadioButton)findViewById(rg5.getCheckedRadioButtonId())).getText().toString();
 
                     //Craving timings

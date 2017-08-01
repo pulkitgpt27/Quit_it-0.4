@@ -61,7 +61,7 @@ public class ViewActivity extends AppCompatActivity {
         final TextView contact_text_view = (TextView) findViewById(R.id.contact_text_view);
         name_text_view.setText(ClickedEntry.getContact());
         final TextView email_text_view = (TextView) findViewById(R.id.email_text_view);
-        name_text_view.setText(ClickedEntry.getEmail());
+        /*name_text_view.setText(ClickedEntry.getEmail());
         final TextView address_text_view = (TextView) findViewById(R.id.address_text_view);
         name_text_view.setText(ClickedEntry.getAddress());
         final TextView medical_history_text_view = (TextView) findViewById(R.id.medicalHistory_text_view);
@@ -77,7 +77,7 @@ public class ViewActivity extends AppCompatActivity {
         final EditText years_smoking_input = (EditText) findViewById(R.id.smoking_years_edit_text);
         final EditText months_smoking_input = (EditText) findViewById(R.id.smoking_months_edit_text);
         final EditText often_smoking_input = (EditText) findViewById(R.id.often_edit_text);
-        final EditText cost_ciggartte_input = (EditText) findViewById(R.id.cost_smoking_edit_text);
+        final EditText cost_ciggartte_input = (EditText) findViewById(R.id.cost_smoking_edit_text);*/
 
     }
 }

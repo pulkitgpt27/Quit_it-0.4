@@ -860,8 +860,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="2"
-
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:id="@+id/aware_radio_group">
                         <RadioButton
                             android:id="@+id/yes_aware"
                             android:layout_width="wrap_content"
@@ -1017,7 +1017,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="2"
-
+                        android:id="@+id/quit_radiogroup"
                         android:orientation="horizontal">
 
 
@@ -1128,7 +1128,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="2"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:id="@+id/quit_before_radiogroup">
 
                         <RadioButton
                             android:id="@+id/yes_tried_quitting"
