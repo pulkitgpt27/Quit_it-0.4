@@ -14,6 +14,8 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/name_layout"
+                android:background="#E75F40"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/height_linear_layout"
                 android:layout_margin="@dimen/activity_horizontal_margin"
@@ -41,6 +43,8 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/age_layout"
+                android:background="#E75F40"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/height_linear_layout"
                 android:layout_marginBottom="@dimen/activity_horizontal_margin"
@@ -123,6 +127,8 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/contact_layout"
+                android:background="#E75F40"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/height_linear_layout"
                 android:layout_marginBottom="@dimen/activity_horizontal_margin"
@@ -151,6 +157,8 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/email_layout"
+                android:background="#E75F40"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/height_linear_layout"
                 android:layout_marginBottom="@dimen/activity_horizontal_margin"
