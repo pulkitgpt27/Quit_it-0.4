@@ -9,6 +9,15 @@ import java.util.regex.Pattern;
 
 public class ValidateEntry {
 
+
+    public static boolean validateEmpty(String entity)
+    {
+        if(entity.length()<1)
+            return false;
+
+        return true;
+    }
+
     public static boolean validateNameDigit(String name)
     {
         Character I;
@@ -17,14 +26,6 @@ public class ValidateEntry {
             if(Character.isDigit(name.charAt(i)) == true)
                 return false;
         }
-        return true;
-    }
-
-    public static boolean validateEmpty(String entity)
-    {
-        if(entity.length()<1)
-            return false;
-
         return true;
     }
 

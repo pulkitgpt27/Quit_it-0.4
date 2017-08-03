@@ -81,8 +81,33 @@ public class NewEntryActivity  extends AppCompatActivity {
         //**************VALIDATIONS**************
         //************ALL START WITH SYMBOL $************
         final EditText $name = (EditText) findViewById(R.id.name_edit_text);
+        final EditText $phone = (EditText) findViewById(R.id.contact_edit_text);
+        final EditText $age = (EditText) findViewById(R.id.age_edit_text);
+        final EditText $email = (EditText) findViewById(R.id.email_edit_text);
+        final EditText $salary = (EditText) findViewById(R.id.salary_edit_text);
+
+
         final LinearLayout $name_layout = (LinearLayout) findViewById(R.id.name_layout);
-        $name.getBackground().setAlpha(0);
+        final LinearLayout $age_layout = (LinearLayout) findViewById(R.id.age_layout);
+        final LinearLayout $phone_layout = (LinearLayout) findViewById(R.id.contact_layout);
+        final LinearLayout $email_layout = (LinearLayout) findViewById(R.id.email_layout);
+        final LinearLayout $salary_layout = (LinearLayout) findViewById(R.id.salary_layout);
+
+
+        $name_layout.setBackgroundColor(getResources().getColor(R.color.magnitude9));
+        $age_layout.setBackgroundColor(getResources().getColor(R.color.magnitude9));
+        $phone_layout.setBackgroundColor(getResources().getColor(R.color.magnitude9));
+        $email_layout.setBackgroundColor(getResources().getColor(R.color.magnitude9));
+        $salary_layout.setBackgroundColor(getResources().getColor(R.color.magnitude9));
+
+
+        $name_layout.getBackground().setAlpha(0);
+        $phone_layout.getBackground().setAlpha(0);
+        $age_layout.getBackground().setAlpha(0);
+        $email_layout.getBackground().setAlpha(0);
+        $salary_layout.getBackground().setAlpha(0);
+
+
         $name.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b){
@@ -101,52 +126,65 @@ public class NewEntryActivity  extends AppCompatActivity {
             }
         });
 
-        final EditText $age = (EditText) findViewById(R.id.age_edit_text);
-        final LinearLayout $age_layout = (LinearLayout) findViewById(R.id.age_layout);
-        $age_layout.getBackground().setAlpha(0);
+
         $age.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
                 if(!b) {
-                    if (!ValidateEntry.validateEmpty($age.getText().toString()))
+                    if (!ValidateEntry.validateEmpty($age.getText().toString())) {
                         $age.setError("Age is empty");
-                    else if (!ValidateEntry.validateAge($age.getText().toString()))
+                        $age_layout.getBackground().setAlpha(51);
+                    }
+                    else if (!ValidateEntry.validateAge($age.getText().toString())){
                         $age.setError("Age is invalid");
+                        $age_layout.getBackground().setAlpha(51);
+                    }
+                    else
+                        $age_layout.getBackground().setAlpha(0);
                 }
             }
         });
 
-        final EditText $email = (EditText) findViewById(R.id.email_edit_text);
-        final LinearLayout $email_layout = (LinearLayout) findViewById(R.id.email_layout);
-        $email_layout.getBackground().setAlpha(0);
+
         $email.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
                 if(!b) {
-                    if (!ValidateEntry.validateEmail($email.getText().toString()))
+                    if (!ValidateEntry.validateEmail($email.getText().toString())) {
                         $email.setError("Invalid Email");
+                        $email_layout.getBackground().setAlpha(51);
+                    }
+                    else
+                        $email_layout.getBackground().setAlpha(0);
                 }
             }
         });
 
-        final EditText $phone = (EditText) findViewById(R.id.contact_edit_text);
+
         $phone.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
                 if(!b){
-                    if(!ValidateEntry.validatePhone($phone.getText().toString()))
+                    if(!ValidateEntry.validatePhone($phone.getText().toString())) {
                         $phone.setError("Number Invalid");
+                        $phone_layout.getBackground().setAlpha(51);
+                    }
+                    else
+                        $phone_layout.getBackground().setAlpha(0);
                 }
             }
         });
 
-        final EditText $salary = (EditText) findViewById(R.id.salary_edit_text);
         $salary.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
                 if(!b){
-                    if(!ValidateEntry.validateInteger($salary.getText().toString()))
+                    if(!ValidateEntry.validateInteger($salary.getText().toString())) {
                         $salary.setError("Salary amount is invalid");
+                        $salary_layout.getBackground().setAlpha(51);
+                    }
+                    else
+                        $salary_layout.getBackground().setAlpha(0);
                 }
             }
         });
