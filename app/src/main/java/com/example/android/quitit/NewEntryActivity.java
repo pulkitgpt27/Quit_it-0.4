@@ -4,40 +4,25 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
-import org.w3c.dom.Text;
-
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
-import static android.os.Build.VERSION_CODES.M;
-import static com.example.android.quitit.R.id.age;
-import static com.example.android.quitit.R.id.interest;
 import static java.lang.Integer.parseInt;
 
 
@@ -92,6 +77,117 @@ public class NewEntryActivity  extends AppCompatActivity {
         mUsername=ANONYMOUS;
         mFirebaseDatabase=FirebaseDatabase.getInstance();
         mPatientDatabaseReference=mFirebaseDatabase.getReference().child("patient");
+
+        //**************VALIDATIONS**************
+        //************ALL START WITH SYMBOL $************
+        final EditText $name = (EditText) findViewById(R.id.name_edit_text);
+        final EditText $phone = (EditText) findViewById(R.id.contact_edit_text);
+        final EditText $age = (EditText) findViewById(R.id.age_edit_text);
+        final EditText $email = (EditText) findViewById(R.id.email_edit_text);
+        final EditText $salary = (EditText) findViewById(R.id.salary_edit_text);
+
+
+        final LinearLayout $name_layout = (LinearLayout) findViewById(R.id.name_layout);
+        final LinearLayout $age_layout = (LinearLayout) findViewById(R.id.age_layout);
+        final LinearLayout $phone_layout = (LinearLayout) findViewById(R.id.contact_layout);
+        final LinearLayout $email_layout = (LinearLayout) findViewById(R.id.email_layout);
+        final LinearLayout $salary_layout = (LinearLayout) findViewById(R.id.salary_layout);
+
+
+        $name_layout.setBackgroundColor(getResources().getColor(R.color.magnitude9));
+        $age_layout.setBackgroundColor(getResources().getColor(R.color.magnitude9));
+        $phone_layout.setBackgroundColor(getResources().getColor(R.color.magnitude9));
+        $email_layout.setBackgroundColor(getResources().getColor(R.color.magnitude9));
+        $salary_layout.setBackgroundColor(getResources().getColor(R.color.magnitude9));
+
+
+        $name_layout.getBackground().setAlpha(0);
+        $phone_layout.getBackground().setAlpha(0);
+        $age_layout.getBackground().setAlpha(0);
+        $email_layout.getBackground().setAlpha(0);
+        $salary_layout.getBackground().setAlpha(0);
+
+
+        $name.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b){
+                if(!b) {
+                    if (!ValidateEntry.validateEmpty($name.getText().toString())) {
+                        $name.setError("Name is Empty!");
+                        $name_layout.getBackground().setAlpha(51);
+                    }
+                    else if (!ValidateEntry.validateNameDigit($name.getText().toString())){  //checks if name contains a number{
+                        $name.setError("Name contains a number!");
+                        $name_layout.getBackground().setAlpha(51);
+                    }
+                    else
+                        $name_layout.getBackground().setAlpha(0);
+                }
+            }
+        });
+
+
+        $age.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if(!b) {
+                    if (!ValidateEntry.validateEmpty($age.getText().toString())) {
+                        $age.setError("Age is empty");
+                        $age_layout.getBackground().setAlpha(51);
+                    }
+                    else if (!ValidateEntry.validateAge($age.getText().toString())){
+                        $age.setError("Age is invalid");
+                        $age_layout.getBackground().setAlpha(51);
+                    }
+                    else
+                        $age_layout.getBackground().setAlpha(0);
+                }
+            }
+        });
+
+
+        $email.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if(!b) {
+                    if (!ValidateEntry.validateEmail($email.getText().toString())) {
+                        $email.setError("Invalid Email");
+                        $email_layout.getBackground().setAlpha(51);
+                    }
+                    else
+                        $email_layout.getBackground().setAlpha(0);
+                }
+            }
+        });
+
+
+        $phone.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if(!b){
+                    if(!ValidateEntry.validatePhone($phone.getText().toString())) {
+                        $phone.setError("Number Invalid");
+                        $phone_layout.getBackground().setAlpha(51);
+                    }
+                    else
+                        $phone_layout.getBackground().setAlpha(0);
+                }
+            }
+        });
+
+        $salary.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if(!b){
+                    if(!ValidateEntry.validateInteger($salary.getText().toString())) {
+                        $salary.setError("Salary amount is invalid");
+                        $salary_layout.getBackground().setAlpha(51);
+                    }
+                    else
+                        $salary_layout.getBackground().setAlpha(0);
+                }
+            }
+        });
 
 
         final CheckBox chewer = (CheckBox) findViewById(R.id.chewer);
