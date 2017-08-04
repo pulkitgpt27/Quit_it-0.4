@@ -55,7 +55,7 @@ public class ViewActivity extends AppCompatActivity {
         final TextView name_text_view = (TextView) findViewById(R.id.name_text_view);
         name_text_view.setText(ClickedEntry.getName());
         final TextView age_text_view = (TextView) findViewById(R.id.age_text_view);
-        name_text_view.setText(ClickedEntry.getAge());
+        age_text_view.setText(ClickedEntry.getAge());
         final TextView sex_text_view = (TextView) findViewById(R.id.sex_text_view);
         name_text_view.setText(ClickedEntry.getSex());
         final TextView contact_text_view = (TextView) findViewById(R.id.contact_text_view);

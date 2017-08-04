@@ -146,6 +146,7 @@ public class ReportActivity extends AppCompatActivity {
                 B.putParcelable("ClickedEntry", (Parcelable) temp);
                 intent.putExtras(B);
                 startActivity(intent);
+                break;
             case R.id.update:
                 Intent intent2 = new Intent(ReportActivity.this,UpdateActivity.class);
                 Entry temp2 = ClickedEntry;
