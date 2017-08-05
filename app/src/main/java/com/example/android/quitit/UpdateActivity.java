@@ -159,8 +159,9 @@ public class UpdateActivity extends AppCompatActivity {
 
 
                 try {
-                    Entry patient = new Entry(nameView.getText().toString(), Integer.parseInt(ageView.getText().toString()), s, ClickedEntry.getInterest(), med_history, ClickedEntry.getContact(), ClickedEntry.getChew_history(),
-                            ClickedEntry.getChew_freq(), ClickedEntry.getChew_cost(), ClickedEntry.getSmokeHistory(), ClickedEntry.getSmoke_freq(), ClickedEntry.getSmoke_cost(), ClickedEntry.getMarry_status(),
+                    Entry patient = new Entry(nameView.getText().toString(), Integer.parseInt(ageView.getText().toString()), s, ClickedEntry.getInterest(), med_history, ClickedEntry.getContact(),ClickedEntry.getEmail(),ClickedEntry.getAddress(),
+                            ClickedEntry.getChewText(),ClickedEntry.getChew_history(),
+                            ClickedEntry.getChew_freq(), ClickedEntry.getChew_cost(),ClickedEntry.getSmokeText(), ClickedEntry.getSmokeHistory(), ClickedEntry.getSmoke_freq(), ClickedEntry.getSmoke_cost(), ClickedEntry.getMarry_status(),
                             ClickedEntry.getBusiness(), ClickedEntry.getSalary(), ClickedEntry.getTime(), ClickedEntry.getFormattedDate(), ClickedEntry.getMorning_status(), ClickedEntry.getFamily_status(),
                             ClickedEntry.getHabit_reason(), ClickedEntry.getHabit(), ClickedEntry.getAware_status(), ClickedEntry.getAware_disease(), ClickedEntry.getQuit_status(), ClickedEntry.getQuit_reason(), ClickedEntry.getQuit_before_status(),
                             ClickedEntry.getCraving_time(), ClickedEntry.getId());

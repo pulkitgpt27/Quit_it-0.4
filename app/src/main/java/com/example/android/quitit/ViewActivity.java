@@ -64,9 +64,11 @@ public class ViewActivity extends AppCompatActivity {
         name_text_view.setText(ClickedEntry.getName());
 
         final TextView age_text_view = (TextView) findViewById(R.id.age_text_view);
+      
         age_text_view.setText(String.valueOf(ClickedEntry.getAge()));
-
+        
         final TextView sex_text_view = (TextView) findViewById(R.id.sex_text_view);
+        
         sex_text_view.setText(ClickedEntry.getSex());
 
         final TextView contact_text_view = (TextView) findViewById(R.id.contact_text_view);
