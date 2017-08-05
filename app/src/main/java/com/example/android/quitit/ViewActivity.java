@@ -73,7 +73,7 @@ public class ViewActivity extends AppCompatActivity {
         contact_text_view.setText(ClickedEntry.getContact());
 
         final TextView email_text_view = (TextView) findViewById(R.id.email_text_view);
-        email_text_view.setText("sdfksdfkd");
+        email_text_view.setText("adasfsf");
 
         final TextView address_text_view = (TextView) findViewById(R.id.address_text_view);
         address_text_view.setText("Fdsfdsfds");

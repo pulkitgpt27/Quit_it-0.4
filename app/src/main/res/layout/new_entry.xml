@@ -14,6 +14,7 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/name_layout"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/height_linear_layout"
                 android:layout_margin="@dimen/activity_horizontal_margin"
@@ -41,6 +42,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/age_layout"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/height_linear_layout"
                 android:layout_marginBottom="@dimen/activity_horizontal_margin"
@@ -123,6 +125,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/contact_layout"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/height_linear_layout"
                 android:layout_marginBottom="@dimen/activity_horizontal_margin"
@@ -151,6 +154,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/email_layout"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/height_linear_layout"
                 android:layout_marginBottom="@dimen/activity_horizontal_margin"
@@ -582,6 +586,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/salary_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/activity_horizontal_margin"
@@ -860,11 +865,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="2"
-                        android:orientation="horizontal">
                         android:orientation="horizontal"
-                        android:layout_gravity="center"
-                        android:id="@+id/aware_checkbox_group">
-
+                        android:id="@+id/aware_radio_group">
                         <RadioButton
                             android:id="@+id/yes_aware"
                             android:layout_width="wrap_content"
@@ -1020,10 +1022,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="2"
+                        android:id="@+id/quit_radiogroup"
                         android:orientation="horizontal">
-                        android:orientation="horizontal"
-                        android:layout_gravity="center"
-                        android:id="@+id/quit_checkbox_group">
 
 
                         <RadioButton
@@ -1133,7 +1133,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="2"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:id="@+id/quit_before_radiogroup">
 
                         <RadioButton
                             android:id="@+id/yes_tried_quitting"
@@ -1270,4 +1271,5 @@
             </RelativeLayout>
         </LinearLayout>
     </ScrollView>
+>>>>>>> 68a46850de133101b245758300a6c5880aa74d8b
 </LinearLayout>
