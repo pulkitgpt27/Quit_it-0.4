@@ -14,6 +14,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DatabaseReference;
@@ -705,6 +706,7 @@ public class NewEntryActivity  extends AppCompatActivity {
                         family_status,habit_reason,habbit,aware_status,aware_diseases,quit_status,quit_reason,quit_before_status,craving_time,key);
 
                 mPatientDatabaseReference.push().setValue(patient);
+                Toast.makeText(getBaseContext(), "Welcome"+name, Toast.LENGTH_SHORT).show();
 
                 Intent i=new Intent(NewEntryActivity.this,MainActivity.class);
                 startActivity(i);
