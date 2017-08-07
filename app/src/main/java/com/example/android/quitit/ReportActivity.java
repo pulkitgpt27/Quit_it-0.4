@@ -4,7 +4,6 @@ package com.example.android.quitit;
  * Created by Pulkit on 03-07-2017.
  */
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,13 +12,11 @@ import android.os.Parcelable;
 import android.print.PrintManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -27,8 +24,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-
-import static android.R.attr.y;
 
 /**
  * Created by Ayush vaid on 02-07-2017.
@@ -41,6 +36,7 @@ public class ReportActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        this.setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
 
@@ -120,9 +116,9 @@ public class ReportActivity extends AppCompatActivity {
             case R.id.delete:
                 new AlertDialog.Builder(this)
                         .setTitle("Delete")
-                        .setMessage("Do you really want to delete")
+                        .setMessage("Are you sure you want to delete? This record will be removed permanently from the Database.")
                        // .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        .setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 deletepatient();
@@ -177,7 +173,6 @@ public class ReportActivity extends AppCompatActivity {
                     appleSnapshot.getRef().removeValue();
                 }
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
                // Log.e(TAG, "onCancelled", databaseError.toException());

@@ -6,17 +6,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
+    style="@style/AppThemeNoBar"
+    android:theme="@style/AppThemeNoBar"
+    android:background="@android:color/white"
     >
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppThemeNoBar.AppBarOverlay"
+        >
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            app:popupTheme="@style/AppThemeNoBar.PopupOverlay" />
+
+    </android.support.design.widget.AppBarLayout>
 
     <ListView
         android:id="@+id/listView"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="wrap_content"
+        android:fastScrollAlwaysVisible="true"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        xmlns:fab="http://schemas.android.com/apk/res-auto"/>
-
-
-
+        android:background="@android:color/white"
+        />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -26,9 +43,9 @@
         android:layout_gravity="bottom"
         android:layout_marginTop="430dp"
         android:layout_marginLeft="300dp"
-        fab:elevation="6dp"
+        fab:elevation="4dp"
         fab:pressedTranslationZ="12dp"
-        fab:backgroundTint="@color/magnitude7"
+        fab:backgroundTint="@color/colorAccent"
         app:layout_anchor="@id/listView"
         />
 

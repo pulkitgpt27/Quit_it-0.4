@@ -17,4 +17,5 @@
         android:id="@+id/view_all"
         android:title="@string/view_all"
         app:showAsAction="never" />
+
 </menu>
