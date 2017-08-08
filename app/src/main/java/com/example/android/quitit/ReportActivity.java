@@ -145,7 +145,7 @@ public class ReportActivity extends AppCompatActivity {
                 intent.putExtras(B);
                 startActivity(intent);
                 return true;
-                break;
+
 
             case R.id.update:
                 Intent intent2 = new Intent(ReportActivity.this,UpdateActivity.class);

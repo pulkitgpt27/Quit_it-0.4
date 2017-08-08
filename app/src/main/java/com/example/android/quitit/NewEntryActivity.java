@@ -362,23 +362,23 @@ public class NewEntryActivity  extends AppCompatActivity {
                 CheckBox med5=(CheckBox) findViewById(R.id.disease_5);
                 if(med1.isChecked())
                 {
-                    med_history+=med1.getText().toString()+" ";
+                    med_history+=med1.getText().toString()+"/";
                 }
                 if(med2.isChecked())
                 {
-                    med_history+=med2.getText().toString()+" ";
+                    med_history+=med2.getText().toString()+"/";
                 }
                 if(med3.isChecked())
                 {
-                    med_history+=med3.getText().toString()+" ";
+                    med_history+=med3.getText().toString()+"/";
                 }
                 if(med4.isChecked())
                 {
-                    med_history+=med4.getText().toString()+" ";
+                    med_history+=med4.getText().toString()+"/";
                 }
                 if(med5.isChecked())
                 {
-                    med_history+=med5.getText().toString()+" ";
+                    med_history+=med5.getText().toString()+"/";
                 }
 
 
@@ -502,19 +502,19 @@ public class NewEntryActivity  extends AppCompatActivity {
 
                     if(res1.isChecked())
                     {
-                        habit_reason+=res1.getText().toString()+" ";
+                        habit_reason+=res1.getText().toString()+"/";
                     }
                     if(res2.isChecked())
                     {
-                        habit_reason+=res2.getText().toString()+" ";
+                        habit_reason+=res2.getText().toString()+"/";
                     }
                     if(res3.isChecked())
                     {
-                        habit_reason+=res3.getText().toString()+" ";
+                        habit_reason+=res3.getText().toString()+"/";
                     }
                     if(res4.isChecked())
                     {
-                        habit_reason+=res4.getText().toString()+" ";
+                        habit_reason+=res4.getText().toString()+"/";
                     }
 
                     //For other Habbits
@@ -546,52 +546,52 @@ public class NewEntryActivity  extends AppCompatActivity {
                     CheckBox disease_checkbox10=(CheckBox) findViewById(R.id.disease_aware_10);
                     if(disease_checkbox1.isChecked())
                     {
-                        aware_diseases+=disease_checkbox1.getText().toString() + "";
+                        aware_diseases+=disease_checkbox1.getText().toString() + "/";
                     }
 
                     if(disease_checkbox2.isChecked())
                     {
-                        aware_diseases+=disease_checkbox2.getText().toString() + "";
+                        aware_diseases+=disease_checkbox2.getText().toString() + "/";
                     }
 
                     if(disease_checkbox3.isChecked())
                     {
-                        aware_diseases+=disease_checkbox3.getText().toString() + "";
+                        aware_diseases+=disease_checkbox3.getText().toString() + "/";
                     }
 
                     if(disease_checkbox4.isChecked())
                     {
-                        aware_diseases+=disease_checkbox4.getText().toString() + "";
+                        aware_diseases+=disease_checkbox4.getText().toString() + "/";
                     }
 
                     if(disease_checkbox5.isChecked())
                     {
-                        aware_diseases+=disease_checkbox5.getText().toString() + "";
+                        aware_diseases+=disease_checkbox5.getText().toString() + "/";
                     }
 
                     if(disease_checkbox6.isChecked())
                     {
-                        aware_diseases+=disease_checkbox6.getText().toString() + "";
+                        aware_diseases+=disease_checkbox6.getText().toString() + "/";
                     }
 
                     if(disease_checkbox7.isChecked())
                     {
-                        aware_diseases+=disease_checkbox7.getText().toString() + "";
+                        aware_diseases+=disease_checkbox7.getText().toString() + "/";
                     }
 
                     if(disease_checkbox8.isChecked())
                     {
-                        aware_diseases+=disease_checkbox8.getText().toString() + "";
+                        aware_diseases+=disease_checkbox8.getText().toString() + "/";
                     }
 
                     if(disease_checkbox9.isChecked())
                     {
-                        aware_diseases+=disease_checkbox9.getText().toString() + "";
+                        aware_diseases+=disease_checkbox9.getText().toString() + "/";
                     }
 
                     if(disease_checkbox10.isChecked())
                     {
-                        aware_diseases+=disease_checkbox10.getText().toString() + "";
+                        aware_diseases+=disease_checkbox10.getText().toString() + "/";
                     }
 
                     //Want to quit yes or no
@@ -606,28 +606,28 @@ public class NewEntryActivity  extends AppCompatActivity {
 
                     if(reason_quit_checkbox1.isChecked())
                     {
-                        quit_reason+=reason_quit_checkbox1.getText().toString() + "";
+                        quit_reason+=reason_quit_checkbox1.getText().toString() + "/";
                     }
 
                     if(reason_quit_checkbox2.isChecked())
                     {
-                        quit_reason+=reason_quit_checkbox2.getText().toString() + "";
+                        quit_reason+=reason_quit_checkbox2.getText().toString() + "/";
                     }
 
                     if(reason_quit_checkbox2.isChecked())
                     {
-                        quit_reason+=reason_quit_checkbox2.getText().toString() + "";
+                        quit_reason+=reason_quit_checkbox2.getText().toString() + "/";
                     }
 
                     if(reason_quit_checkbox3.isChecked())
                     {
-                        quit_reason+=reason_quit_checkbox3.getText().toString() + "";
+                        quit_reason+=reason_quit_checkbox3.getText().toString() + "/";
                     }
 
 
                     if(reason_quit_checkbox4.isChecked())
                     {
-                        quit_reason+=reason_quit_checkbox4.getText().toString() + "";
+                        quit_reason+=reason_quit_checkbox4.getText().toString() + "/";
                     }
 
                     //Tried Quiting Before
@@ -647,47 +647,47 @@ public class NewEntryActivity  extends AppCompatActivity {
 
                     if(craving_chackbox1.isChecked())
                     {
-                        craving_time+=craving_chackbox1.getText().toString() + "";
+                        craving_time+=craving_chackbox1.getText().toString() + "/";
                     }
 
                     if(craving_chackbox2.isChecked())
                     {
-                        craving_time+=craving_chackbox2.getText().toString() + "";
+                        craving_time+=craving_chackbox2.getText().toString() + "/";
                     }
 
                     if(craving_chackbox3.isChecked())
                     {
-                        craving_time+=craving_chackbox3.getText().toString() + "";
+                        craving_time+=craving_chackbox3.getText().toString() + "/";
                     }
 
                     if(craving_chackbox4.isChecked())
                     {
-                        craving_time+=craving_chackbox4.getText().toString() + "";
+                        craving_time+=craving_chackbox4.getText().toString() + "/";
                     }
 
                     if(craving_chackbox5.isChecked())
                     {
-                        craving_time+=craving_chackbox5.getText().toString() + "";
+                        craving_time+=craving_chackbox5.getText().toString() + "/";
                     }
 
                     if(craving_chackbox6.isChecked())
                     {
-                        craving_time+=craving_chackbox6.getText().toString() + "";
+                        craving_time+=craving_chackbox6.getText().toString() + "/";
                     }
 
                     if(craving_chackbox7.isChecked())
                     {
-                        craving_time+=craving_chackbox7.getText().toString() + "";
+                        craving_time+=craving_chackbox7.getText().toString() + "/";
                     }
 
                     if(craving_chackbox8.isChecked())
                     {
-                        craving_time+=craving_chackbox8.getText().toString() + "";
+                        craving_time+=craving_chackbox8.getText().toString() + "/";
                     }
 
                     if(craving_chackbox9.isChecked())
                     {
-                        craving_time+=craving_chackbox9.getText().toString() + "";
+                        craving_time+=craving_chackbox9.getText().toString() + "/";
                     }
 
 

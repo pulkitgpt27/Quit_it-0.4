@@ -75,22 +75,35 @@ public class ViewActivity extends AppCompatActivity {
         contact_text_view.setText(ClickedEntry.getContact());
 
         final TextView email_text_view = (TextView) findViewById(R.id.email_text_view);
-        email_text_view.setText("adasfsf");
+        email_text_view.setText(ClickedEntry.getEmail());
 
         final TextView address_text_view = (TextView) findViewById(R.id.address_text_view);
-        address_text_view.setText("Fdsfdsfds");
+        address_text_view.setText(ClickedEntry.getAddress());
 
         final TextView medical_history_text_view = (TextView) findViewById(R.id.medicalHistory_text_view);
         medical_history_text_view.setText(ClickedEntry.getMed_history());
 
+        String consume = null;
+        if(ClickedEntry.getSmokeHistory() != 0 && ClickedEntry.getChew_history()!=0){
+            consume = "Ciggerates/Bidi/Hukkah " + "\nTambakoo/Gutka/Pan";
+        }
+        else if(ClickedEntry.getSmokeHistory() == 0){
+            consume = "Tambakoo/Gutka/Pan";
+        }
+        else if(ClickedEntry.getChew_history() == 0){
+            consume = "Ciggerates/Bidi/Hukkah";
+        }
         final TextView consume_text_view = (TextView) findViewById(R.id.consume_text_view);
-        consume_text_view.setText("Tobacco");
+        consume_text_view.setText(consume);
+
+        int chewYears = ClickedEntry.getChew_history()/365;
+        int chewMonths = (ClickedEntry.getChew_history()%365)/30;
 
         final TextView years_chewing_input = (TextView) findViewById(R.id.years_chewing_text_view);
-        years_chewing_input.setText(String.valueOf(ClickedEntry.getChew_history()));
+        years_chewing_input.setText(String.valueOf(chewYears));
 
         final TextView months_chewing_text_view = (TextView) findViewById(R.id.months_chewing_text_view);
-        months_chewing_text_view.setText("adfsfsaf");
+        months_chewing_text_view.setText(String.valueOf(chewMonths));
 
         final TextView often_chewing_text_view = (TextView) findViewById(R.id.often_chewing_text_view_value);
         often_chewing_text_view.setText(String.valueOf(ClickedEntry.getChew_freq()));
@@ -114,7 +127,7 @@ public class ViewActivity extends AppCompatActivity {
         family_consumes_text_view.setText(ClickedEntry.getFamily_status());
 
         final TextView start_consuming_text_view = (TextView) findViewById(R.id.start_consuming_text_view);
-        start_consuming_text_view.setText("asdsada");
+        start_consuming_text_view.setText(ClickedEntry.getHabit_reason());
 
         final TextView habit_text_view = (TextView) findViewById(R.id.habit_text_view);
         habit_text_view.setText(ClickedEntry.getHabit());
@@ -137,11 +150,14 @@ public class ViewActivity extends AppCompatActivity {
         final TextView craving_text_view = (TextView) findViewById(R.id.craving_text_view);
         craving_text_view.setText(ClickedEntry.getCraving_time());
 
+        int smokeYears = ClickedEntry.getSmokeHistory()/365;
+        int smokeMonths = (ClickedEntry.getSmokeHistory()%365)/30;
+
         final TextView years_smoking_text_view = (TextView) findViewById(R.id.smoking_years_text_view);
-        years_smoking_text_view.setText(String.valueOf(ClickedEntry.getSmokeHistory()));
+        years_smoking_text_view.setText(String.valueOf(smokeYears));
 
         final TextView months_smoking_text_view = (TextView) findViewById(R.id.smoking_months_text_view);
-        months_smoking_text_view.setText("dasdsadas");
+        months_smoking_text_view.setText(String.valueOf(smokeMonths));
 
         final TextView often_smoking_text_view = (TextView) findViewById(R.id.often_text_view);
         often_smoking_text_view.setText(String.valueOf(ClickedEntry.getSmoke_freq()));
