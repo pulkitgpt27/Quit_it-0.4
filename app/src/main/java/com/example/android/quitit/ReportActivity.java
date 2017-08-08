@@ -135,24 +135,17 @@ public class ReportActivity extends AppCompatActivity {
                     String morning_status,String family_status,String habit_reason,String habit,String aware_status,String aware_diseases,String quit_status,String quit_reason,String quit_before_status,String craving_time,int id){
                 */
 
-                Entry temp = new Entry(ClickedEntry.getName(),ClickedEntry.getAge(),ClickedEntry.getSex(),ClickedEntry.getInterest(),ClickedEntry.getMed_history(),ClickedEntry.getContact(),ClickedEntry.getChew_history(),
-                        ClickedEntry.getChew_freq(),ClickedEntry.getChew_cost(),ClickedEntry.getSmokeHistory(),ClickedEntry.getSmoke_freq(),ClickedEntry.getSmoke_cost(),ClickedEntry.getMarry_status(),
-                        ClickedEntry.getBusiness(),ClickedEntry.getSalary(),ClickedEntry.getTime(),ClickedEntry.getFormattedDate(),ClickedEntry.getMorning_status(),ClickedEntry.getFamily_status(),
-                        ClickedEntry.getHabit_reason(),ClickedEntry.getHabit(),ClickedEntry.getAware_status(),ClickedEntry.getAware_disease(),ClickedEntry.getQuit_status(),ClickedEntry.getQuit_reason(),ClickedEntry.getQuit_before_status(),
-                        ClickedEntry.getCraving_time(),ClickedEntry.getId());
+                Entry temp = ClickedEntry;
                 Bundle B = new Bundle();
 
                 //passing bundle
                 B.putParcelable("ClickedEntry", (Parcelable) temp);
                 intent.putExtras(B);
                 startActivity(intent);
+                break;
             case R.id.update:
                 Intent intent2 = new Intent(ReportActivity.this,UpdateActivity.class);
-                Entry temp2 = new Entry(ClickedEntry.getName(),ClickedEntry.getAge(),ClickedEntry.getSex(),ClickedEntry.getInterest(),ClickedEntry.getMed_history(),ClickedEntry.getContact(),ClickedEntry.getChew_history(),
-                    ClickedEntry.getChew_freq(),ClickedEntry.getChew_cost(),ClickedEntry.getSmokeHistory(),ClickedEntry.getSmoke_freq(),ClickedEntry.getSmoke_cost(),ClickedEntry.getMarry_status(),
-                    ClickedEntry.getBusiness(),ClickedEntry.getSalary(),ClickedEntry.getTime(),ClickedEntry.getFormattedDate(),ClickedEntry.getMorning_status(),ClickedEntry.getFamily_status(),
-                    ClickedEntry.getHabit_reason(),ClickedEntry.getHabit(),ClickedEntry.getAware_status(),ClickedEntry.getAware_disease(),ClickedEntry.getQuit_status(),ClickedEntry.getQuit_reason(),ClickedEntry.getQuit_before_status(),
-                    ClickedEntry.getCraving_time(),ClickedEntry.getId());
+                Entry temp2 = ClickedEntry;
                 Bundle B1 = new Bundle();
                 B1.putParcelable("ClickedEntry", (Parcelable) temp2);
                 intent2.putExtras(B1);

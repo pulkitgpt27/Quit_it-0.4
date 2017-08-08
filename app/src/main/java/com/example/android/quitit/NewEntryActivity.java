@@ -15,6 +15,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DatabaseReference;
@@ -69,6 +70,10 @@ public class NewEntryActivity  extends AppCompatActivity {
     private String m_status="";
     private String business="";
     private int salary=1;
+    private String email="";
+    private String address="";
+    private String chewText="";
+    private String smokeText="";
 
 
     @Override
@@ -156,8 +161,11 @@ public class NewEntryActivity  extends AppCompatActivity {
             public void onFocusChange(View view, boolean b) {
                 if(!b) {
                     if (!ValidateEntry.validateEmail($email.getText().toString())) {
+
                         $email_layout.setErrorEnabled(true);
                         $email_layout.setError("Invalid Email");
+                        $email.setError("Invalid Email");
+
                         $email_layout.getBackground().setAlpha(51);
                     }
                     else
@@ -347,6 +355,26 @@ public class NewEntryActivity  extends AppCompatActivity {
                 EditText ageView=(EditText)findViewById(R.id.age_edit_text);
                 age= parseInt(ageView.getText().toString());
 
+
+                //For Sex
+                RadioGroup rg = (RadioGroup)findViewById(R.id.sex_group);
+                sex = ((RadioButton)findViewById(rg.getCheckedRadioButtonId())).getText().toString();
+
+
+
+                //For Contact No
+                EditText contactView=(EditText)findViewById(R.id.contact_edit_text);
+                contact= (contactView.getText().toString());
+
+                //For email
+                email=$email.getText().toString();
+
+
+                //For address
+
+                EditText addressView=(EditText)findViewById(R.id.address_edit_text);
+                address= (addressView.getText().toString());
+
                 //For Med History
                 String med_history="";
                 CheckBox med1=(CheckBox) findViewById(R.id.disease_1);
@@ -376,15 +404,11 @@ public class NewEntryActivity  extends AppCompatActivity {
                 }
 
 
-                //For Sex
-                RadioGroup rg = (RadioGroup)findViewById(R.id.sex_group);
-                sex = ((RadioButton)findViewById(rg.getCheckedRadioButtonId())).getText().toString();
-
-                //For Contact No
-                EditText contactView=(EditText)findViewById(R.id.contact_edit_text);
-                contact= (contactView.getText().toString());
-
                 if(chewer.isChecked()) {
+
+                    //For chiewer text
+                    chewText = chewer.getText().toString();
+
                     //For chewing history
                     EditText chew_yearView = (EditText) findViewById(R.id.years_chewing_edit_text);
                     int chew_years = Integer.parseInt(chew_yearView.getText().toString());
@@ -404,6 +428,10 @@ public class NewEntryActivity  extends AppCompatActivity {
                 }
 
                 if(smoker.isChecked()){
+
+                    //For chiewer text
+                    smokeText = smoker.getText().toString();
+
                     //For smoking history
                     EditText smoke_yearView = (EditText) findViewById(R.id.smoking_years_edit_text);
                     int smoke_years = Integer.parseInt(smoke_yearView.getText().toString());
@@ -695,10 +723,11 @@ public class NewEntryActivity  extends AppCompatActivity {
                 String future = "";
                 String key=mPatientDatabaseReference.push().getKey();
 
-                Entry patient=new Entry(name,age,sex,interest,med_history,contact,chew_days,chew_freq,chew_cost,smoke_days,smoke_freq,smoke_cost,m_status,business,salary,formattedtime1,formattedDate1,morning_status,
+                Entry patient=new Entry(name,age,sex,interest,med_history,contact,email,address,chewText,chew_days,chew_freq,chew_cost,smokeText,smoke_days,smoke_freq,smoke_cost,m_status,business,salary,formattedtime1,formattedDate1,morning_status,
                         family_status,habit_reason,habbit,aware_status,aware_diseases,quit_status,quit_reason,quit_before_status,craving_time,key);
 
                 mPatientDatabaseReference.push().setValue(patient);
+                Toast.makeText(getBaseContext(), "Welcome"+name, Toast.LENGTH_SHORT).show();
 
                 Intent i=new Intent(NewEntryActivity.this,MainActivity.class);
                 startActivity(i);
