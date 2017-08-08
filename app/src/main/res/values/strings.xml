@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">QuitIt</string>
 
+    <!-- this is needed in JAVA CODE -->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="disease_1">Diabetes</string>
@@ -10,12 +14,6 @@
     <string name="disease_5">Disease5</string>
     <string name="disease_6">Disease6</string>
     <string name="disease_7">Disease7</string>
-    <string name="interests_1">Interest1</string>
-    <string name="interests_2">Interest2</string>
-    <string name="interests_3">Interest3</string>
-    <string name="interests_4">Interest4</string>
-    <string name="interests_5">Interest5</string>
-    <string name="interests_6">Interest6</string>
     <string-array name="future_array">
         <item>Aspiring to do a Job?</item>
         <item>Thinking to start a family?</item>
@@ -71,6 +69,10 @@
     <string name="delete_patient">Delete</string>
 
     <string name="view_all">View Details</string>
+    <string name="profession">Profession</string>
+    <string name="monthly_salary">Monthly Salary:</string>
+    <string name="average_cost_of_each_ciggerate">Average cost of each ciggerate :</string>
+    <string name="how_many_times_do_you_smoke_in_a_day">How many times do you smoke in a day?</string>
 
 
 </resources>

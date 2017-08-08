@@ -5,9 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.google.firebase.database.ChildEventListener;
@@ -45,6 +42,7 @@ public class ViewActivity extends AppCompatActivity {
     Entry ClickedEntry;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        this.setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view);
 

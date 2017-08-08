@@ -3,6 +3,7 @@ package com.example.android.quitit;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -24,6 +25,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import static android.view.View.GONE;
 import static java.lang.Integer.parseInt;
 
 
@@ -76,12 +78,14 @@ public class NewEntryActivity  extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        this.setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_entry);
 
         mUsername=ANONYMOUS;
         mFirebaseDatabase=FirebaseDatabase.getInstance();
         mPatientDatabaseReference=mFirebaseDatabase.getReference().child("patient");
+
 
         //**************VALIDATIONS**************
         //************ALL START WITH SYMBOL $************
@@ -92,12 +96,11 @@ public class NewEntryActivity  extends AppCompatActivity {
         final EditText $salary = (EditText) findViewById(R.id.salary_edit_text);
 
 
-        final LinearLayout $name_layout = (LinearLayout) findViewById(R.id.name_layout);
-        final LinearLayout $age_layout = (LinearLayout) findViewById(R.id.age_layout);
-        final LinearLayout $phone_layout = (LinearLayout) findViewById(R.id.contact_layout);
-        final LinearLayout $email_layout = (LinearLayout) findViewById(R.id.email_layout);
-        final LinearLayout $salary_layout = (LinearLayout) findViewById(R.id.salary_layout);
-
+        final TextInputLayout $name_layout = (TextInputLayout) findViewById(R.id.name_layout);
+        final TextInputLayout $age_layout = (TextInputLayout) findViewById(R.id.age_layout);
+        final TextInputLayout $phone_layout = (TextInputLayout) findViewById(R.id.contact_layout);
+        final TextInputLayout $email_layout = (TextInputLayout) findViewById(R.id.email_layout);
+        final TextInputLayout $salary_layout = (TextInputLayout) findViewById(R.id.salary_layout);
 
         $name_layout.setBackgroundColor(getResources().getColor(R.color.magnitude9));
         $age_layout.setBackgroundColor(getResources().getColor(R.color.magnitude9));
@@ -105,28 +108,28 @@ public class NewEntryActivity  extends AppCompatActivity {
         $email_layout.setBackgroundColor(getResources().getColor(R.color.magnitude9));
         $salary_layout.setBackgroundColor(getResources().getColor(R.color.magnitude9));
 
-
         $name_layout.getBackground().setAlpha(0);
         $phone_layout.getBackground().setAlpha(0);
         $age_layout.getBackground().setAlpha(0);
         $email_layout.getBackground().setAlpha(0);
         $salary_layout.getBackground().setAlpha(0);
 
-
         $name.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b){
                 if(!b) {
                     if (!ValidateEntry.validateEmpty($name.getText().toString())) {
-                        $name.setError("Name is Empty!");
+                        $name_layout.setErrorEnabled(true);
+                        $name_layout.setError("Name is Empty!");
                         $name_layout.getBackground().setAlpha(51);
                     }
                     else if (!ValidateEntry.validateNameDigit($name.getText().toString())){  //checks if name contains a number{
-                        $name.setError("Name contains a number!");
+                        $name_layout.setError("Name contains a number!");
+                        $name_layout.setErrorEnabled(true);
                         $name_layout.getBackground().setAlpha(51);
                     }
                     else
-                        $name_layout.getBackground().setAlpha(0);
+                        $name_layout.setErrorEnabled(false);
                 }
             }
         });
@@ -137,15 +140,17 @@ public class NewEntryActivity  extends AppCompatActivity {
             public void onFocusChange(View view, boolean b) {
                 if(!b) {
                     if (!ValidateEntry.validateEmpty($age.getText().toString())) {
-                        $age.setError("Age is empty");
+                        $age_layout.setErrorEnabled(true);
+                        $age_layout.setError("Age is empty");
                         $age_layout.getBackground().setAlpha(51);
                     }
                     else if (!ValidateEntry.validateAge($age.getText().toString())){
-                        $age.setError("Age is invalid");
+                        $age_layout.setErrorEnabled(true);
+                        $age_layout.setError("Age is invalid");
                         $age_layout.getBackground().setAlpha(51);
                     }
                     else
-                        $age_layout.getBackground().setAlpha(0);
+                        $age_layout.setErrorEnabled(true);
                 }
             }
         });
@@ -156,12 +161,17 @@ public class NewEntryActivity  extends AppCompatActivity {
             public void onFocusChange(View view, boolean b) {
                 if(!b) {
                     if (!ValidateEntry.validateEmail($email.getText().toString())) {
+
+                        $email_layout.setErrorEnabled(true);
+                        $email_layout.setError("Invalid Email");
                         $email.setError("Invalid Email");
 
                         $email_layout.getBackground().setAlpha(51);
                     }
                     else
-                        $email_layout.getBackground().setAlpha(0);
+                    {    $email_layout.getBackground().setAlpha(0);
+                        $email_layout.setErrorEnabled(false);
+                    }
                 }
             }
         });
@@ -172,11 +182,14 @@ public class NewEntryActivity  extends AppCompatActivity {
             public void onFocusChange(View view, boolean b) {
                 if(!b){
                     if(!ValidateEntry.validatePhone($phone.getText().toString())) {
-                        $phone.setError("Number Invalid");
+                        $phone_layout.setErrorEnabled(true);
+                        $phone_layout.setError("Number Invalid");
                         $phone_layout.getBackground().setAlpha(51);
                     }
                     else
-                        $phone_layout.getBackground().setAlpha(0);
+                    {   $phone_layout.getBackground().setAlpha(0);
+                        $phone_layout.setErrorEnabled(false);
+                    }
                 }
             }
         });
@@ -195,12 +208,11 @@ public class NewEntryActivity  extends AppCompatActivity {
             }
         });
 
-
+        //**************DISSAPPEARING VIEWS*****************
         final CheckBox chewer = (CheckBox) findViewById(R.id.chewer);
         final CheckBox smoker = (CheckBox) findViewById(R.id.smoker);
 
-
-        final TextView chewing_heading = (TextView) findViewById(R.id.chewing_history_heading);
+        //final TextView chewing_heading = (TextView) findViewById(R.id.chewing_history_heading);
         final TextView time_chewing = (TextView) findViewById(R.id.chewing_time_text_view);
         final EditText years_chewing_input = (EditText) findViewById(R.id.years_chewing_edit_text);
         final EditText months_chewing_input = (EditText) findViewById(R.id.months_chewing_edit_text);
@@ -210,15 +222,77 @@ public class NewEntryActivity  extends AppCompatActivity {
         final EditText cost_packet_input = (EditText) findViewById(R.id.cost_chewing_edit_text);
 
 
-        final TextView smoking_heading = (TextView) findViewById(R.id.smoking_history_heading);
+        //final TextView smoking_heading = (TextView) findViewById(R.id.smoking_history_heading);
         final TextView time_smoking = (TextView) findViewById(R.id.smoking_time_text_view);
         final EditText years_smoking_input = (EditText) findViewById(R.id.smoking_years_edit_text);
         final EditText months_smoking_input = (EditText) findViewById(R.id.smoking_months_edit_text);
         final TextView often_smoking = (TextView) findViewById(R.id.often_smoking_text_view);
-        final EditText often_smoking_input = (EditText) findViewById(R.id.often_edit_text);
+        final EditText often_smoking_input = (EditText) findViewById(R.id.often_smoking_edit_text);
         final TextView cost_ciggartte = (TextView) findViewById(R.id.cost_smoking_text_view); //textView
         final EditText cost_ciggartte_input = (EditText) findViewById(R.id.cost_smoking_edit_text);
 
+        final LinearLayout smoking_history= (LinearLayout) findViewById(R.id.smoking_history_layout);
+        final LinearLayout chewing_history= (LinearLayout) findViewById(R.id.chewing_history_layout);
+
+        chewer.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+                if(!isChecked){
+                    //chewing_heading.setVisibility(View.GONE);
+                    time_chewing.setVisibility(View.GONE);
+                    years_chewing_input.setVisibility(View.GONE);
+                    months_chewing_input.setVisibility(View.GONE);
+                    often_chewing.setVisibility(View.GONE);
+                    often_chewing_input.setVisibility(View.GONE);
+                    cost_packet.setVisibility(View.GONE);
+                    cost_packet_input.setVisibility(View.GONE);
+                    chewing_history.setVisibility(GONE);
+                }
+                else
+                {
+                    //chewing_heading.setVisibility(View.VISIBLE);
+                    time_chewing.setVisibility(View.VISIBLE);
+                    years_chewing_input.setVisibility(View.VISIBLE);
+                    months_chewing_input.setVisibility(View.VISIBLE);
+                    often_chewing.setVisibility(View.VISIBLE);
+                    often_chewing_input.setVisibility(View.VISIBLE);
+                    cost_packet.setVisibility(View.VISIBLE);
+                    cost_packet_input.setVisibility(View.VISIBLE);
+                    chewing_history.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        smoker.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+                if(!isChecked){
+                    //smoking_heading.setVisibility(View.GONE);
+                    time_smoking.setVisibility(View.GONE);
+                    years_smoking_input.setVisibility(View.GONE);
+                    months_smoking_input.setVisibility(View.GONE);
+                    often_smoking.setVisibility(View.GONE);
+                    often_smoking_input.setVisibility(View.GONE);
+                    cost_ciggartte.setVisibility(View.GONE);
+                    cost_ciggartte_input.setVisibility(View.GONE);
+                    smoking_history.setVisibility(View.GONE);
+                }
+                else {
+                    //smoking_heading.setVisibility(View.VISIBLE);
+                    time_smoking.setVisibility(View.VISIBLE);
+                    years_smoking_input.setVisibility(View.VISIBLE);
+                    months_smoking_input.setVisibility(View.VISIBLE);
+                    often_smoking.setVisibility(View.VISIBLE);
+                    often_smoking_input.setVisibility(View.VISIBLE);
+                    cost_ciggartte.setVisibility(View.VISIBLE);
+                    cost_ciggartte_input.setVisibility(View.VISIBLE);
+                    smoking_history.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+
+        //********************FILLMORE LAYOUTS***************************
         final Switch S = (Switch) findViewById(R.id.mySwitch);
         final LinearLayout morning_consumer = (LinearLayout) findViewById(R.id.morning_consumer_layout);
         final LinearLayout family_consumes = (LinearLayout) findViewById(R.id.family_consumes_layout);
@@ -239,16 +313,16 @@ public class NewEntryActivity  extends AppCompatActivity {
                 if(!isChecked)
                 {
 
-                    morning_consumer.setVisibility(LinearLayout.GONE);
-                    family_consumes.setVisibility(LinearLayout.GONE);
-                    started_how.setVisibility(LinearLayout.GONE);
-                    other_habit.setVisibility(LinearLayout.GONE);
-                    aware_harms.setVisibility(LinearLayout.GONE);
-                    disease_aware.setVisibility(LinearLayout.GONE);
-                    quit.setVisibility(LinearLayout.GONE);
-                    reasonforquitting.setVisibility(LinearLayout.GONE);
-                    tried_quitting.setVisibility(LinearLayout.GONE);
-                    craving.setVisibility(LinearLayout.GONE);
+                    morning_consumer.setVisibility(GONE);
+                    family_consumes.setVisibility(GONE);
+                    started_how.setVisibility(GONE);
+                    other_habit.setVisibility(GONE);
+                    aware_harms.setVisibility(GONE);
+                    disease_aware.setVisibility(GONE);
+                    quit.setVisibility(GONE);
+                    reasonforquitting.setVisibility(GONE);
+                    tried_quitting.setVisibility(GONE);
+                    craving.setVisibility(GONE);
                 }
                 else
                 {
@@ -257,6 +331,7 @@ public class NewEntryActivity  extends AppCompatActivity {
                     started_how.setVisibility(LinearLayout.VISIBLE);
                     other_habit.setVisibility(LinearLayout.VISIBLE);
                     aware_harms.setVisibility(LinearLayout.VISIBLE);
+
                     disease_aware.setVisibility(LinearLayout.VISIBLE);
                     quit.setVisibility(LinearLayout.VISIBLE);
                     reasonforquitting.setVisibility(LinearLayout.VISIBLE);
@@ -266,60 +341,6 @@ public class NewEntryActivity  extends AppCompatActivity {
             }
         });
 
-
-
-        chewer.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
-                if(!isChecked){
-                    chewing_heading.setVisibility(View.GONE);
-                    time_chewing.setVisibility(View.GONE);
-                    years_chewing_input.setVisibility(View.GONE);
-                    months_chewing_input.setVisibility(View.GONE);
-                    often_chewing.setVisibility(View.GONE);
-                    often_chewing_input.setVisibility(View.GONE);
-                    cost_packet.setVisibility(View.GONE);
-                    cost_packet_input.setVisibility(View.GONE);
-                }
-                else
-                {
-                    chewing_heading.setVisibility(View.VISIBLE);
-                    time_chewing.setVisibility(View.VISIBLE);
-                    years_chewing_input.setVisibility(View.VISIBLE);
-                    months_chewing_input.setVisibility(View.VISIBLE);
-                    often_chewing.setVisibility(View.VISIBLE);
-                    often_chewing_input.setVisibility(View.VISIBLE);
-                    cost_packet.setVisibility(View.VISIBLE);
-                    cost_packet_input.setVisibility(View.VISIBLE);
-                }
-            }
-        });
-
-        smoker.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
-                if(!isChecked){
-                    smoking_heading.setVisibility(View.GONE);
-                    time_smoking.setVisibility(View.GONE);
-                    years_smoking_input.setVisibility(View.GONE);
-                    months_smoking_input.setVisibility(View.GONE);
-                    often_smoking.setVisibility(View.GONE);
-                    often_smoking_input.setVisibility(View.GONE);
-                    cost_ciggartte.setVisibility(View.GONE);
-                    cost_ciggartte_input.setVisibility(View.GONE);
-                }
-                else {
-                    smoking_heading.setVisibility(View.VISIBLE);
-                    time_smoking.setVisibility(View.VISIBLE);
-                    years_smoking_input.setVisibility(View.VISIBLE);
-                    months_smoking_input.setVisibility(View.VISIBLE);
-                    often_smoking.setVisibility(View.VISIBLE);
-                    often_smoking_input.setVisibility(View.VISIBLE);
-                    cost_ciggartte.setVisibility(View.VISIBLE);
-                    cost_ciggartte_input.setVisibility(View.VISIBLE);
-                }
-            }
-        });
 
         mSaveButton=(Button) findViewById(R.id.save);
 
@@ -421,7 +442,7 @@ public class NewEntryActivity  extends AppCompatActivity {
                     smoke_days = (smoke_years * 365) + (smoke_months * 30);
 
                     //For smoking frequency(in a day)
-                    EditText smoke_frequencyView = (EditText) findViewById(R.id.often_edit_text);
+                    EditText smoke_frequencyView = (EditText) findViewById(R.id.often_smoking_edit_text);
                     chew_freq = Integer.parseInt(smoke_frequencyView.getText().toString());
 
                     //For avg cost of each smoking thing
