@@ -1,8 +1,6 @@
 package com.example.android.quitit;
 
-/**
- * Created by Pulkit on 03-07-2017.
- */
+
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -130,7 +128,7 @@ public class ReportActivity extends AppCompatActivity {
                 return true;
             case R.id.view_all:
                 Intent intent = new Intent(ReportActivity.this,ViewActivity.class);
-               /* Entry(String name,int age,String sex,String interest,String med,String contact,int chew_days,int chew_freq,float chew_cost,int smoke_days,int smoke_freq,float smoke_cost,String marry_status,
+              /*  Entry(String name,int age,String sex,String interest,String med,String contact,int chew_days,int chew_freq,float chew_cost,int smoke_days,int smoke_freq,float smoke_cost,String marry_status,
                String future,String business,int salary,String time,String date,
                     String morning_status,String family_status,String habit_reason,String habit,String aware_status,String aware_diseases,String quit_status,String quit_reason,String quit_before_status,String craving_time,int id){
                 */
@@ -142,7 +140,9 @@ public class ReportActivity extends AppCompatActivity {
                 B.putParcelable("ClickedEntry", (Parcelable) temp);
                 intent.putExtras(B);
                 startActivity(intent);
-                break;
+                return true;
+
+
             case R.id.update:
                 Intent intent2 = new Intent(ReportActivity.this,UpdateActivity.class);
                 Entry temp2 = ClickedEntry;
