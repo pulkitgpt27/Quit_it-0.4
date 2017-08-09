@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="?android:attr/listPreferredItemHeight"
+    android:layout_height="72dp"
     android:layout_margin="12dp"
     >
     <LinearLayout
@@ -21,41 +21,38 @@
             tools:text="Arunesh Kumar"
             android:maxLines="2"
             android:textColor="@color/colorPrimaryDarkEQ"
-            android:textSize="20sp"/>
+            android:textSize="24sp"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
                 android:id="@+id/age"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize = "16sp"
-                android:layout_weight="1"
                 tools:text="40"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize = "16sp"
+                android:text=","/>
+
             <TextView
                 android:id="@+id/sex"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.3"
-                tools:text="M"
+                android:textSize = "16sp"
+                tools:text="Male"
                 />
         </LinearLayout>
     </LinearLayout>
-    <TextView
-        android:id="@+id/interest"
-        android:layout_width="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="0"
-        tools:text="Singing"
-        />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:orientation="vertical">
 
         <TextView

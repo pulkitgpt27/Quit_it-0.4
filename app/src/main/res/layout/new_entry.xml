@@ -1,8 +1,18 @@
+</LinearLayout>
+=======
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    >
+
+    <LinearLayout
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -13,62 +23,38 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <LinearLayout
+
+            <android.support.design.widget.TextInputLayout
                 android:id="@+id/name_layout"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/height_linear_layout"
-                android:layout_margin="@dimen/activity_horizontal_margin"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:text="Name :"
-                    android:textSize="18sp"
-                    android:textStyle="italic" />
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:layout_marginBottom="0dp"
+                app:errorTextAppearance="@style/error_appearance">
 
                 <EditText
                     android:id="@+id/name_edit_text"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="3"
-                    android:hint="Name"
-                    android:inputType="textCapWords"
-                    android:paddingLeft="24dp" />
+                    android:singleLine="true"
+                    android:hint="@string/name" />
+            </android.support.design.widget.TextInputLayout>
 
-            </LinearLayout>
-
-            <LinearLayout
+            <android.support.design.widget.TextInputLayout
                 android:id="@+id/age_layout"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/height_linear_layout"
-                android:layout_marginBottom="@dimen/activity_horizontal_margin"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:orientation="horizontal">
-
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Age :"
-                    android:textSize="18sp"
-                    android:textStyle="italic|normal" />
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:errorTextAppearance="@style/error_appearance">
 
                 <EditText
                     android:id="@+id/age_edit_text"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:hint="Age"
-                    android:inputType="number"
-                    android:paddingLeft="24dp" />
-
-            </LinearLayout>
+                    android:singleLine="true"
+                    android:hint="@string/age"
+                    android:inputType="number"/>
+            </android.support.design.widget.TextInputLayout>
 
 
             <LinearLayout
@@ -103,7 +89,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:text="M" />
+                        android:text="Male" />
 
                     <RadioButton
                         android:id="@+id/sex_female"
@@ -111,7 +97,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="6dp"
                         android:layout_marginTop="6dp"
-                        android:text="F" />
+                        android:text="Female" />
 
                     <RadioButton
                         android:id="@+id/sex_other"
@@ -124,87 +110,56 @@
 
             </LinearLayout>
 
-            <LinearLayout
+
+            <android.support.design.widget.TextInputLayout
                 android:id="@+id/contact_layout"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/height_linear_layout"
-                android:layout_marginBottom="@dimen/activity_horizontal_margin"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:orientation="horizontal">
-
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Contact :"
-                    android:textSize="18sp"
-                    android:textStyle="italic" />
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:layout_marginBottom="0dp"
+                app:errorTextAppearance="@style/error_appearance">
 
                 <EditText
                     android:id="@+id/contact_edit_text"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
+                    android:singleLine="true"
                     android:hint="@string/contact_number"
-                    android:inputType="number"
-                    android:paddingLeft="24dp" />
+                    android:inputType="number"/>
+            </android.support.design.widget.TextInputLayout>
 
-            </LinearLayout>
-
-            <LinearLayout
+            <android.support.design.widget.TextInputLayout
                 android:id="@+id/email_layout"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/height_linear_layout"
-                android:layout_marginBottom="@dimen/activity_horizontal_margin"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:orientation="horizontal">
-
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Email :"
-                    android:textSize="18sp"
-                    android:textStyle="italic" />
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:layout_marginBottom="0dp"
+                app:errorTextAppearance="@style/error_appearance">
 
                 <EditText
                     android:id="@+id/email_edit_text"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:hint="@string/email"
-                    android:paddingLeft="24dp" />
-            </LinearLayout>
+                    android:singleLine="true"
+                    android:hint="@string/email" />
+            </android.support.design.widget.TextInputLayout>
 
-            <LinearLayout
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/address_layout"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/height_linear_layout"
-                android:layout_marginBottom="@dimen/activity_horizontal_margin"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:orientation="horizontal">
-
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/address"
-                    android:textSize="18sp"
-                    android:textStyle="italic" />
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:layout_marginBottom="0dp"
+                app:errorTextAppearance="@style/error_appearance">
 
                 <EditText
                     android:id="@+id/address_edit_text"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:hint="Address"
-                    android:paddingLeft="24dp" />
-            </LinearLayout>
+                    android:singleLine="true"
+                    android:hint="@string/address" />
+            </android.support.design.widget.TextInputLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -334,18 +289,8 @@
                 >
 
                 <TextView
-                    android:id="@+id/smoking_history_heading"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="top"
-                    android:layout_marginBottom="10dp"
-                    android:text="Smoking History :"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:visibility="gone" />
-
-                <TextView
                     android:id="@+id/smoking_time_text_view"
+                    android:textStyle="bold"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
@@ -379,17 +324,18 @@
                 </LinearLayout>
 
                 <TextView
+                    android:textStyle="bold"
                     android:id="@+id/often_smoking_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="6dp"
                     android:layout_marginTop="12dp"
-                    android:text="How many times do you smoke in a day?"
+                    android:text="@string/how_many_times_do_you_smoke_in_a_day"
                     android:textSize="18sp"
                     android:visibility="gone" />
 
                 <EditText
-                    android:id="@+id/often_edit_text"
+                    android:id="@+id/often_smoking_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="6dp"
@@ -399,11 +345,12 @@
                     android:visibility="gone" />
 
                 <TextView
+                    android:textStyle="bold"
                     android:id="@+id/cost_smoking_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
-                    android:text="Average cost of each ciggerate :"
+                    android:text="@string/average_cost_of_each_ciggerate"
                     android:textSize="18sp"
                     android:visibility="gone" />
 
@@ -428,22 +375,12 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/chewing_history_heading"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="top"
-                    android:layout_marginBottom="10dp"
-                    android:text="@string/chewing_history"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:visibility="gone" />
-
-                <TextView
                     android:id="@+id/chewing_time_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
                     android:text="@string/chewing_history_time"
+                    android:textStyle="bold"
                     android:textSize="18sp"
                     android:visibility="gone" />
 
@@ -479,6 +416,7 @@
                     android:layout_marginBottom="6dp"
                     android:layout_marginTop="12dp"
                     android:text="@string/often_chewing_text_view"
+                    android:textStyle="bold"
                     android:textSize="18sp"
                     android:visibility="gone" />
 
@@ -498,6 +436,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
                     android:text="@string/cost_of_one_packet"
+                    android:textStyle="bold"
                     android:textSize="18sp"
                     android:visibility="gone" />
 
@@ -560,57 +499,38 @@
                 </RadioGroup>
             </LinearLayout>
 
-            <LinearLayout
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/profession_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/activity_horizontal_margin"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:text="Profession"
-                    android:textSize="18sp"
-                    android:textStyle="italic" />
+                android:layout_margin="16dp"
+                android:layout_marginBottom="0dp"
+                app:errorTextAppearance="@style/error_appearance">
 
                 <EditText
                     android:id="@+id/business_edit_text"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:hint="Any Income Source"
-                    android:paddingLeft="24dp" />
-            </LinearLayout>
+                    android:singleLine="true"
+                    android:hint="@string/profession" />
+            </android.support.design.widget.TextInputLayout>
 
-            <LinearLayout
+
+            <android.support.design.widget.TextInputLayout
                 android:id="@+id/salary_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/activity_horizontal_margin"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:text="Monthly Salary:"
-                    android:textSize="18sp"
-                    android:textStyle="italic" />
+                android:layout_margin="16dp"
+                android:layout_marginBottom="0dp"
+                app:errorTextAppearance="@style/error_appearance">
 
                 <EditText
                     android:id="@+id/salary_edit_text"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:hint="@string/rupees"
-                    android:inputType="number"
-                    android:paddingLeft="24dp" />
-            </LinearLayout>
+                    android:singleLine="true"
+                    android:hint="@string/monthly_salary" />
+            </android.support.design.widget.TextInputLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -1271,5 +1191,6 @@
             </RelativeLayout>
         </LinearLayout>
     </ScrollView>
->>>>>>> 68a46850de133101b245758300a6c5880aa74d8b
 </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>
