@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -79,6 +81,9 @@ public class NewEntryActivity  extends AppCompatActivity {
 
     //for validation
     boolean[] validation;
+    private String message="";
+    private String med_history="";
+    private Entry patient;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -406,7 +411,7 @@ public class NewEntryActivity  extends AppCompatActivity {
                 address= (addressView.getText().toString());
 
                 //For Med History
-                String med_history="";
+                med_history="";
                 CheckBox med1=(CheckBox) findViewById(R.id.disease_1);
                 CheckBox med2=(CheckBox) findViewById(R.id.disease_2);
                 CheckBox med3=(CheckBox) findViewById(R.id.disease_3);
@@ -501,11 +506,11 @@ public class NewEntryActivity  extends AppCompatActivity {
                 Calendar c = Calendar.getInstance();
                 SimpleDateFormat df = new SimpleDateFormat("hh:mm a");
                 //SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
-                String formattedtime1 = df.format(c.getTime());
+                final String formattedtime1 = df.format(c.getTime());
 
                 //For current date
                 SimpleDateFormat df1 = new SimpleDateFormat("dd-MMM-yyyy");
-                String formattedDate1 = df1.format(c.getTime());
+                final String formattedDate1 = df1.format(c.getTime());
 
                 //For id
                // DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -744,16 +749,45 @@ public class NewEntryActivity  extends AppCompatActivity {
 
                 }
 
-                String interest = "";
+                final String interest = "";
                 String future = "";
-                String key=mPatientDatabaseReference.push().getKey();
 
-                String message=MessageActivity.getMessage(age,sex,chewer.isChecked(),chew_freq,smoker.isChecked(),smoke_freq,med_history,m_status,habit_reason);
+                message=MessageActivity.getMessage(age,sex,chewer.isChecked(),chew_freq,smoker.isChecked(),smoke_freq,med_history,m_status,habit_reason);
+                
 
-                Entry patient=new Entry(name,age,sex,interest,med_history,contact,email,address,chewText,chew_days,chew_freq,chew_cost,smokeText,smoke_days,smoke_freq,smoke_cost,m_status,business,salary,formattedtime1,formattedDate1,morning_status,
-                        family_status,habit_reason,habbit,aware_status,aware_diseases,quit_status,quit_reason,quit_before_status,craving_time,key,message);
+                mPatientDatabaseReference=FirebaseMethods.getFirebaseReference("patient");
 
-                mPatientDatabaseReference.push().setValue(patient);
+                final String[] uniqueKey = {""};
+                String key="";
+
+
+                mPatientDatabaseReference
+                        .push()
+                        .setValue(null, new DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError,
+                                                   DatabaseReference databaseReference) {
+                                uniqueKey[0] = databaseReference.getKey();
+
+                                DatabaseReference UpdatePatientDatabaseReference=FirebaseDatabase.getInstance().getReference().child("patient").child(uniqueKey[0]);
+                                try {
+
+                                    patient=new Entry(name,age,sex,interest,med_history,contact,email,address,chewText,chew_days,chew_freq,chew_cost,smokeText,smoke_days,smoke_freq,smoke_cost,m_status,business,salary,formattedtime1,formattedDate1,morning_status,
+                                            family_status,habit_reason,habbit,aware_status,aware_diseases,quit_status,quit_reason,quit_before_status,craving_time,uniqueKey[0],message);
+                                    UpdatePatientDatabaseReference.setValue(patient);
+
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+
+                                Log.e("Updated", "hello"+patient.getId());
+
+
+                            }
+                        });
+
+
+
                 Toast.makeText(getBaseContext(), "Welcome"+name, Toast.LENGTH_SHORT).show();
 
                 Intent i=new Intent(NewEntryActivity.this,MainActivity.class);

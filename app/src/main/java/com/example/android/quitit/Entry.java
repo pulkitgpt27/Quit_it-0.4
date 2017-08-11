@@ -1,15 +1,10 @@
-
 package com.example.android.quitit;
 
-        import android.os.Parcel;
+import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by Ayush vaid on 12-06-2017.
- */
 public class Entry implements Parcelable {
 
-    private String message;
     private  String name;
     private  int age;
     private String sex;
@@ -22,9 +17,7 @@ public class Entry implements Parcelable {
     private int chew_freq;
     private float chew_cost;
     private String smokeText;
-
     private int smoke_history;
-
     private String interest;
     private String marry_status;
     private int smoke_freq;
@@ -44,13 +37,14 @@ public class Entry implements Parcelable {
     private String quit_reason;
     private String quit_before_status;
     private String craving_time;
+    private String message;
 
+    public Entry() {
+    }
 
-
-
-    public Entry(String name,int age,String sex,String interest,String med,String contact,String email,String address,String chewText,int chew_days,int chew_freq,float chew_cost,String smokeText,int smoke_days,int smoke_freq,float smoke_cost,String marry_status,String business,int salary,String time,String date,
-                 String morning_status,String family_status,String habit_reason,String habit,String aware_status,String aware_diseases,String quit_status,String quit_reason,String quit_before_status,String craving_time,String id
-            ,String message){
+    public Entry(String name, int age, String sex, String interest, String med, String contact, String email, String address, String chewText, int chew_days, int chew_freq, float chew_cost, String smokeText, int smoke_days, int smoke_freq, float smoke_cost, String marry_status, String business, int salary, String time, String date,
+                 String morning_status, String family_status, String habit_reason, String habit, String aware_status, String aware_diseases, String quit_status, String quit_reason, String quit_before_status, String craving_time, String id,
+                 String message){
         this.name=name;
         this.age=age;
         this.sex=sex;
@@ -123,6 +117,9 @@ public class Entry implements Parcelable {
     public String getCraving_time(){return craving_time;}
     public String getId(){return id;}
     public String getMessage(){return message;}
+
+    //setter
+    public void setId(String val){this.id=val;}
 
 
     //parcealable stuff

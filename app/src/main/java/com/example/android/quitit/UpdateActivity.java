@@ -11,9 +11,12 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import static com.example.android.quitit.R.id.update;
 
 /**
  * Created by Pulkit on 29-07-2017.
@@ -489,24 +492,21 @@ public class UpdateActivity extends AppCompatActivity {
                                         cravingTime += craving9.getText() + "/";
                                     }
 
-                                    Intent intent = new Intent(UpdateActivity.this,MainActivity.class);
-                                    //Toast.makeText(this, "hello" ,Toast.LENGTH_LONG).show();
-                                    DatabaseReference mPatientDatabaseReference=FirebaseDatabase.getInstance().getReference().child("patient").child(ClickedEntry.getId());
 
+                Entry patient = new Entry(nameView.getText().toString(), ClickedEntry.getAge(),ClickedEntry.getSex(), ClickedEntry.getInterest(), med_history, contactView.getText().toString() ,emailView.getText().toString(),addressView.getText().toString(),
+                        ClickedEntry.getChewText(),ClickedEntry.getChew_history(),
+                        ClickedEntry.getChew_freq(), ClickedEntry.getChew_cost(),ClickedEntry.getSmokeText(), ClickedEntry.getSmokeHistory(), ClickedEntry.getSmoke_freq(), ClickedEntry.getSmoke_cost(), m_status,
+                        businessView.getText().toString(), Integer.parseInt(salaryView.getText().toString()), ClickedEntry.getTime(), ClickedEntry.getFormattedDate(), ClickedEntry.getMorning_status(), ClickedEntry.getFamily_status(),
+                        startConsumingReason, otherHabit, ClickedEntry.getAware_status(), tobaccoConsumptionDiseases, ClickedEntry.getQuit_status(), reasonForQuitting, ClickedEntry.getQuit_before_status(),
+                        cravingTime, ClickedEntry.getId(),ClickedEntry.getMessage());
 
-                try {
-                    Entry patient = new Entry(nameView.getText().toString(), ClickedEntry.getAge(),ClickedEntry.getSex(), ClickedEntry.getInterest(), med_history, contactView.getText().toString() ,emailView.getText().toString(),addressView.getText().toString(),
-                            ClickedEntry.getChewText(),ClickedEntry.getChew_history(),
-                            ClickedEntry.getChew_freq(), ClickedEntry.getChew_cost(),ClickedEntry.getSmokeText(), ClickedEntry.getSmokeHistory(), ClickedEntry.getSmoke_freq(), ClickedEntry.getSmoke_cost(), m_status,
-                            businessView.getText().toString(), Integer.parseInt(salaryView.getText().toString()), ClickedEntry.getTime(), ClickedEntry.getFormattedDate(), ClickedEntry.getMorning_status(), ClickedEntry.getFamily_status(),
-                            startConsumingReason, otherHabit, ClickedEntry.getAware_status(), tobaccoConsumptionDiseases, ClickedEntry.getQuit_status(), reasonForQuitting, ClickedEntry.getQuit_before_status(),
-                            cravingTime, ClickedEntry.getId(),ClickedEntry.getMessage());
+                //For updation
+                FirebaseMethods.updatePatient(ClickedEntry.getId(),patient);
 
-                    mPatientDatabaseReference.setValue(patient);
-                    startActivity(intent);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
+                Intent intent = new Intent(UpdateActivity.this,MainActivity.class);
+
+                Toast.makeText(getBaseContext(), "Successfully updated" , Toast.LENGTH_SHORT).show();
+                startActivity(intent);
 
 
             }
@@ -516,4 +516,6 @@ public class UpdateActivity extends AppCompatActivity {
 
 
     }
+
+
 }

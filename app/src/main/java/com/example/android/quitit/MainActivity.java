@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity
 
     private ChildEventListener mChildEventListener;
     private DatabaseReference mPatientDatabaseReference;
-    private FirebaseDatabase mFirebaseDatabase;
     private ListView mPatientListView;
     private EntriesListAdapter mPatientAdapter;
     private ArrayList<Entry> patientList;
@@ -65,53 +64,20 @@ public class MainActivity extends AppCompatActivity
         spinner=(ProgressBar) findViewById(R.id.spinner);
 
         //firebase reference
-        mFirebaseDatabase=FirebaseDatabase.getInstance();
-        mPatientDatabaseReference=mFirebaseDatabase.getReference().child("patient");
+
+        mPatientDatabaseReference=FirebaseMethods.getFirebaseReference("patient");
 
         //setting list view
         mPatientListView=(ListView) findViewById(R.id.listView);
         patientList=new ArrayList<Entry>();
-        Log.e("myLog","size"+patientList.size());
+
 
         //setting adapter
         mPatientAdapter=new EntriesListAdapter(MainActivity.this,R.layout.list_item,patientList);
         mPatientListView.setAdapter(mPatientAdapter);
 
-
-
-
-        mChildEventListener=new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Entry patient = dataSnapshot.getValue(Entry.class);
-                patientList.add(patient);
-
-                if(!patientList.isEmpty())
-                {
-                    spinner.setVisibility(View.GONE);
-                    empty=false;
-                }
-                mPatientAdapter=new EntriesListAdapter(MainActivity.this,R.layout.list_item,patientList);
-                mPatientListView.setAdapter(mPatientAdapter);
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-            }
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-            }
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-
-        };
-
-        mPatientDatabaseReference.addChildEventListener(mChildEventListener);
-
+        //fetching data from firebase
+        firebaseDataFetch();
 
         mPatientListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
@@ -170,5 +136,40 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         return false;
+    }
+
+    public void firebaseDataFetch()
+    {
+        mChildEventListener=new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Entry patient = dataSnapshot.getValue(Entry.class);
+                patientList.add(patient);
+
+                if(!patientList.isEmpty())
+                {
+                    spinner.setVisibility(View.GONE);
+                    empty=false;
+                }
+                mPatientAdapter=new EntriesListAdapter(MainActivity.this,R.layout.list_item,patientList);
+                mPatientListView.setAdapter(mPatientAdapter);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            }
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+            }
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+
+        };
+
+        mPatientDatabaseReference.addChildEventListener(mChildEventListener);
     }
 }
