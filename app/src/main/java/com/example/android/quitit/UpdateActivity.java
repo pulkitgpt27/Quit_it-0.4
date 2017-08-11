@@ -10,9 +10,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -502,7 +500,7 @@ public class UpdateActivity extends AppCompatActivity {
                             ClickedEntry.getChew_freq(), ClickedEntry.getChew_cost(),ClickedEntry.getSmokeText(), ClickedEntry.getSmokeHistory(), ClickedEntry.getSmoke_freq(), ClickedEntry.getSmoke_cost(), m_status,
                             businessView.getText().toString(), Integer.parseInt(salaryView.getText().toString()), ClickedEntry.getTime(), ClickedEntry.getFormattedDate(), ClickedEntry.getMorning_status(), ClickedEntry.getFamily_status(),
                             startConsumingReason, otherHabit, ClickedEntry.getAware_status(), tobaccoConsumptionDiseases, ClickedEntry.getQuit_status(), reasonForQuitting, ClickedEntry.getQuit_before_status(),
-                            cravingTime, ClickedEntry.getId());
+                            cravingTime, ClickedEntry.getId(),ClickedEntry.getMessage());
 
                     mPatientDatabaseReference.setValue(patient);
                     startActivity(intent);

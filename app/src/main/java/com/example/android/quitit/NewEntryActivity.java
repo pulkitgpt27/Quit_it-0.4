@@ -76,6 +76,10 @@ public class NewEntryActivity  extends AppCompatActivity {
     private String smokeText="";
 
 
+
+    //for validation
+    boolean[] validation;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         this.setTheme(R.style.AppTheme);
@@ -87,8 +91,11 @@ public class NewEntryActivity  extends AppCompatActivity {
         mPatientDatabaseReference=mFirebaseDatabase.getReference().child("patient");
 
 
+
         //**************VALIDATIONS**************
         //************ALL START WITH SYMBOL $************
+        validation = new boolean[7];
+
         final EditText $name = (EditText) findViewById(R.id.name_edit_text);
         final EditText $phone = (EditText) findViewById(R.id.contact_edit_text);
         final EditText $age = (EditText) findViewById(R.id.age_edit_text);
@@ -122,14 +129,19 @@ public class NewEntryActivity  extends AppCompatActivity {
                         $name_layout.setErrorEnabled(true);
                         $name_layout.setError("Name is Empty!");
                         $name_layout.getBackground().setAlpha(51);
+                        validation[0] = false;
                     }
                     else if (!ValidateEntry.validateNameDigit($name.getText().toString())){  //checks if name contains a number{
                         $name_layout.setError("Name contains a number!");
                         $name_layout.setErrorEnabled(true);
                         $name_layout.getBackground().setAlpha(51);
+                        validation[0]=false;
                     }
-                    else
+                    else {
+                        $name_layout.getBackground().setAlpha(0);
                         $name_layout.setErrorEnabled(false);
+                        validation[0] = true;
+                    }
                 }
             }
         });
@@ -143,14 +155,19 @@ public class NewEntryActivity  extends AppCompatActivity {
                         $age_layout.setErrorEnabled(true);
                         $age_layout.setError("Age is empty");
                         $age_layout.getBackground().setAlpha(51);
+                        validation[1] = false;
                     }
                     else if (!ValidateEntry.validateAge($age.getText().toString())){
                         $age_layout.setErrorEnabled(true);
                         $age_layout.setError("Age is invalid");
                         $age_layout.getBackground().setAlpha(51);
+                        validation[1] = false;
                     }
-                    else
+                    else {
+                        $age_layout.getBackground().setAlpha(0);
                         $age_layout.setErrorEnabled(true);
+                        validation[1] = true;
+                    }
                 }
             }
         });
@@ -165,12 +182,13 @@ public class NewEntryActivity  extends AppCompatActivity {
                         $email_layout.setErrorEnabled(true);
                         $email_layout.setError("Invalid Email");
                         $email.setError("Invalid Email");
-
                         $email_layout.getBackground().setAlpha(51);
+                        validation[2] = false;
                     }
                     else
                     {    $email_layout.getBackground().setAlpha(0);
                         $email_layout.setErrorEnabled(false);
+                        validation[2] = true;
                     }
                 }
             }
@@ -185,10 +203,12 @@ public class NewEntryActivity  extends AppCompatActivity {
                         $phone_layout.setErrorEnabled(true);
                         $phone_layout.setError("Number Invalid");
                         $phone_layout.getBackground().setAlpha(51);
+                        validation[3] = false;
                     }
                     else
                     {   $phone_layout.getBackground().setAlpha(0);
                         $phone_layout.setErrorEnabled(false);
+                        validation[3] = true;
                     }
                 }
             }
@@ -199,11 +219,16 @@ public class NewEntryActivity  extends AppCompatActivity {
             public void onFocusChange(View view, boolean b) {
                 if(!b){
                     if(!ValidateEntry.validateInteger($salary.getText().toString())) {
-                        $salary.setError("Salary amount is invalid");
+                        $salary_layout.setError("Salary amount is invalid");
                         $salary_layout.getBackground().setAlpha(51);
+                        $salary_layout.setErrorEnabled(true);
+                        validation[5] = false;
                     }
-                    else
+                    else {
                         $salary_layout.getBackground().setAlpha(0);
+                        $salary_layout.setErrorEnabled(false);
+                        validation[5] = true;
+                    }
                 }
             }
         });
@@ -347,6 +372,11 @@ public class NewEntryActivity  extends AppCompatActivity {
         mSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //validations for scrolling view
+                //if(validation[0])
+                //    $name_layout.scroll
+
+
                 //For Name
                 EditText nameView=(EditText)findViewById(R.id.name_edit_text);
                 name=nameView.getText().toString();
@@ -712,27 +742,22 @@ public class NewEntryActivity  extends AppCompatActivity {
                         craving_time+=craving_chackbox9.getText().toString() + "";
                     }
 
-
-
-
-
                 }
-
 
                 String interest = "";
                 String future = "";
                 String key=mPatientDatabaseReference.push().getKey();
 
+                String message=MessageActivity.getMessage(age,sex,chewer.isChecked(),chew_freq,smoker.isChecked(),smoke_freq,med_history,m_status,habit_reason);
+
                 Entry patient=new Entry(name,age,sex,interest,med_history,contact,email,address,chewText,chew_days,chew_freq,chew_cost,smokeText,smoke_days,smoke_freq,smoke_cost,m_status,business,salary,formattedtime1,formattedDate1,morning_status,
-                        family_status,habit_reason,habbit,aware_status,aware_diseases,quit_status,quit_reason,quit_before_status,craving_time,key);
+                        family_status,habit_reason,habbit,aware_status,aware_diseases,quit_status,quit_reason,quit_before_status,craving_time,key,message);
 
                 mPatientDatabaseReference.push().setValue(patient);
                 Toast.makeText(getBaseContext(), "Welcome"+name, Toast.LENGTH_SHORT).show();
 
                 Intent i=new Intent(NewEntryActivity.this,MainActivity.class);
                 startActivity(i);
-
-
             }
         });
 

@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         this.setTheme(R.style.AppThemeNoBar);
         super.onCreate(savedInstanceState);
-        
+
         setContentView(R.layout.activity_main); //changed due to navbar;
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
