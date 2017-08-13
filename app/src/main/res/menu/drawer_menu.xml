@@ -26,4 +26,14 @@
                 android:title="Send" />
         </menu>
     </item>
+    <item android:title="Analysis">
+        <menu>
+            <item
+                android:id="@+id/basisOfAge"
+                android:title="Age" />
+            <item
+                android:id="@+id/basisOfNoOfCigarette"
+                android:title="No Of Cigarettes" />
+        </menu>
+    </item>
 </menu>

@@ -41,6 +41,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
@@ -85,10 +86,10 @@ public class MainActivity extends AppCompatActivity
         //******************FIREBASE BEGINS HERE********************
         
         empty=true;
-        setContentView(R.layout.activity_main);
+        //setContentView(R.layout.activity_main);
         spinner=(ProgressBar) findViewById(R.id.spinner);
-        final View emptyView=findViewById(R.id.empty_view);
-        emptyView.setVisibility(View.INVISIBLE);
+        //final View emptyView=findViewById(R.id.empty_view);
+        //emptyView.setVisibility(View.INVISIBLE);
 
         //firebase reference
         mFirebaseDatabase=FirebaseDatabase.getInstance();
@@ -180,12 +181,13 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.sign_out_menu:
                 AuthUI.getInstance().signOut(this);
                 Intent i = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(i);
-                return  true;
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
 
@@ -194,6 +196,18 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        return false;
+        switch (item.getItemId()){
+            case R.id.basisOfAge:
+                Intent intent = new Intent(MainActivity.this, Analytics.class);
+                Bundle args = new Bundle();
+                args.putParcelableArrayList("ARRAYLIST", patientList);
+                intent.putExtras(args);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
     }
+
 }

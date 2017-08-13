@@ -37,7 +37,11 @@
             android:name=".UpdateActivity"
             android:parentActivityName=".MainActivity">
         </activity>
+        <activity
+            android:name=".Analytics"
+            android:parentActivityName=".MainActivity">
 
+        </activity>
     </application>
 
 </manifest>
