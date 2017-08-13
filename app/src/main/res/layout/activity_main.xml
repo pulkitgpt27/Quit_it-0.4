@@ -25,12 +25,5 @@
         app:headerLayout="@layout/nav_header_layout"
         app:menu="@menu/drawer_menu" />
 
-    <ProgressBar
-        android:layout_width="wrap_content"
-        style="@style/Widget.AppCompat.ProgressBar"
-        android:layout_height="wrap_content"
-        android:id="@+id/spinner"
-        android:layout_centerInParent="true"
-        android:layout_gravity="center"/>
 
 </android.support.v4.widget.DrawerLayout>

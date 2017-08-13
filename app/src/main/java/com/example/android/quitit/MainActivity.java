@@ -149,7 +149,6 @@ public class MainActivity extends AppCompatActivity
                 if(!patientList.isEmpty())
                 {
                     spinner.setVisibility(View.GONE);
-                    empty=false;
                 }
                 mPatientAdapter=new EntriesListAdapter(MainActivity.this,R.layout.list_item,patientList);
                 mPatientListView.setAdapter(mPatientAdapter);
