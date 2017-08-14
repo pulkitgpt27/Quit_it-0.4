@@ -7,8 +7,8 @@ package com.example.android.quitit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ValidateEntry {
-
+public class ValidateEntry
+{
 
     public static boolean validateEmpty(String entity)
     {
@@ -42,7 +42,7 @@ public class ValidateEntry {
             return false;
 
         int age = Integer.parseInt(ageValue);
-        if(age>120)
+        if(age>120 || age < 15)
             return false;
         else
             return true;
@@ -62,6 +62,17 @@ public class ValidateEntry {
     public static boolean validateInteger(String value) //to check if value is purely integer
     {
         if(value.matches("[a-zA-Z]"))
+            return false;
+
+        return true;
+    }
+
+    public static boolean validateTime(String ageValue, String consumingTime)
+    {
+        int time = Integer.parseInt(consumingTime);
+        int age = Integer.parseInt(ageValue);
+        age+=10;
+        if(time>=age)
             return false;
 
         return true;
