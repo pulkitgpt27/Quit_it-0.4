@@ -27,6 +27,24 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import com.google.firebase.storage.FirebaseStorage;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.Toast;
+
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
@@ -62,6 +80,7 @@ public class MainActivity extends AppCompatActivity
         //******************FIREBASE BEGINS HERE*******************
         empty=true;
         spinner=(ProgressBar) findViewById(R.id.spinner);
+
 
         //firebase reference
 
@@ -121,12 +140,13 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.sign_out_menu:
                 AuthUI.getInstance().signOut(this);
                 Intent i = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(i);
-                return  true;
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
 
@@ -135,7 +155,18 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        return false;
+        switch (item.getItemId()){
+            case R.id.basisOfAge:
+                Intent intent = new Intent(MainActivity.this, Analytics.class);
+                Bundle args = new Bundle();
+                args.putParcelableArrayList("ARRAYLIST", patientList);
+                intent.putExtras(args);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
     }
 
     public void firebaseDataFetch()
@@ -171,4 +202,5 @@ public class MainActivity extends AppCompatActivity
 
         mPatientDatabaseReference.addChildEventListener(mChildEventListener);
     }
+
 }
