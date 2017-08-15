@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,5 +48,12 @@ public class EntriesListAdapter extends ArrayAdapter<Entry>{
         timeTextView.setText(current.getTime());
 
         return convertView;
+    }
+
+    public void setFilter(ArrayList<Entry> newList)
+    {
+        this.clear();
+        this.addAll(newList);
+        notifyDataSetChanged();
     }
 }
