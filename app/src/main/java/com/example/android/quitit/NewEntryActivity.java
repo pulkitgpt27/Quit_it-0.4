@@ -478,7 +478,7 @@ public class NewEntryActivity  extends AppCompatActivity {
 
                     //For smoking frequency(in a day)
                     EditText smoke_frequencyView = (EditText) findViewById(R.id.often_smoking_edit_text);
-                    chew_freq = Integer.parseInt(smoke_frequencyView.getText().toString());
+                    smoke_freq = Integer.parseInt(smoke_frequencyView.getText().toString());
 
                     //For avg cost of each smoking thing
                     EditText smoke_costView = (EditText) findViewById(R.id.cost_smoking_edit_text);
