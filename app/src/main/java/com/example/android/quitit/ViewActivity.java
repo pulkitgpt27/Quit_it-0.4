@@ -4,6 +4,7 @@ package com.example.android.quitit;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.webkit.ClientCertRequest;
 import android.widget.Button;
 import android.widget.TextView;
@@ -148,6 +149,7 @@ public class ViewActivity extends AppCompatActivity {
         final TextView craving_text_view = (TextView) findViewById(R.id.craving_text_view);
         craving_text_view.setText(ClickedEntry.getCraving_time());
 
+        Log.e("error",""+ClickedEntry.getSmokeHistory());
         int smokeYears = ClickedEntry.getSmokeHistory()/365;
         int smokeMonths = (ClickedEntry.getSmokeHistory()%365)/30;
 

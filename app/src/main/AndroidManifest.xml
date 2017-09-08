@@ -19,31 +19,39 @@
 
 
         <activity
-            android:name=".MainActivity">
+            android:name=".MainActivity"
+            android:label="Records"
+            android:parentActivityName=".MainActivity">
+
 
         </activity>
 
         <activity
             android:name=".NewEntryActivity"
+            android:label="New Entry"
             android:parentActivityName=".MainActivity">
 
         </activity>
         <activity
             android:name=".ReportActivity"
+            android:label="Report"
             android:parentActivityName=".MainActivity">
         </activity>
 
         <activity
             android:name=".ViewActivity"
+            android:label="View"
             android:parentActivityName=".ReportActivity">
         </activity>
 
         <activity
             android:name=".UpdateActivity"
+            android:label="Update"
             android:parentActivityName=".MainActivity">
         </activity>
         <activity
-            android:name=".Analytics"
+            android:name=".AnalyticsMPChart"
+            android:label="Analytics"
             android:parentActivityName=".MainActivity">
 
         </activity>

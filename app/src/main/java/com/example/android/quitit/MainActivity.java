@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.basisOfAge:
-                Intent intent = new Intent(MainActivity.this, Analytics.class);
+                Intent intent = new Intent(MainActivity.this, AnalyticsMPChart.class);
                 Bundle args = new Bundle();
                 args.putParcelableArrayList("ARRAYLIST", patientList);
                 intent.putExtras(args);
