@@ -185,10 +185,19 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
-            case R.id.basisOfAge:
-                Intent intent = new Intent(MainActivity.this, AnalyticsMPChart.class);
+            case R.id.basisOfSmoking:
+                Intent intent = new Intent(MainActivity.this, AnalyticsMPChartSmoking.class);
                 Bundle args = new Bundle();
                 args.putParcelableArrayList("ARRAYLIST", patientList);
+                args.putString("ChartType","Smoking");
+                intent.putExtras(args);
+                startActivity(intent);
+                return true;
+            case R.id.basisOfChewing:
+                intent = new Intent(MainActivity.this, AnalyticsMPChartChewing.class);
+                args = new Bundle();
+                args.putParcelableArrayList("ARRAYLIST", patientList);
+                args.putString("ChartType","Chewing");
                 intent.putExtras(args);
                 startActivity(intent);
                 return true;

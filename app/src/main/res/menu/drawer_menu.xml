@@ -29,11 +29,11 @@
     <item android:title="Analysis">
         <menu>
             <item
-                android:id="@+id/basisOfAge"
-                android:title="Age" />
+                android:id="@+id/basisOfSmoking"
+                android:title="Smoking" />
             <item
-                android:id="@+id/basisOfNoOfCigarette"
-                android:title="No Of Cigarettes" />
+                android:id="@+id/basisOfChewing"
+                android:title="Chewing" />
         </menu>
     </item>
 </menu>

@@ -24,8 +24,8 @@
         <item>item7</item>
         <item>item8</item>
     </string-array>
-    <string name ="email">Email Address</string>
-    <string name ="contact_number">Contact number</string>
+    <string name="email">Email Address</string>
+    <string name="contact_number">Contact number</string>
 
     <string name="name">Name :</string>
     <string name="sex">Sex :</string>
@@ -36,7 +36,7 @@
     <string name="marital_status">Marital Status :</string>
     <string name="fractionSpent">Fraction of salary spent :</string>
     <string name="future_prompt">Choose One :</string>
-    <string name= "address">Address :</string>
+    <string name="address">Address :</string>
 
 
     <string name="chewing_history">Chewing History</string>

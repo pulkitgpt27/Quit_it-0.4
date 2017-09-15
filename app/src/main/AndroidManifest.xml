@@ -8,54 +8,40 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppThemeNoBar">
-        <activity
-            android:name=".LoginActivity">
+        <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
         <activity
             android:name=".MainActivity"
             android:label="Records"
-            android:parentActivityName=".MainActivity">
-
-
-        </activity>
-
+            android:parentActivityName=".MainActivity"></activity>
         <activity
             android:name=".NewEntryActivity"
             android:label="New Entry"
-            android:parentActivityName=".MainActivity">
-
-        </activity>
+            android:parentActivityName=".MainActivity"></activity>
         <activity
             android:name=".ReportActivity"
             android:label="Report"
-            android:parentActivityName=".MainActivity">
-        </activity>
-
+            android:parentActivityName=".MainActivity"></activity>
         <activity
             android:name=".ViewActivity"
             android:label="View"
-            android:parentActivityName=".ReportActivity">
-        </activity>
-
+            android:parentActivityName=".ReportActivity"></activity>
         <activity
             android:name=".UpdateActivity"
             android:label="Update"
-            android:parentActivityName=".MainActivity">
-        </activity>
+            android:parentActivityName=".MainActivity"></activity>
         <activity
-            android:name=".AnalyticsMPChart"
-            android:label="Analytics"
-            android:parentActivityName=".MainActivity">
-
-        </activity>
-
+            android:name=".AnalyticsMPChartSmoking"
+            android:label="Smoking Analytics"
+            android:parentActivityName=".MainActivity"></activity>
+        <activity android:name=".AnalyticsMPChartChewing"
+            android:label="Chewing Analytics"
+            android:parentActivityName=".MainActivity"></activity>
     </application>
 
 </manifest>
