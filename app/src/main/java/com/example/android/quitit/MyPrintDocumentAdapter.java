@@ -131,7 +131,7 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
         Paint paint = new Paint();
         paint.setColor(Color.GRAY);
         paint.setTextSize(20);
-        canvas.drawRect(35,30,600,80,paint);
+        canvas.drawRect(35,30,550,80,paint);
         paint.setColor(Color.BLACK);
         canvas.drawText("REPORT",265,60,paint);
         paint.setTextSize(30);
