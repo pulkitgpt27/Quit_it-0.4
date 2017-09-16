@@ -71,8 +71,8 @@ public class AnalyticsMPChartChewing extends AppCompatActivity {
         final BarDataSet smokingSet = new BarDataSet(barEntries, "Percent people");
         final BarDataSet menSmokingSet = new BarDataSet(menEntries, "Percent of men");
         final BarDataSet womenSmokingSet = new BarDataSet(womenEntries, "Percent of women");
-        menSmokingSet.setColor(Color.RED);
-        womenSmokingSet.setColor(Color.BLUE);
+        menSmokingSet.setColor(Color.GREEN);
+        womenSmokingSet.setColor(Color.MAGENTA);
         chewingBarGraph.getDescription().setEnabled(false);
         chewingData = new BarData(smokingSet);
         final BarData combinedSmokingData = new BarData(menSmokingSet,womenSmokingSet);
@@ -148,12 +148,15 @@ public class AnalyticsMPChartChewing extends AppCompatActivity {
     }
 
     private void addEntry(){
-        int years,years1,years2,menCount = 0,womenCount = 0;
+        int years,years1,years2,menCount = 0,womenCount = 0,count = 0;
         float menPercent,womenPercent;
         for(int i = 0;i<patientList.size();i++){
-            years = (patientList.get(i).getChew_history())/365;
-            //Log.e("error","" + years);
-            ageArray[patientList.get(i).getAge() - years]++;
+            if(patientList.get(i).getChew_freq()!=0) {
+                count++;
+                years = (patientList.get(i).getChew_history()) / 365;
+                //Log.e("error","" + years);
+                ageArray[patientList.get(i).getAge() - years]++;
+            }
 
             //years2 = (patientList.get(i).getChew_history())/365;
             //chewingArray[patientList.get(i).getAge() - years2]++;
@@ -177,10 +180,10 @@ public class AnalyticsMPChartChewing extends AppCompatActivity {
             //points[i] = new DataPoint(i,(ageArray[i]/(double)patientList.size()) * 100);
             //points2[i] = new DataPoint(i,(chewingArray[i]/(double)patientList.size()) * 100);
             if(ageArray[i]!=0)
-                barEntries.add(new BarEntry(i,(ageArray[i]/(float)patientList.size()) * 100));
+                barEntries.add(new BarEntry(i,(ageArray[i]/(float)count) * 100));
             if(menAgeArray[i]!=0 || womenAgeArray[i]!=0) {
-                menEntries.add(new BarEntry(i, (menAgeArray[i] / (float) patientList.size()) * 100));
-                womenEntries.add(new BarEntry(i, (womenAgeArray[i] / (float) patientList.size()) * 100));
+                menEntries.add(new BarEntry(i, (menAgeArray[i] / (float) count) * 100));
+                womenEntries.add(new BarEntry(i, (womenAgeArray[i] / (float) count) * 100));
             }
             smokingXAxis.add(String.valueOf(i));
         }
