@@ -35,13 +35,14 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
     public int totalpages = 1;
     String name,sex,bussiness,marrital_status,spent;
     int age,consumption;
+    String personal_msg;
     /*public MyPrintDocumentAdapter(Context context) {
         this.context = context;
         //Bundle B = this.getIntent().getExtras();
         //Entry ClickedEntry = B.getParcelable("ClickedEntry");
     }*/
 
-    public MyPrintDocumentAdapter(Context context, String name, String sex, int age, String bussiness, String marrital_status, int consumption, String spent) {
+    public MyPrintDocumentAdapter(Context context, String name, String sex, int age, String bussiness, String marrital_status, int consumption, String spent,String msg) {
         this.context = context;
         this.name = name;
         this.sex = sex;
@@ -50,6 +51,8 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
         this.marrital_status = marrital_status;
         this.consumption = consumption;
         this.spent = spent;
+        this.personal_msg = msg;
+
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -171,6 +174,11 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
                 50,
                 310,
                 paint);
+        canvas.drawText(
+                "Harms:" ,
+                50,
+                340,
+                paint);
         /*paint.setTextSize(14);
         canvas.drawText("This is some test content to verify that custom document printing works", leftMargin, titleBaseLine + 35, paint);*/
 
@@ -179,6 +187,17 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
         else
             paint.setColor(Color.GREEN);
         */
+        int y=370;
+        String lines[] = personal_msg.split("\\r?\\n");
+        for(int i=0; i<lines.length; i++)
+        {
+            canvas.drawText(
+                    lines[i],
+                    50,
+                    y,
+                    paint);
+            y+=30;
+        }
 
         PdfDocument.PageInfo pageInfo = page.getInfo();
 
