@@ -119,8 +119,7 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
 
-    private void drawPage(PdfDocument.Page page,
-                          int pagenumber) {
+    private void drawPage(PdfDocument.Page page, int pagenumber) {
         Canvas canvas = page.getCanvas();
 
         pagenumber++; // Make sure page numbers start at 1

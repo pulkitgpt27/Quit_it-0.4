@@ -78,8 +78,8 @@ public class AnalyticsMPChartSmoking extends AppCompatActivity {
         final BarDataSet smokingSet = new BarDataSet(barEntries, "Percent people");
         final BarDataSet menSmokingSet = new BarDataSet(menEntries, "Percent of men");
         final BarDataSet womenSmokingSet = new BarDataSet(womenEntries, "Percent of women");
-        menSmokingSet.setColor(Color.GREEN);
-        womenSmokingSet.setColor(Color.MAGENTA);
+        menSmokingSet.setColor(Color.parseColor("#03A9F4"));
+        womenSmokingSet.setColor(Color.parseColor("#0D47A1"));
         smokingBarGraph.getDescription().setEnabled(false);
         smokingData = new BarData(smokingSet);
         final BarData combinedSmokingData = new BarData(menSmokingSet,womenSmokingSet);
@@ -196,8 +196,13 @@ public class AnalyticsMPChartSmoking extends AppCompatActivity {
             if(ageArray[i]!=0)
                 barEntries.add(new BarEntry(i,(ageArray[i]/(float)count) * 100));
             if(menAgeArray[i]!=0 || womenAgeArray[i]!=0) {
-                menEntries.add(new BarEntry(i, (menAgeArray[i] / (float) count) * 100));
-                womenEntries.add(new BarEntry(i, (womenAgeArray[i] / (float) count) * 100));
+                float menDivision = (menAgeArray[i] / (float) count) * 100;
+                float womenDivision = (womenAgeArray[i] / (float) count) * 100;
+                if(menDivision == womenDivision){
+                    menDivision = menDivision * 2;
+                }
+                menEntries.add(new BarEntry(i, menDivision));
+                womenEntries.add(new BarEntry(i, womenDivision));
             }
             smokingXAxis.add(String.valueOf(i));
         }
