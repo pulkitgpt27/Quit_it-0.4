@@ -17,7 +17,8 @@ import java.util.Arrays;
  * Created by Pulkit on 07-08-2017.
  */
 
-public class LoginActivity extends AppCompatActivity {
+public class
+LoginActivity extends AppCompatActivity {
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private String mUsername;
