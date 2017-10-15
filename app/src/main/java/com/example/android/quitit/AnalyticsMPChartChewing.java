@@ -71,8 +71,8 @@ public class AnalyticsMPChartChewing extends AppCompatActivity {
         final BarDataSet smokingSet = new BarDataSet(barEntries, "Percent people");
         final BarDataSet menSmokingSet = new BarDataSet(menEntries, "Percent of men");
         final BarDataSet womenSmokingSet = new BarDataSet(womenEntries, "Percent of women");
-        menSmokingSet.setColor(Color.GREEN);
-        womenSmokingSet.setColor(Color.MAGENTA);
+        menSmokingSet.setColor(Color.parseColor("#03A9F4"));
+        womenSmokingSet.setColor(Color.parseColor("#0D47A1"));
         chewingBarGraph.getDescription().setEnabled(false);
         chewingData = new BarData(smokingSet);
         final BarData combinedSmokingData = new BarData(menSmokingSet,womenSmokingSet);

@@ -5,6 +5,7 @@ package com.example.android.quitit;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.print.PrintManager;
@@ -77,11 +78,31 @@ public class ReportActivity extends AppCompatActivity {
         disp=Float.toString(percent)+"%";
         TextView fSpenView=(TextView) findViewById(R.id.fractionSpentView);
         fSpenView.setText(disp);
+
+        TextView personal_message =(TextView) findViewById(R.id.personalisedMessage);
+        personal_message.setText(ClickedEntry.getMessage());
+
+
         Button printButton = (Button) findViewById(R.id.print_report_button);
         printButton.setOnClickListener(new Button.OnClickListener() {
                                            @Override
                                            public void onClick(View v) {
                                                printDocument(v);
+                                           }
+                                       }
+        );
+        Button sendButton = (Button) findViewById(R.id.send_msg_button);
+        sendButton.setOnClickListener(new Button.OnClickListener() {
+                                           @Override
+                                           public void onClick(View v) {
+                                               Intent intent=new Intent(Intent.ACTION_SENDTO);
+                                               intent.setData(Uri.parse("mailto:"));
+                                               intent.putExtra(Intent.EXTRA_EMAIL  , new String[]{ClickedEntry.getEmail()});
+                                               intent.putExtra(Intent.EXTRA_TEXT,ClickedEntry.getMessage());
+                                               intent.putExtra(Intent.EXTRA_SUBJECT,"Harms of tobacco");
+                                               if(intent.resolveActivity(getPackageManager())!=null){
+                                                   startActivity(intent);
+                                               }
                                            }
                                        }
         );
@@ -96,7 +117,7 @@ public class ReportActivity extends AppCompatActivity {
                 " Document";
 
         printManager.print(jobName, new
-                        MyPrintDocumentAdapter(this,ClickedEntry.getName(),ClickedEntry.getSex(),ClickedEntry.getAge(),ClickedEntry.getBusiness(),ClickedEntry.getMarry_status(),ClickedEntry.getSmoke_freq(),disp),
+                        MyPrintDocumentAdapter(this,ClickedEntry.getName(),ClickedEntry.getSex(),ClickedEntry.getAge(),ClickedEntry.getBusiness(),ClickedEntry.getMarry_status(),ClickedEntry.getSmoke_freq(),disp,ClickedEntry.getMessage()),
                 null);
 
     }
