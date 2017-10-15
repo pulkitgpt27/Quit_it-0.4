@@ -14,9 +14,9 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DatabaseError;
@@ -99,7 +99,7 @@ public class NewEntryActivity  extends AppCompatActivity {
 
         //**************VALIDATIONS**************
         //************ALL START WITH SYMBOL $************
-        validation = new boolean[7];
+        validation = new boolean[5];
 
         final EditText $name = (EditText) findViewById(R.id.name_edit_text);
         final EditText $phone = (EditText) findViewById(R.id.contact_edit_text);
@@ -227,12 +227,12 @@ public class NewEntryActivity  extends AppCompatActivity {
                         $salary_layout.setError("Salary amount is invalid");
                         $salary_layout.getBackground().setAlpha(51);
                         $salary_layout.setErrorEnabled(true);
-                        validation[5] = false;
+                        validation[4] = false;
                     }
                     else {
                         $salary_layout.getBackground().setAlpha(0);
                         $salary_layout.setErrorEnabled(false);
-                        validation[5] = true;
+                        validation[4] = true;
                     }
                 }
             }
@@ -342,7 +342,6 @@ public class NewEntryActivity  extends AppCompatActivity {
 
                 if(!isChecked)
                 {
-
                     morning_consumer.setVisibility(GONE);
                     family_consumes.setVisibility(GONE);
                     started_how.setVisibility(GONE);
@@ -371,6 +370,134 @@ public class NewEntryActivity  extends AppCompatActivity {
             }
         });
 
+        //for fill more switch
+
+        //how did start consuming
+        final CheckBox res1=(CheckBox) findViewById(R.id.habit_started_with_friends);
+        final CheckBox res2=(CheckBox) findViewById(R.id.habit_started_for_hunger);
+        final CheckBox res3=(CheckBox) findViewById(R.id.habbit_started_social_issues);
+        final CheckBox res4=(CheckBox) findViewById(R.id.habit_started_other);
+        //Anyone in Family consume tobacco
+        final RadioGroup rg3 = (RadioGroup)findViewById(R.id.family_consumes_RG);
+        //Morning consumer
+        final RadioGroup rg2 = (RadioGroup)findViewById(R.id.within_30_mins);
+
+        //For other Habbits
+        final CheckBox hab1_checkbox=(CheckBox) findViewById(R.id.drugs_habit);
+        final CheckBox hab2_checkbox=(CheckBox) findViewById(R.id.alchohol_habit);
+
+        //Aware or not
+        final RadioGroup rg4 = (RadioGroup)findViewById(R.id.aware_radio_group);
+
+        final RadioButton yes_aware = (RadioButton) findViewById(R.id.yes_aware);
+        //Which diseases
+        final CheckBox disease_checkbox1=(CheckBox) findViewById(R.id.disease_aware_1);
+        final CheckBox disease_checkbox2=(CheckBox) findViewById(R.id.disease_aware_2);
+        final CheckBox disease_checkbox3=(CheckBox) findViewById(R.id.disease_aware_3);
+        final CheckBox disease_checkbox4=(CheckBox) findViewById(R.id.disease_aware_4);
+        final CheckBox disease_checkbox5=(CheckBox) findViewById(R.id.disease_aware_5);
+        final CheckBox disease_checkbox6=(CheckBox) findViewById(R.id.disease_aware_6);
+        final CheckBox disease_checkbox7=(CheckBox) findViewById(R.id.disease_aware_7);
+        final CheckBox disease_checkbox8=(CheckBox) findViewById(R.id.disease_aware_8);
+        final CheckBox disease_checkbox9=(CheckBox) findViewById(R.id.disease_aware_9);
+        final CheckBox disease_checkbox10=(CheckBox) findViewById(R.id.disease_aware_10);
+
+        disease_checkbox1.setVisibility(View.GONE);
+        disease_checkbox2.setVisibility(View.GONE);
+        disease_checkbox3.setVisibility(View.GONE);
+        disease_checkbox4.setVisibility(View.GONE);
+        disease_checkbox5.setVisibility(View.GONE);
+        disease_checkbox6.setVisibility(View.GONE);
+        disease_checkbox7.setVisibility(View.GONE);
+        disease_checkbox8.setVisibility(View.GONE);
+        disease_checkbox9.setVisibility(View.GONE);
+        disease_checkbox10.setVisibility(View.GONE);
+
+        yes_aware.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(!isChecked)
+                {
+                    disease_checkbox1.setVisibility(View.GONE);
+                    disease_checkbox2.setVisibility(View.GONE);
+                    disease_checkbox3.setVisibility(View.GONE);
+                    disease_checkbox4.setVisibility(View.GONE);
+                    disease_checkbox5.setVisibility(View.GONE);
+                    disease_checkbox6.setVisibility(View.GONE);
+                    disease_checkbox7.setVisibility(View.GONE);
+                    disease_checkbox8.setVisibility(View.GONE);
+                    disease_checkbox9.setVisibility(View.GONE);
+                    disease_checkbox10.setVisibility(View.GONE);
+                }
+                else
+                {
+                    disease_checkbox1.setVisibility(View.VISIBLE);
+                    disease_checkbox2.setVisibility(View.VISIBLE);
+                    disease_checkbox3.setVisibility(View.VISIBLE);
+                    disease_checkbox4.setVisibility(View.VISIBLE);
+                    disease_checkbox5.setVisibility(View.VISIBLE);
+                    disease_checkbox6.setVisibility(View.VISIBLE);
+                    disease_checkbox7.setVisibility(View.VISIBLE);
+                    disease_checkbox8.setVisibility(View.VISIBLE);
+                    disease_checkbox9.setVisibility(View.VISIBLE);
+                    disease_checkbox10.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+
+        //Want to quit yes or no
+        final RadioGroup rg5 = (RadioGroup)findViewById(R.id.quit_radiogroup);
+
+        final RadioButton yes_quitting = (RadioButton) findViewById(R.id.yes_quitting);
+
+        //Why Quit
+        final CheckBox reason_quit_checkbox1=(CheckBox) findViewById(R.id.quitting_1);
+        final CheckBox reason_quit_checkbox2=(CheckBox) findViewById(R.id.quitting_2);
+        final CheckBox reason_quit_checkbox3=(CheckBox) findViewById(R.id.quitting_3);
+        final CheckBox reason_quit_checkbox4=(CheckBox) findViewById(R.id.quitting_4);
+
+        reason_quit_checkbox1.setVisibility(View.GONE);
+        reason_quit_checkbox2.setVisibility(View.GONE);
+        reason_quit_checkbox3.setVisibility(View.GONE);
+        reason_quit_checkbox4.setVisibility(View.GONE);
+
+        yes_quitting.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(!isChecked)
+                {
+                    reason_quit_checkbox1.setVisibility(View.GONE);
+                    reason_quit_checkbox2.setVisibility(View.GONE);
+                    reason_quit_checkbox3.setVisibility(View.GONE);
+                    reason_quit_checkbox4.setVisibility(View.GONE);
+                }
+                else
+                {
+                    reason_quit_checkbox1.setVisibility(View.VISIBLE);
+                    reason_quit_checkbox2.setVisibility(View.VISIBLE);
+                    reason_quit_checkbox3.setVisibility(View.VISIBLE);
+                    reason_quit_checkbox4.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+
+        //Tried Quiting Before
+        final RadioGroup rg6 = (RadioGroup)findViewById(R.id.quit_before_radiogroup);
+
+        //Craving timings
+        final CheckBox craving_checkbox1=(CheckBox) findViewById(R.id.craving_1);
+        final CheckBox craving_checkbox2=(CheckBox) findViewById(R.id.craving_2);
+        final CheckBox craving_checkbox3=(CheckBox) findViewById(R.id.craving_3);
+        final CheckBox craving_checkbox4=(CheckBox) findViewById(R.id.craving_4);
+        final CheckBox craving_checkbox5=(CheckBox) findViewById(R.id.craving_5);
+        final CheckBox craving_checkbox6=(CheckBox) findViewById(R.id.craving_6);
+        final CheckBox craving_checkbox7=(CheckBox) findViewById(R.id.craving_7);
+        final CheckBox craving_checkbox8=(CheckBox) findViewById(R.id.craving_8);
+        final CheckBox craving_checkbox9=(CheckBox) findViewById(R.id.craving_9);
+
+        final ScrollView parent_scroll_view = (ScrollView) findViewById(R.id.parent_scroll);
 
         mSaveButton=(Button) findViewById(R.id.save);
 
@@ -378,420 +505,263 @@ public class NewEntryActivity  extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //validations for scrolling view
-                //if(validation[0])
-                //    $name_layout.scroll
-
-
-                //For Name
-                EditText nameView=(EditText)findViewById(R.id.name_edit_text);
-                name=nameView.getText().toString();
-
-                //For Age
-                EditText ageView=(EditText)findViewById(R.id.age_edit_text);
-                age= parseInt(ageView.getText().toString());
-
-
-                //For Sex
-                RadioGroup rg = (RadioGroup)findViewById(R.id.sex_group);
-                sex = ((RadioButton)findViewById(rg.getCheckedRadioButtonId())).getText().toString();
-
-
-
-                //For Contact No
-                EditText contactView=(EditText)findViewById(R.id.contact_edit_text);
-                contact= (contactView.getText().toString());
-
-                //For email
-                email=$email.getText().toString();
-
-
-                //For address
-
-                EditText addressView=(EditText)findViewById(R.id.address_edit_text);
-                address= (addressView.getText().toString());
-
-                //For Med History
-                med_history="";
-                CheckBox med1=(CheckBox) findViewById(R.id.disease_1);
-                CheckBox med2=(CheckBox) findViewById(R.id.disease_2);
-                CheckBox med3=(CheckBox) findViewById(R.id.disease_3);
-                CheckBox med4=(CheckBox) findViewById(R.id.disease_4);
-                CheckBox med5=(CheckBox) findViewById(R.id.disease_5);
-                if(med1.isChecked())
-                {
-                    med_history+=med1.getText().toString()+" ";
+                if(!validation[0]){
+                    parent_scroll_view.smoothScrollTo(0,$name_layout.getTop());
                 }
-                if(med2.isChecked())
-                {
-                    med_history+=med2.getText().toString()+" ";
+                else if(!validation[1]){
+                    parent_scroll_view.smoothScrollTo(0,$age_layout.getTop());
                 }
-                if(med3.isChecked())
-                {
-                    med_history+=med3.getText().toString()+" ";
+                else if(!validation[3]){
+                    parent_scroll_view.smoothScrollTo(0,$phone_layout.getTop());
                 }
-                if(med4.isChecked())
-                {
-                    med_history+=med4.getText().toString()+" ";
+                else if(!validation[2]){
+                    parent_scroll_view.smoothScrollTo(0,$email_layout.getTop());
                 }
-                if(med5.isChecked())
-                {
-                    med_history+=med5.getText().toString()+" ";
+                else if(!validation[4]){
+                    parent_scroll_view.smoothScrollTo(0,$salary_layout.getTop());
                 }
+                else {
+                    EditText nameView = (EditText) findViewById(R.id.name_edit_text);
+                    name = nameView.getText().toString();
+                    //For Age
+                    EditText ageView = (EditText) findViewById(R.id.age_edit_text);
+                    age = parseInt(ageView.getText().toString());
+                    //For Sex
+                    RadioGroup rg = (RadioGroup) findViewById(R.id.sex_group);
+                    sex = ((RadioButton) findViewById(rg.getCheckedRadioButtonId())).getText().toString();
+                    //For Contact No
+                    EditText contactView = (EditText) findViewById(R.id.contact_edit_text);
+                    contact = (contactView.getText().toString());
+                    //For email
+                    email = $email.getText().toString();
+                    //For address
+                    EditText addressView = (EditText) findViewById(R.id.address_edit_text);
+                    address = (addressView.getText().toString());
+
+                    //For Med History
+                    med_history = "";
+                    CheckBox med1 = (CheckBox) findViewById(R.id.disease_1);
+                    CheckBox med2 = (CheckBox) findViewById(R.id.disease_2);
+                    CheckBox med3 = (CheckBox) findViewById(R.id.disease_3);
+                    CheckBox med4 = (CheckBox) findViewById(R.id.disease_4);
+                    CheckBox med5 = (CheckBox) findViewById(R.id.disease_5);
+                    if (med1.isChecked()) {
+                        med_history += med1.getText().toString() + " ";
+                    }
+                    if (med2.isChecked()) {
+                        med_history += med2.getText().toString() + " ";
+                    }
+                    if (med3.isChecked()) {
+                        med_history += med3.getText().toString() + " ";
+                    }
+                    if (med4.isChecked()) {
+                        med_history += med4.getText().toString() + " ";
+                    }
+                    if (med5.isChecked()) {
+                        med_history += med5.getText().toString() + " ";
+                    }
 
 
-                if(chewer.isChecked()) {
+                    if (chewer.isChecked()) {
 
-                    //For chiewer text
-                    chewText = chewer.getText().toString();
+                        //For chiewer text
+                        chewText = chewer.getText().toString();
 
-                    //For chewing history
-                    EditText chew_yearView = (EditText) findViewById(R.id.years_chewing_edit_text);
-                    int chew_years = Integer.parseInt(chew_yearView.getText().toString());
+                        //For chewing history
+                        EditText chew_yearView = (EditText) findViewById(R.id.years_chewing_edit_text);
+                        int chew_years = Integer.parseInt(chew_yearView.getText().toString());
 
-                    EditText chew_monthView = (EditText) findViewById(R.id.months_chewing_edit_text);
-                    int chew_months = Integer.parseInt(chew_monthView.getText().toString());
+                        EditText chew_monthView = (EditText) findViewById(R.id.months_chewing_edit_text);
+                        int chew_months = Integer.parseInt(chew_monthView.getText().toString());
 
-                    chew_days = (chew_years * 365) + (chew_months * 30);
+                        chew_days = (chew_years * 365) + (chew_months * 30);
 
-                    //For chewing frequency(in a day)
-                    EditText chew_frequencyView = (EditText) findViewById(R.id.often_chewing_edit_text);
-                    chew_freq = Integer.parseInt(chew_frequencyView.getText().toString());
+                        //For chewing frequency(in a day)
+                        EditText chew_frequencyView = (EditText) findViewById(R.id.often_chewing_edit_text);
+                        chew_freq = Integer.parseInt(chew_frequencyView.getText().toString());
 
-                    //For avg cost of each chewing thing
-                    EditText chew_costView = (EditText) findViewById(R.id.cost_chewing_edit_text);
-                    chew_cost = Float.parseFloat(chew_costView.getText().toString());
-                }
+                        //For avg cost of each chewing thing
+                        EditText chew_costView = (EditText) findViewById(R.id.cost_chewing_edit_text);
+                        chew_cost = Float.parseFloat(chew_costView.getText().toString());
+                    }
 
-                if(smoker.isChecked()){
+                    if (smoker.isChecked()) {
 
-                    //For chiewer text
-                    smokeText = smoker.getText().toString();
+                        //For chiewer text
+                        smokeText = smoker.getText().toString();
 
-                    //For smoking history
-                    EditText smoke_yearView = (EditText) findViewById(R.id.smoking_years_edit_text);
-                    int smoke_years = Integer.parseInt(smoke_yearView.getText().toString());
+                        //For smoking history
+                        EditText smoke_yearView = (EditText) findViewById(R.id.smoking_years_edit_text);
+                        int smoke_years = Integer.parseInt(smoke_yearView.getText().toString());
 
-                    EditText smoke_monthView = (EditText) findViewById(R.id.smoking_months_edit_text);
-                    int smoke_months = Integer.parseInt(smoke_monthView.getText().toString());
+                        EditText smoke_monthView = (EditText) findViewById(R.id.smoking_months_edit_text);
+                        int smoke_months = Integer.parseInt(smoke_monthView.getText().toString());
 
-                    smoke_days = (smoke_years * 365) + (smoke_months * 30);
+                        smoke_days = (smoke_years * 365) + (smoke_months * 30);
 
-                    //For smoking frequency(in a day)
-                    EditText smoke_frequencyView = (EditText) findViewById(R.id.often_smoking_edit_text);
-                    smoke_freq = Integer.parseInt(smoke_frequencyView.getText().toString());
+                        //For smoking frequency(in a day)
+                        EditText smoke_frequencyView = (EditText) findViewById(R.id.often_smoking_edit_text);
+                        smoke_freq = Integer.parseInt(smoke_frequencyView.getText().toString());
 
-                    //For avg cost of each smoking thing
-                    EditText smoke_costView = (EditText) findViewById(R.id.cost_smoking_edit_text);
-                    smoke_cost = Float.parseFloat(smoke_costView.getText().toString());
-                }
-
-
-                //For marital status m=marriage
-                RadioGroup rg1 = (RadioGroup)findViewById(R.id.m_status_group);
-                m_status = ((RadioButton)findViewById(rg1.getCheckedRadioButtonId())).getText().toString();
-
-                //For Future Plans
-                //Spinner futurespinner = (Spinner)findViewById(R.id.future_spinner);
-                //String future = futurespinner.getSelectedItem().toString();
-
-                //For Business
-                EditText businessView=(EditText)findViewById(R.id.business_edit_text);
-                business= (businessView.getText().toString());
-
-                //For Salary
-                EditText salaryView=(EditText)findViewById(R.id.salary_edit_text);
-                salary= Integer.parseInt(salaryView.getText().toString());
-
-                //For Current time
-                Calendar c = Calendar.getInstance();
-                SimpleDateFormat df = new SimpleDateFormat("hh:mm a");
-                //SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
-                final String formattedtime1 = df.format(c.getTime());
-
-                //For current date
-                SimpleDateFormat df1 = new SimpleDateFormat("dd-MMM-yyyy");
-                final String formattedDate1 = df1.format(c.getTime());
-
-                //For id
-               // DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-                //Query lastQuery = databaseReference.child("patient").orderByKey().limitToLast(1);
-                //lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                  /*  @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        //For avg cost of each smoking thing
+                        EditText smoke_costView = (EditText) findViewById(R.id.cost_smoking_edit_text);
+                        smoke_cost = Float.parseFloat(smoke_costView.getText().toString());
+                    }
 
 
+                    //For marital status m=marriage
+                    RadioGroup rg1 = (RadioGroup) findViewById(R.id.m_status_group);
+                    m_status = ((RadioButton) findViewById(rg1.getCheckedRadioButtonId())).getText().toString();
 
-                        if(dataSnapshot==null)
-                        {
-                            id=1;
+                    //For Business
+                    EditText businessView = (EditText) findViewById(R.id.business_edit_text);
+                    business = (businessView.getText().toString());
+
+                    //For Salary
+                    EditText salaryView = (EditText) findViewById(R.id.salary_edit_text);
+                    salary = Integer.parseInt(salaryView.getText().toString());
+
+                    //For Current time
+                    Calendar c = Calendar.getInstance();
+                    SimpleDateFormat df = new SimpleDateFormat("hh:mm a");
+                    //SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                    final String formattedtime1 = df.format(c.getTime());
+
+                    //For current date
+                    SimpleDateFormat df1 = new SimpleDateFormat("dd-MMM-yyyy");
+                    final String formattedDate1 = df1.format(c.getTime());
+
+                    //For fill more
+                    if (S.isChecked()) {
+                        morning_status = ((RadioButton) findViewById(rg2.getCheckedRadioButtonId())).getText().toString();
+                        family_status = ((RadioButton) findViewById(rg3.getCheckedRadioButtonId())).getText().toString();
+                        if (res1.isChecked()) {
+                            habit_reason += res1.getText().toString() + " ";
                         }
-                        else
-                        {
-                            id = (dataSnapshot!=null)? (int) dataSnapshot.child("id").getValue() :1;
-                            id++;
+                        if (res2.isChecked()) {
+                            habit_reason += res2.getText().toString() + " ";
+                        }
+                        if (res3.isChecked()) {
+                            habit_reason += res3.getText().toString() + " ";
+                        }
+                        if (res4.isChecked()) {
+                            habit_reason += res4.getText().toString() + " ";
+                        }
+                        if (hab1_checkbox.isChecked()) {
+                            habbit += hab1_checkbox.getText().toString() + " ";
+                        }
+                        if (hab2_checkbox.isChecked()) {
+                            habbit += hab2_checkbox.getText().toString() + " ";
+                        }
+                        aware_status = ((RadioButton) findViewById(rg4.getCheckedRadioButtonId())).getText().toString();
+                        if (disease_checkbox1.isChecked()) {
+                            aware_diseases += disease_checkbox1.getText().toString() + "";
+                        }
+
+                        if (disease_checkbox2.isChecked()) {
+                            aware_diseases += disease_checkbox2.getText().toString() + "";
+                        }
+                        if (disease_checkbox3.isChecked()) {
+                            aware_diseases += disease_checkbox3.getText().toString() + "";
+                        }
+                        if (disease_checkbox4.isChecked()) {
+                            aware_diseases += disease_checkbox4.getText().toString() + "";
+                        }
+                        if (disease_checkbox5.isChecked()) {
+                            aware_diseases += disease_checkbox5.getText().toString() + "";
+                        }
+                        if (disease_checkbox6.isChecked()) {
+                            aware_diseases += disease_checkbox6.getText().toString() + "";
+                        }
+                        if (disease_checkbox7.isChecked()) {
+                            aware_diseases += disease_checkbox7.getText().toString() + "";
+                        }
+                        if (disease_checkbox8.isChecked()) {
+                            aware_diseases += disease_checkbox8.getText().toString() + "";
+                        }
+                        if (disease_checkbox9.isChecked()) {
+                            aware_diseases += disease_checkbox9.getText().toString() + "";
+                        }
+                        if (disease_checkbox10.isChecked()) {
+                            aware_diseases += disease_checkbox10.getText().toString() + "";
+                        }
+                        quit_status = ((RadioButton) findViewById(rg5.getCheckedRadioButtonId())).getText().toString();
+
+                        if (reason_quit_checkbox1.isChecked()) {
+                            quit_reason += reason_quit_checkbox1.getText().toString() + "";
+                        }
+                        if (reason_quit_checkbox2.isChecked()) {
+                            quit_reason += reason_quit_checkbox2.getText().toString() + "";
+                        }
+                        if (reason_quit_checkbox2.isChecked()) {
+                            quit_reason += reason_quit_checkbox2.getText().toString() + "";
+                        }
+                        if (reason_quit_checkbox3.isChecked()) {
+                            quit_reason += reason_quit_checkbox3.getText().toString() + "";
+                        }
+                        if (reason_quit_checkbox4.isChecked()) {
+                            quit_reason += reason_quit_checkbox4.getText().toString() + "";
+                        }
+                        quit_before_status = ((RadioButton) findViewById(rg5.getCheckedRadioButtonId())).getText().toString();
+                        if (craving_checkbox1.isChecked()) {
+                            craving_time += craving_checkbox1.getText().toString() + "";
+                        }
+                        if (craving_checkbox2.isChecked()) {
+                            craving_time += craving_checkbox2.getText().toString() + "";
+                        }
+                        if (craving_checkbox3.isChecked()) {
+                            craving_time += craving_checkbox3.getText().toString() + "";
+                        }
+                        if (craving_checkbox4.isChecked()) {
+                            craving_time += craving_checkbox4.getText().toString() + "";
+                        }
+                        if (craving_checkbox5.isChecked()) {
+                            craving_time += craving_checkbox5.getText().toString() + "";
+                        }
+                        if (craving_checkbox6.isChecked()) {
+                            craving_time += craving_checkbox6.getText().toString() + "";
+                        }
+                        if (craving_checkbox7.isChecked()) {
+                            craving_time += craving_checkbox7.getText().toString() + "";
+                        }
+                        if (craving_checkbox8.isChecked()) {
+                            craving_time += craving_checkbox8.getText().toString() + "";
+                        }
+                        if (craving_checkbox9.isChecked()) {
+                            craving_time += craving_checkbox9.getText().toString() + "";
                         }
                     }
+                    final String interest = "";
+                    String future = "";
 
+                    message = MessageActivity.getMessage(age, sex, chewer.isChecked(), chew_freq, smoker.isChecked(), smoke_freq, med_history, m_status, habit_reason);
+                    mPatientDatabaseReference = FirebaseMethods.getFirebaseReference("patient");
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    //Handle possible errors.
-                }
-            });*/
+                    final String[] uniqueKey = {""};
+                    String key = "";
 
-            //For fill more
-                if(S.isChecked())
-                {
-                    //Morning consumer
-                    RadioGroup rg2 = (RadioGroup)findViewById(R.id.within_30_mins);
-                    morning_status = ((RadioButton)findViewById(rg2.getCheckedRadioButtonId())).getText().toString();
+                    mPatientDatabaseReference
+                            .push()
+                            .setValue(null, new DatabaseReference.CompletionListener() {
+                                @Override
+                                public void onComplete(DatabaseError databaseError,
+                                                       DatabaseReference databaseReference) {
+                                    uniqueKey[0] = databaseReference.getKey();
 
-                    //Anyone in Family consume tobacco
-                    RadioGroup rg3 = (RadioGroup)findViewById(R.id.family_consumes_RG);
-                    family_status = ((RadioButton)findViewById(rg3.getCheckedRadioButtonId())).getText().toString();
-
-                    //how did start consuming
-
-                    CheckBox res1=(CheckBox) findViewById(R.id.habit_started_with_friends);
-                    CheckBox res2=(CheckBox) findViewById(R.id.habit_started_for_hunger);
-                    CheckBox res3=(CheckBox) findViewById(R.id.habbit_started_social_issues);
-                    CheckBox res4=(CheckBox) findViewById(R.id.habit_started_other);
-
-                    if(res1.isChecked())
-                    {
-                        habit_reason+=res1.getText().toString()+" ";
-                    }
-                    if(res2.isChecked())
-                    {
-                        habit_reason+=res2.getText().toString()+" ";
-                    }
-                    if(res3.isChecked())
-                    {
-                        habit_reason+=res3.getText().toString()+" ";
-                    }
-                    if(res4.isChecked())
-                    {
-                        habit_reason+=res4.getText().toString()+" ";
-                    }
-
-                    //For other Habbits
-                    CheckBox hab1_checkbox=(CheckBox) findViewById(R.id.drugs_habit);
-                    CheckBox hab2_checkbox=(CheckBox) findViewById(R.id.alchohol_habit);
-                    if(hab1_checkbox.isChecked())
-                    {
-                        habbit+=hab1_checkbox.getText().toString()+" ";
-                    }
-                    if(hab2_checkbox.isChecked())
-                    {
-                        habbit+=hab2_checkbox.getText().toString()+" ";
-
-                    }
-                    //Aware or not
-                    RadioGroup rg4 = (RadioGroup)findViewById(R.id.aware_radio_group);
-                    aware_status = ((RadioButton)findViewById(rg4.getCheckedRadioButtonId())).getText().toString();
-
-                    //Which diseases
-                    CheckBox disease_checkbox1=(CheckBox) findViewById(R.id.disease_aware_1);
-                    CheckBox disease_checkbox2=(CheckBox) findViewById(R.id.disease_aware_2);
-                    CheckBox disease_checkbox3=(CheckBox) findViewById(R.id.disease_aware_3);
-                    CheckBox disease_checkbox4=(CheckBox) findViewById(R.id.disease_aware_4);
-                    CheckBox disease_checkbox5=(CheckBox) findViewById(R.id.disease_aware_5);
-                    CheckBox disease_checkbox6=(CheckBox) findViewById(R.id.disease_aware_6);
-                    CheckBox disease_checkbox7=(CheckBox) findViewById(R.id.disease_aware_7);
-                    CheckBox disease_checkbox8=(CheckBox) findViewById(R.id.disease_aware_8);
-                    CheckBox disease_checkbox9=(CheckBox) findViewById(R.id.disease_aware_9);
-                    CheckBox disease_checkbox10=(CheckBox) findViewById(R.id.disease_aware_10);
-                    if(disease_checkbox1.isChecked())
-                    {
-                        aware_diseases+=disease_checkbox1.getText().toString() + "";
-                    }
-
-                    if(disease_checkbox2.isChecked())
-                    {
-                        aware_diseases+=disease_checkbox2.getText().toString() + "";
-                    }
-
-                    if(disease_checkbox3.isChecked())
-                    {
-                        aware_diseases+=disease_checkbox3.getText().toString() + "";
-                    }
-
-                    if(disease_checkbox4.isChecked())
-                    {
-                        aware_diseases+=disease_checkbox4.getText().toString() + "";
-                    }
-
-                    if(disease_checkbox5.isChecked())
-                    {
-                        aware_diseases+=disease_checkbox5.getText().toString() + "";
-                    }
-
-                    if(disease_checkbox6.isChecked())
-                    {
-                        aware_diseases+=disease_checkbox6.getText().toString() + "";
-                    }
-
-                    if(disease_checkbox7.isChecked())
-                    {
-                        aware_diseases+=disease_checkbox7.getText().toString() + "";
-                    }
-
-                    if(disease_checkbox8.isChecked())
-                    {
-                        aware_diseases+=disease_checkbox8.getText().toString() + "";
-                    }
-
-                    if(disease_checkbox9.isChecked())
-                    {
-                        aware_diseases+=disease_checkbox9.getText().toString() + "";
-                    }
-
-                    if(disease_checkbox10.isChecked())
-                    {
-                        aware_diseases+=disease_checkbox10.getText().toString() + "";
-                    }
-
-                    //Want to quit yes or no
-                    RadioGroup rg5 = (RadioGroup)findViewById(R.id.quit_radiogroup);
-                    quit_status = ((RadioButton)findViewById(rg5.getCheckedRadioButtonId())).getText().toString();
-
-                    //Why Quit
-                    CheckBox reason_quit_checkbox1=(CheckBox) findViewById(R.id.quitting_1);
-                    CheckBox reason_quit_checkbox2=(CheckBox) findViewById(R.id.quitting_2);
-                    CheckBox reason_quit_checkbox3=(CheckBox) findViewById(R.id.quitting_3);
-                    CheckBox reason_quit_checkbox4=(CheckBox) findViewById(R.id.quitting_4);
-
-                    if(reason_quit_checkbox1.isChecked())
-                    {
-                        quit_reason+=reason_quit_checkbox1.getText().toString() + "";
-                    }
-
-                    if(reason_quit_checkbox2.isChecked())
-                    {
-                        quit_reason+=reason_quit_checkbox2.getText().toString() + "";
-                    }
-
-                    if(reason_quit_checkbox2.isChecked())
-                    {
-                        quit_reason+=reason_quit_checkbox2.getText().toString() + "";
-                    }
-
-                    if(reason_quit_checkbox3.isChecked())
-                    {
-                        quit_reason+=reason_quit_checkbox3.getText().toString() + "";
-                    }
-
-
-                    if(reason_quit_checkbox4.isChecked())
-                    {
-                        quit_reason+=reason_quit_checkbox4.getText().toString() + "";
-                    }
-
-                    //Tried Quiting Before
-                    RadioGroup rg6 = (RadioGroup)findViewById(R.id.quit_before_radiogroup);
-                    quit_before_status = ((RadioButton)findViewById(rg5.getCheckedRadioButtonId())).getText().toString();
-
-                    //Craving timings
-                    CheckBox craving_chackbox1=(CheckBox) findViewById(R.id.craving_1);
-                    CheckBox craving_chackbox2=(CheckBox) findViewById(R.id.craving_2);
-                    CheckBox craving_chackbox3=(CheckBox) findViewById(R.id.craving_3);
-                    CheckBox craving_chackbox4=(CheckBox) findViewById(R.id.craving_4);
-                    CheckBox craving_chackbox5=(CheckBox) findViewById(R.id.craving_5);
-                    CheckBox craving_chackbox6=(CheckBox) findViewById(R.id.craving_6);
-                    CheckBox craving_chackbox7=(CheckBox) findViewById(R.id.craving_7);
-                    CheckBox craving_chackbox8=(CheckBox) findViewById(R.id.craving_8);
-                    CheckBox craving_chackbox9=(CheckBox) findViewById(R.id.craving_9);
-
-                    if(craving_chackbox1.isChecked())
-                    {
-                        craving_time+=craving_chackbox1.getText().toString() + "";
-                    }
-
-                    if(craving_chackbox2.isChecked())
-                    {
-                        craving_time+=craving_chackbox2.getText().toString() + "";
-                    }
-
-                    if(craving_chackbox3.isChecked())
-                    {
-                        craving_time+=craving_chackbox3.getText().toString() + "";
-                    }
-
-                    if(craving_chackbox4.isChecked())
-                    {
-                        craving_time+=craving_chackbox4.getText().toString() + "";
-                    }
-
-                    if(craving_chackbox5.isChecked())
-                    {
-                        craving_time+=craving_chackbox5.getText().toString() + "";
-                    }
-
-                    if(craving_chackbox6.isChecked())
-                    {
-                        craving_time+=craving_chackbox6.getText().toString() + "";
-                    }
-
-                    if(craving_chackbox7.isChecked())
-                    {
-                        craving_time+=craving_chackbox7.getText().toString() + "";
-                    }
-
-                    if(craving_chackbox8.isChecked())
-                    {
-                        craving_time+=craving_chackbox8.getText().toString() + "";
-                    }
-
-                    if(craving_chackbox9.isChecked())
-                    {
-                        craving_time+=craving_chackbox9.getText().toString() + "";
-                    }
-
-                }
-
-                final String interest = "";
-                String future = "";
-
-                message=MessageActivity.getMessage(age,sex,chewer.isChecked(),chew_freq,smoker.isChecked(),smoke_freq,med_history,m_status,habit_reason);
-                
-
-                mPatientDatabaseReference=FirebaseMethods.getFirebaseReference("patient");
-
-                final String[] uniqueKey = {""};
-                String key="";
-
-
-                mPatientDatabaseReference
-                        .push()
-                        .setValue(null, new DatabaseReference.CompletionListener() {
-                            @Override
-                            public void onComplete(DatabaseError databaseError,
-                                                   DatabaseReference databaseReference) {
-                                uniqueKey[0] = databaseReference.getKey();
-
-                                DatabaseReference UpdatePatientDatabaseReference=FirebaseDatabase.getInstance().getReference().child("patient").child(uniqueKey[0]);
-                                try {
-
-                                    patient=new Entry(name,age,sex,interest,med_history,contact,email,address,chewText,chew_days,chew_freq,chew_cost,smokeText,smoke_days,smoke_freq,smoke_cost,m_status,business,salary,formattedtime1,formattedDate1,morning_status,
-                                            family_status,habit_reason,habbit,aware_status,aware_diseases,quit_status,quit_reason,quit_before_status,craving_time,uniqueKey[0],message);
-                                    UpdatePatientDatabaseReference.setValue(patient);
-
-                                }catch (Exception e){
-                                    e.printStackTrace();
+                                    DatabaseReference UpdatePatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("patient").child(uniqueKey[0]);
+                                    try {
+                                        patient = new Entry(name, age, sex, interest, med_history, contact, email, address, chewText, chew_days, chew_freq, chew_cost, smokeText, smoke_days, smoke_freq, smoke_cost, m_status, business, salary, formattedtime1, formattedDate1, morning_status,
+                                                family_status, habit_reason, habbit, aware_status, aware_diseases, quit_status, quit_reason, quit_before_status, craving_time, uniqueKey[0], message);
+                                        UpdatePatientDatabaseReference.setValue(patient);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    Log.e("Updated", "hello" + patient.getId());
                                 }
-
-                                Log.e("Updated", "hello"+patient.getId());
-
-
-                            }
-                        });
-
-
-
-                Toast.makeText(getBaseContext(), "Welcome"+name, Toast.LENGTH_SHORT).show();
-
-                Intent i=new Intent(NewEntryActivity.this,MainActivity.class);
-                startActivity(i);
+                            });
+                    Intent i = new Intent(NewEntryActivity.this, MainActivity.class);
+                    startActivity(i);
+                }
             }
         });
 

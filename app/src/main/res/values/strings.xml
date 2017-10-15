@@ -27,16 +27,16 @@
     <string name="email">Email Address</string>
     <string name="contact_number">Contact number</string>
 
-    <string name="name">Name :</string>
-    <string name="sex">Sex :</string>
-    <string name="businessEditTest">Profession :</string>
+    <string name="name">Name</string>
+    <string name="sex">Sex :q</string>
+    <string name="businessEditTest">Profession</string>
     <string name="rupees">In Rupees</string>
-    <string name="age">Age :</string>
-    <string name="bussiness">Profession :</string>
-    <string name="marital_status">Marital Status :</string>
+    <string name="age">Age</string>
+    <string name="bussiness">Profession</string>
+    <string name="marital_status">Marital Status: </string>
     <string name="fractionSpent">Fraction of salary spent :</string>
     <string name="future_prompt">Choose One :</string>
-    <string name="address">Address :</string>
+    <string name="address">Address</string>
 
 
     <string name="chewing_history">Chewing History</string>
