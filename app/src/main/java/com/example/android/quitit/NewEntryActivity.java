@@ -419,23 +419,23 @@ public class NewEntryActivity  extends AppCompatActivity {
                 CheckBox med5=(CheckBox) findViewById(R.id.disease_5);
                 if(med1.isChecked())
                 {
-                    med_history+=med1.getText().toString()+" ";
+                    med_history+=med1.getText().toString()+",";
                 }
                 if(med2.isChecked())
                 {
-                    med_history+=med2.getText().toString()+" ";
+                    med_history+=med2.getText().toString()+",";
                 }
                 if(med3.isChecked())
                 {
-                    med_history+=med3.getText().toString()+" ";
+                    med_history+=med3.getText().toString()+",";
                 }
                 if(med4.isChecked())
                 {
-                    med_history+=med4.getText().toString()+" ";
+                    med_history+=med4.getText().toString()+",";
                 }
                 if(med5.isChecked())
                 {
-                    med_history+=med5.getText().toString()+" ";
+                    med_history+=med5.getText().toString();
                 }
 
 

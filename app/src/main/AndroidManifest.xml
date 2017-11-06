@@ -18,30 +18,32 @@
         <activity
             android:name=".MainActivity"
             android:label="Records"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".NewEntryActivity"
             android:label="New Entry"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".ReportActivity"
             android:label="Report"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".ViewActivity"
             android:label="View"
-            android:parentActivityName=".ReportActivity"></activity>
+            android:parentActivityName=".ReportActivity" />
         <activity
             android:name=".UpdateActivity"
             android:label="Update"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".AnalyticsMPChartSmoking"
             android:label="Smoking Analytics"
-            android:parentActivityName=".MainActivity"></activity>
-        <activity android:name=".AnalyticsMPChartChewing"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".AnalyticsMPChartChewing"
             android:label="Chewing Analytics"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".MPChartExample"></activity>
     </application>
 
 </manifest>
