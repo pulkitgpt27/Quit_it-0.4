@@ -34,6 +34,9 @@
             <item
                 android:id="@+id/basisOfChewing"
                 android:title="Chewing" />
+            <item
+                android:id="@+id/Example"
+                android:title="Example" />
         </menu>
     </item>
 </menu>

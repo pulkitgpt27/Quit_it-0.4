@@ -37,19 +37,20 @@
 
             </com.github.mikephil.charting.charts.BarChart>
 
-            <android.support.v7.widget.SwitchCompat
-                android:id="@+id/genderSwitch"
-                android:layout_width="wrap_content"
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="200dp"
-                android:text="By Gender"/>
-
-            <android.support.v7.widget.SwitchCompat
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="180dp"
+                android:text="Analytics on starting age based on gender:"
+                android:textColor="@color/colorPrimary"
                 android:layout_marginTop="10dp"
-                android:text="By Residence"/>
+                android:layout_marginBottom="10dp"/>
+
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/smokingBarMaleFemaleGraph"
+                android:layout_width="match_parent"
+                android:layout_height="400dp">
+
+            </com.github.mikephil.charting.charts.BarChart>
 
             <com.github.mikephil.charting.charts.BarChart
                 android:id="@+id/combinedSmokingBarGraph"
@@ -73,8 +74,16 @@
                 android:layout_marginTop="30dp">
             </com.github.mikephil.charting.charts.PieChart>
 
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Analytics based on Medical History:"
+                android:textColor="@color/colorPrimary"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"/>
+
             <com.github.mikephil.charting.charts.PieChart
-                android:id="@+id/pieChart"
+                android:id="@+id/diseaseChart"
                 android:layout_width="match_parent"
                 android:layout_height="400dp"
                 android:layout_marginTop="30dp">
