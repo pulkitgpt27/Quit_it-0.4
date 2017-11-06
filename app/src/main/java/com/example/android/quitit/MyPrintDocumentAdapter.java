@@ -186,6 +186,7 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
         else
             paint.setColor(Color.GREEN);
         */
+        paint.setTextSize(16);
         int y=370;
         String lines[] = personal_msg.split("\\r?\\n");
         for(int i=0; i<lines.length; i++)

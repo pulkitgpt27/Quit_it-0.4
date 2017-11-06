@@ -6,104 +6,110 @@ package com.example.android.quitit;
 
 class MessageActivity {
 
-    public static String getMessage(int age, String sex,boolean isChewing, int chew_freq,boolean isSmoking, int smoke_freq,String med_history,String m_status,String habbit_reason) {
-        String message="Tobacco affect all your body parts from head to toe";
+    public static String getMessage(int age, String sex, boolean isChewing, int chew_freq, boolean isSmoking, int smoke_freq, String med_history, String m_status, String habbit_reason, String quit_status, String craving_time, String morning_status) {
+        String message="Tobacco affect all your body parts from head to toe general";
         String ageCategory=getAgeCategory(age);
-        if(ageCategory=="Middle" || ageCategory=="Old")
+
+        if(quit_status == "Yes")
         {
-            message+="\nIt shortens your life by 10 to 15 years\nYou are more prone to stomach ulcers";
+            message+="You are at the right place.We assure we will make you quit";
         }
 
-        if(ageCategory=="Youngster" && smoke_freq<5 && isSmoking)
+        if(smoke_freq<3 && isSmoking)
         {
-            message+="\nIts ill effects are there even if you smoke occasionaly";
+            message+="\nCongrats you are not addicted yet we can help you quit tobacco habbits";
         }
 
-        if(habbit_reason=="With Friends" && ageCategory=="Youngster")
+        if(smoke_freq>=3 && isSmoking)
         {
-            message+="\nYou may have started tobacco use casually ith friends but it soon becomes addiction";
+            message+="\nAre you addicted dont worry we will help you quit smoking";
         }
 
-        if(m_status=="Married")
+
+        if(chew_freq<3 && isChewing)
+        {
+            message+="\nCongrats you are not addicted yet we can help you quit tobacco habbits";
+        }
+
+        if(chew_freq>=3 && isChewing)
+        {
+            message+="\nAre you addicted dont worry we will help you quit smoking";
+        }
+
+        if(ageCategory.equals("Youngster"))
+        {
+            message += "\nIt may affect your face and also your stamina also ability to enjoy good food is affected";
+        }
+        if(ageCategory.equals("Middle"))
+        {
+            message += "\nIt may affect your family";
+        }
+        if(ageCategory.equals ("Old"))
+        {
+            message += "\nIt may shorten your life and of people around you\n";
+        }
+
+        if(habbit_reason.contains("With Friends"))
+        {
+            message+="\nYou may have started tobacco use casually with friends but it soon becomes addiction";
+        }
+
+        if(m_status.equals("Married"))
         {
             message+="\nYour smoking brings diseases not just for yourself, but also for your family, especially children and\n" +
-                    "others around you\nEven if you avoid smoking at home your kids are still at risk of asthama,allergies as its particle adhere\n" +
+                    "others around you.Even if you avoid smoking at home your kids are still at risk of asthama,allergies as its particle adhere\n" +
                     "to your clothes\n";
         }
-
         if(isChewing)
         {
-            message+="\nCigars, beedis and smokeless tobacco (panmasala, gutkha, khaini) are not any safer than cigarettes.\n" +
-                    "They contain nicotine and cancer causing chemicals just like cigarettes\nChewable tobacco causes loose gums and mouth problems\nWhen you spit gutkha ,Khaini,tobacco it increases risk of spread of TB\nSmokeless forms of tobacco are not less dangerous";
+            message+="\nChewable tobacco causes loose gums and mouth problems\nWhen you spit gutkha ,Khaini it increases risk of spread of TB\n";
         }
 
-        if(ageCategory=="Younster" && sex=="F")
+        if(ageCategory.equals("Younster") && sex.equals("Female"))
         {
             message+="\nYour smile and looks are affected as it causes stains on teeth and gums\nSmoking and gutkha causes bad odour making you less presentable in public talking and at work.";
         }
 
-        if(ageCategory=="Youngster")
-        {
-            message+="\nYour ability to enjoy sports is affected\nYour ability to taste good food is affected\nIt reduces your stamina";
-        }
-
         if(isSmoking)
         {
-            message+="\nHookah is not safe infact its more harmful then bidi or cigratte";
+            message+="\nSmoking is not safe it cause lung diseases and accumulation of tar in lungs";
         }
 
-        if(m_status== "Married" && sex=="M")
+        if((m_status.equals("Married") || m_status.equals("Soon to be married")) && sex.equals("Male"))
         {
             message+="\nContrary to the way it has been marketed it causes Sexual impotence in man";
         }
 
-        if(m_status== "Married" && sex=="F")
+
+        if((m_status.equals("Married") || m_status.equals("Soon to be married")) && sex.equals("Female"))
         {
             message+="\nTobacco is a cause of miscarriage and infertility in woman.";
         }
-
-        if((ageCategory=="Middle" ||ageCategory=="Old") && med_history!="")
-        {
-            message+="\nTobacco use causes lung cancer\nIt’s a cause for breathing problems";
-        }
-
         if(med_history.equals(R.string.disease_1) && (ageCategory=="Middle" || ageCategory=="Old"))
         {
             message+="\nSmoking increases your risk of diabetes and its complication(30-40%)";
         }
 
-        if(med_history.equals(R.string.disease_2) && (ageCategory=="Middle" || ageCategory=="Old"))
+        if((med_history.contains(String.valueOf(R.string.disease_2)) || med_history.equals(String.valueOf(R.string.disease_3)))  && (ageCategory.equals("Middle") || ageCategory.equals("Old")))
         {
-            message+="\nSmoking and chewing tobacco increases your risk of raised BP/Hypertension";
+            message+="\n It raises your blood pressure and heart rate, narrows your arteries and hardens their walls, and makes your blood more likely to clot\nIt stresses your heart and sets you up for a heart attack or stroke.";
         }
 
-        if(med_history.equals(R.string.disease_3) && (ageCategory=="Middle" || ageCategory=="Old"))
+        if(!craving_time.equals(""))
         {
-            message+="\nTobacco increases your chances of heart attack";
+            message+="\nIt's best that you think of something that you like or listen to music or keep talking to someone you love during your craving time";
         }
 
-        if(med_history.equals(R.string.disease_4) && (ageCategory=="Middle" || ageCategory=="Old"))
+        if(morning_status.equals("Yes"))
         {
-            message+="\nIt increases your blood cholesterol levels.";
+            message+="Your risk of developing lung and head and neck cancers is considerably higher than that of non-smokers";
         }
 
-        if(med_history!="" && ageCategory=="Youngster")
+        if(med_history.contains(String.valueOf(R.string.disease_2)) || med_history.contains(String.valueOf(R.string.disease_3)))
         {
-            message+="\nTobacco makes you prone to High blood pressure, high chances of a heart attack and stroke, smoker’s\n" +
-                    "cough and lung disease, diabetes and high levels of cholesterol";
+            message+="\nIf u leave smoking with in 20 minutes Your blood pressure and pulse rate is back to normal\nYour chances of heart attack start going down with in 8 hrs if you quit smoking and in 1 year it drops to 50%";
         }
 
-        if(age<=35 && sex=="F")
-        {
-         message+="\nBabies born to mothers who smoke are sicker and smoking causes 4000 new babies to die each\n" +
-                 "year in some countries.";
-        }
-
-        if(med_history.equals(R.string.disease_1) || med_history.equals(R.string.disease_2) || med_history.equals(R.string.disease_3))
-        {
-            message+="\nIf u leave smoking with in 20 minutes Your blood pressure and pulse rate is back to normal\nYour chances of heart attack start going down with in 8 hrs if you quit smoking and in 1 year it\n" +
-                    "drops to 50%";
-        }
         return message;
     }
 

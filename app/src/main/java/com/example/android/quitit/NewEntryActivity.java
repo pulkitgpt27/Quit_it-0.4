@@ -752,7 +752,7 @@ public class NewEntryActivity  extends AppCompatActivity {
                 final String interest = "";
                 String future = "";
 
-                message=MessageActivity.getMessage(age,sex,chewer.isChecked(),chew_freq,smoker.isChecked(),smoke_freq,med_history,m_status,habit_reason);
+                message=MessageActivity.getMessage(age,sex,chewer.isChecked(),chew_freq,smoker.isChecked(),smoke_freq,med_history,m_status,habit_reason,quit_status,craving_time,morning_status);
                 
 
                 mPatientDatabaseReference=FirebaseMethods.getFirebaseReference("patient");
