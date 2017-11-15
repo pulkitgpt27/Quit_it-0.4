@@ -47,12 +47,11 @@
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
+        android:src="@mipmap/ic_person_add_white"
         fab:elevation="4dp"
         fab:pressedTranslationZ="12dp"
         fab:backgroundTint="@color/colorAccent"
-        app:layout_anchor="@id/listView"
-        app:layout_anchorGravity="bottom|end|right"
+        android:layout_gravity="bottom|end|right"
         android:layout_marginRight="40dp"
         android:layout_marginBottom="40dp"
         />
