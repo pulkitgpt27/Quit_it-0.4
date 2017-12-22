@@ -30,6 +30,6 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="A product by $MUMBLE$ Inc." />
+        android:text="A product by ARP Procutions"/>
 
 </LinearLayout>

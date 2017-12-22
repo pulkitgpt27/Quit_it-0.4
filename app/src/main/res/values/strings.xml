@@ -27,27 +27,27 @@
     <string name="email">Email Address</string>
     <string name="contact_number">Contact number</string>
 
-    <string name="name">Name :</string>
+    <string name="name">Name</string>
     <string name="sex">Sex :</string>
     <string name="businessEditTest">Profession :</string>
     <string name="rupees">In Rupees</string>
-    <string name="age">Age :</string>
+    <string name="age">Age </string>
     <string name="bussiness">Profession :</string>
     <string name="marital_status">Marital Status :</string>
     <string name="fractionSpent">Fraction of salary spent :</string>
     <string name="future_prompt">Choose One :</string>
-    <string name="address">Address :</string>
+    <string name="address">Address</string>
 
 
     <string name="chewing_history">Chewing History</string>
     <string name="chewing_history_time">How long have you been chewing?</string>
     <string name="often_chewing_text_view">How many times do you chew in a day?</string>
-    <string name="cost_of_one_packet">What is the cost of one packet?</string>
+    <string name="cost_of_one_packet">Average cost of one packet</string>
     <string name="consumption_tumbakoo">Packets per day :</string>
     <string name="packets_one_day">Packets in one day</string>
 
     <string name="smoking_history">Smoking History</string>
-    <string name="consumption">Cigarettes consumed per day :</string>
+    <string name="consumption">Cigarettes consumed per day </string>
     <string name="cigarettes_one_day">Cigarettes Smoked in a Day</string>
     <string name="smoking_history_time">How long have you been smoking?</string>
     <string name="often_smoking_text_view">How many times do you smoke in a day?</string>
@@ -70,10 +70,9 @@
 
     <string name="view_all">View Details</string>
     <string name="profession">Profession</string>
-    <string name="monthly_salary">Monthly Salary:</string>
-    <string name="average_cost_of_each_ciggerate">Average cost of each ciggerate :</string>
+    <string name="monthly_salary">Monthly Salary</string>
+    <string name="average_cost_of_each_ciggerate">Average cost of each ciggerate </string>
     <string name="how_many_times_do_you_smoke_in_a_day">How many times do you smoke in a day?</string>
     <string name="search_hint">Patient\'s Name</string>
-
 
 </resources>

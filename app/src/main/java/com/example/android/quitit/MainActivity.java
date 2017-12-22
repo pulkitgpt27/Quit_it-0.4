@@ -201,10 +201,6 @@ public class MainActivity extends AppCompatActivity
                 intent.putExtras(args);
                 startActivity(intent);
                 return true;
-            case R.id.Example:
-                intent = new Intent(MainActivity.this,MPChartExample.class);
-                startActivity(intent);
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
