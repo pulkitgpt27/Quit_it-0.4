@@ -263,7 +263,7 @@ public class AnalyticsMPChartSmoking extends AppCompatActivity {
                 years = (patientList.get(i).getSmokeHistory()) / 365;
                 //Log.e("error","" + years);
                 ageArray[patientList.get(i).getAge() - years]++;
-                String[] diseaseList = patientList.get(i).getMed_history().split(" ");
+                String[] diseaseList = patientList.get(i).getMed_history().split(",");
                 for(int j = 0;j<diseaseList.length;j++){
                     if(diseaseList[j].equalsIgnoreCase("Diabetes"))
                         diabetesCount++;

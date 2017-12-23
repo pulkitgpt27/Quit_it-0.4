@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity
 
         //firebase reference
 
-        mPatientDatabaseReference=FirebaseMethods.getFirebaseReference("patient");
+        mPatientDatabaseReference=FirebaseMethods.getFirebaseReference("patients");
 
         //setting list view
         mPatientListView=(ListView) findViewById(R.id.listView);

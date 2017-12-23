@@ -3,6 +3,7 @@ package com.example.android.quitit;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +21,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -380,23 +383,19 @@ public class NewEntryActivity  extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //validations for scrolling view
-                if(!validation[0]) {
+                if (!validation[0]) {
                     $new_entry_scroll_view.smoothScrollTo(0, $name_layout.getTop());
-                    Toast.makeText($new_entry_context,"Not Saved. Error in Name", Toast.LENGTH_LONG).show();
-                }
-                else if(!validation[1]) {
+                    Toast.makeText($new_entry_context, "Not Saved. Error in Name", Toast.LENGTH_LONG).show();
+                } else if (!validation[1]) {
                     $new_entry_scroll_view.smoothScrollTo(0, $age_layout.getTop());
-                    Toast.makeText($new_entry_context,"Not Saved. Error in Age", Toast.LENGTH_LONG).show();
-                }
-                else if(!validation[3]){
+                    Toast.makeText($new_entry_context, "Not Saved. Error in Age", Toast.LENGTH_LONG).show();
+                } else if (!validation[3]) {
                     $new_entry_scroll_view.smoothScrollTo(0, $phone_layout.getTop());
-                    Toast.makeText($new_entry_context,"Not Saved. Error in Phone Number", Toast.LENGTH_LONG).show();
-                }
-                else if(!validation[4]){
+                    Toast.makeText($new_entry_context, "Not Saved. Error in Phone Number", Toast.LENGTH_LONG).show();
+                } else if (!validation[4]) {
                     $new_entry_scroll_view.smoothScrollTo(0, $salary_layout.getTop());
-                    Toast.makeText($new_entry_context,"Not Saved. Error in Salary", Toast.LENGTH_LONG).show();
-                }
-                else {
+                    Toast.makeText($new_entry_context, "Not Saved. Error in Salary", Toast.LENGTH_LONG).show();
+                } else {
                     //For Name
                     EditText nameView = (EditText) findViewById(R.id.name_edit_text);
                     name = nameView.getText().toString();
@@ -746,10 +745,24 @@ public class NewEntryActivity  extends AppCompatActivity {
 
                                     DatabaseReference UpdatePatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("patient").child(uniqueKey[0]);
                                     try {
-
                                         patient = new Entry(name, age, sex, interest, med_history, contact, email, address, chewText, chew_days, chew_freq, chew_cost, smokeText, smoke_days, smoke_freq, smoke_cost, m_status, business, salary, formattedtime1, formattedDate1, morning_status,
                                                 family_status, habit_reason, habbit, aware_status, aware_diseases, quit_status, quit_reason, quit_before_status, craving_time, uniqueKey[0], message);
                                         UpdatePatientDatabaseReference.setValue(patient);
+                                        Toast.makeText(getBaseContext(), "Welcome" + name, Toast.LENGTH_SHORT).show();
+                                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                        if (user != null) {
+                                            Intent i = new Intent(NewEntryActivity.this, MainActivity.class);
+                                            startActivity(i);
+                                            finish();
+                                        } else {
+                                            Intent intent = new Intent(NewEntryActivity.this, ReportActivity.class);
+                                            Entry temp = patient;
+                                            Bundle B = new Bundle();
+                                            B.putParcelable("ClickedEntry", (Parcelable) temp);
+                                            intent.putExtras(B);
+                                            startActivity(intent);
+                                            finish();
+                                        }
 
                                     } catch (Exception e) {
                                         e.printStackTrace();
@@ -758,12 +771,8 @@ public class NewEntryActivity  extends AppCompatActivity {
                                 }
                             });
 
-
-                    Intent i = new Intent(NewEntryActivity.this, MainActivity.class);
-                    startActivity(i);
                 }
             }
         });
-
     }
 }

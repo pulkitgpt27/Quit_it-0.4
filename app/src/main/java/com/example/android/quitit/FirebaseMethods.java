@@ -24,7 +24,7 @@ public class FirebaseMethods {
     public static DatabaseReference getFirebaseReference(String fchild)
     {
         FirebaseDatabase mFirebaseDatabase=FirebaseDatabase.getInstance();
-        DatabaseReference childref=mFirebaseDatabase.getReference().child(fchild);
+        DatabaseReference childref=mFirebaseDatabase.getReference().child("doctors").child("doctor1").child(fchild);
         return childref;
 
     }

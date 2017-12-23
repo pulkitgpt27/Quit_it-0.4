@@ -44,6 +44,7 @@ public class ReportActivity extends AppCompatActivity {
         ClickedEntry = B.getParcelable("ClickedEntry");
 
         //patient name
+
         TextView Name = (TextView) findViewById(R.id.nameView);
         Name.setText(ClickedEntry.getName());
 
