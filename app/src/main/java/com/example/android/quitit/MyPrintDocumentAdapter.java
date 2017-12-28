@@ -15,12 +15,10 @@ import android.print.PrintAttributes;
 import android.print.PrintDocumentAdapter;
 import android.print.PrintDocumentInfo;
 import android.print.pdf.PrintedPdfDocument;
-import android.support.annotation.RequiresApi;
-import android.support.annotation.RequiresPermission;
-import android.view.View;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Created by kakrya on 7/11/2017.
@@ -32,10 +30,12 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
     private int pageHeight;
     private int pageWidth;
     public PdfDocument myPdfDocument;
-    public int totalpages = 1;
+    public int totalpages = 2;
     String name,sex,bussiness,marrital_status,spent;
     int age,consumption;
     String personal_msg;
+    ArrayList<String> personal_message_fragments;
+    int line_count;
     /*public MyPrintDocumentAdapter(Context context) {
         this.context = context;
         //Bundle B = this.getIntent().getExtras();
@@ -53,6 +53,26 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
         this.spent = spent;
         this.personal_msg = msg;
 
+        /*  split the personal_msg into words.
+            concatenate them into a line od page. till the character count reaches 60.
+        * */
+        String words[] = personal_msg.split(" ");
+        personal_message_fragments = new ArrayList<String>();
+        String temp_line = words[0];
+        for(int i=1; i<words.length; i++){
+            if(temp_line.length() + words[i].length() < 60) {
+                temp_line = temp_line + " " + words[i];
+                if(i+1==words.length){
+                    //last word.
+                    personal_message_fragments.add(temp_line);
+                }
+            }
+            else{
+                i--;
+                personal_message_fragments.add(temp_line);
+                temp_line = "";
+            }
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -87,13 +107,11 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
     @Override
     public void onWrite(PageRange[] pages, ParcelFileDescriptor destination, CancellationSignal cancellationSignal, WriteResultCallback callback) {
         for (int i = 0; i < totalpages; i++) {
-            if (pageInRange(pages, i))
+            if(pageInRange(pages, i))
             {
-                PdfDocument.PageInfo newPage = new PdfDocument.PageInfo.Builder(pageWidth,
-                        pageHeight, i).create();
+                PdfDocument.PageInfo newPage = new PdfDocument.PageInfo.Builder(pageWidth, pageHeight, i).create();
 
-                PdfDocument.Page page =
-                        myPdfDocument.startPage(newPage);
+                PdfDocument.Page page = myPdfDocument.startPage(newPage);
 
                 if (cancellationSignal.isCanceled()) {
                     callback.onWriteCancelled();
@@ -101,11 +119,13 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
                     myPdfDocument = null;
                     return;
                 }
-                drawPage(page, i);
+                if(i==0)
+                    line_count = drawPage(page, i, 0);
+                else
+                    line_count = drawPage(page, i, line_count);
                 myPdfDocument.finishPage(page);
             }
         }
-
         try {
             myPdfDocument.writeTo(new FileOutputStream(
                     destination.getFileDescriptor()));
@@ -116,96 +136,110 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
             myPdfDocument.close();
             myPdfDocument = null;
         }
-
         callback.onWriteFinished(pages);
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
 
-    private void drawPage(PdfDocument.Page page, int pagenumber) {
+    private int drawPage(PdfDocument.Page page, int pagenumber, int msg_line_count) {
         Canvas canvas = page.getCanvas();
-
+        int y_max = canvas.getHeight();
         pagenumber++; // Make sure page numbers start at 1
 
         /*int titleBaseLine = 72;
         int leftMargin = 54;*/
 
         Paint paint = new Paint();
-        paint.setColor(Color.GRAY);
-        paint.setTextSize(20);
-        canvas.drawRect(35,30,550,80,paint);
+        paint.setTextSize(18);
         paint.setColor(Color.BLACK);
-        canvas.drawText("REPORT",265,60,paint);
-        paint.setTextSize(30);
-        canvas.drawText(
-                name,
-                50,
-                130,
-                paint);
-        paint.setTextSize(20);
-        canvas.drawText(
-                sex,
-                50,
-                160,
-                paint);
-        canvas.drawText(
-                String.valueOf(age),
-                100,
-                160,
-                paint);
-        canvas.drawText(
-                "Bussiness: " + bussiness,
-                50,
-                220,
-                paint);
-        canvas.drawText(
-                "Marrital Status: " + marrital_status,
-                50,
-                250,
-                paint);
-        canvas.drawText(
-                "Cigarettes consumed per day: " + consumption,
-                50,
-                280,
-                paint);
-        canvas.drawText(
-                "Fraction of salary spent: " + spent,
-                50,
-                310,
-                paint);
-        canvas.drawText(
-                "Harms:" ,
-                50,
-                340,
-                paint);
-        /*paint.setTextSize(14);
-        canvas.drawText("This is some test content to verify that custom document printing works", leftMargin, titleBaseLine + 35, paint);*/
-
-        /*if (pagenumber % 2 == 0)
-            paint.setColor(Color.RED);
-        else
-            paint.setColor(Color.GREEN);
-        */
-        paint.setTextSize(16);
-        int y=370;
-        String lines[] = personal_msg.split("\\r?\\n");
-        for(int i=0; i<lines.length; i++)
-        {
+        int printed_lines = 0;
+        int y;
+        if(msg_line_count == 0){
+            y = 370;
+        }
+        else{
+            y = 50;
+        }
+        if(msg_line_count == 0) {
+            paint.setColor(Color.GRAY);
+            canvas.drawRect(35, 30, 550, 80, paint);
+            paint.setColor(Color.BLACK);
+            canvas.drawText("REPORT", 265, 60, paint);
+            paint.setTextSize(30);
             canvas.drawText(
-                    lines[i],
+                    name,
                     50,
-                    y,
+                    130,
                     paint);
-            y+=30;
+            paint.setTextSize(18);
+            canvas.drawText(
+                    sex,
+                    50,
+                    160,
+                    paint);
+            canvas.drawText(
+                    String.valueOf(age),
+                    150,
+                    160,
+                    paint);
+            canvas.drawText(
+                    "Bussiness: " + bussiness,
+                    50,
+                    220,
+                    paint);
+            canvas.drawText(
+                    "Marrital Status: " + marrital_status,
+                    50,
+                    250,
+                    paint);
+            canvas.drawText(
+                    "Cigarettes consumed per day: " + consumption,
+                    50,
+                    280,
+                    paint);
+            canvas.drawText(
+                    "Fraction of salary spent: " + spent,
+                    50,
+                    310,
+                    paint);
+            canvas.drawText(
+                    "Harms:",
+                    50,
+                    340,
+                    paint);
+        }
+
+        for(String personal_message_fragment : personal_message_fragments)
+        {
+            if(msg_line_count == 0){ //msg hasn;t yet started
+                canvas.drawText(
+                        personal_message_fragment,
+                        50,
+                        y,
+                        paint);
+                printed_lines++;
+                y+=30;
+                if(y >= y_max)
+                    return printed_lines;
+
+            }
+            else{
+                printed_lines++;
+                if(printed_lines > msg_line_count){
+                    canvas.drawText(
+                            personal_message_fragment,
+                            50,
+                            y,
+                            paint);
+                    y+=30;
+                    if(y >= y_max)
+                        return printed_lines;
+                }
+            }
         }
 
         PdfDocument.PageInfo pageInfo = page.getInfo();
-
-
-        /*canvas.drawCircle(pageInfo.getPageWidth()/2,
-                pageInfo.getPageHeight()/2,
-                150,
-                paint);*/
+        return printed_lines;
     }
     private boolean pageInRange(PageRange[] pageRanges, int page)
     {

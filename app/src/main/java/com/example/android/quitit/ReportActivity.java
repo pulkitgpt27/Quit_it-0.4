@@ -117,10 +117,10 @@ public class ReportActivity extends AppCompatActivity {
         String jobName = this.getString(R.string.app_name) +
                 " Document";
 
-        printManager.print(jobName, new
-                        MyPrintDocumentAdapter(this,ClickedEntry.getName(),ClickedEntry.getSex(),ClickedEntry.getAge(),ClickedEntry.getBusiness(),ClickedEntry.getMarry_status(),ClickedEntry.getSmoke_freq(),disp,ClickedEntry.getMessage()),
-                null);
-
+        printManager.print(jobName, new MyPrintDocumentAdapter(this,ClickedEntry.getName(),
+                ClickedEntry.getSex(),ClickedEntry.getAge(),ClickedEntry.getBusiness(),
+                ClickedEntry.getMarry_status(),ClickedEntry.getSmoke_freq(),disp,
+                ClickedEntry.getMessage()), null);
     }
 
     @Override

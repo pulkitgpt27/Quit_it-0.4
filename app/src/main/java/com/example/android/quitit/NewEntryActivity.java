@@ -383,19 +383,20 @@ public class NewEntryActivity  extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //validations for scrolling view
-                if (!validation[0]) {
-                    $new_entry_scroll_view.smoothScrollTo(0, $name_layout.getTop());
-                    Toast.makeText($new_entry_context, "Not Saved. Error in Name", Toast.LENGTH_LONG).show();
-                } else if (!validation[1]) {
-                    $new_entry_scroll_view.smoothScrollTo(0, $age_layout.getTop());
-                    Toast.makeText($new_entry_context, "Not Saved. Error in Age", Toast.LENGTH_LONG).show();
-                } else if (!validation[3]) {
-                    $new_entry_scroll_view.smoothScrollTo(0, $phone_layout.getTop());
-                    Toast.makeText($new_entry_context, "Not Saved. Error in Phone Number", Toast.LENGTH_LONG).show();
-                } else if (!validation[4]) {
-                    $new_entry_scroll_view.smoothScrollTo(0, $salary_layout.getTop());
-                    Toast.makeText($new_entry_context, "Not Saved. Error in Salary", Toast.LENGTH_LONG).show();
-                } else {
+//                if (!validation[0]) {
+//                    $new_entry_scroll_view.smoothScrollTo(0, $name_layout.getTop());
+//                    Toast.makeText($new_entry_context, "Not Saved. Error in Name", Toast.LENGTH_LONG).show();
+//                } else if (!validation[1]) {
+//                    $new_entry_scroll_view.smoothScrollTo(0, $age_layout.getTop());
+//                    Toast.makeText($new_entry_context, "Not Saved. Error in Age", Toast.LENGTH_LONG).show();
+//                } else if (!validation[3]) {
+//                    $new_entry_scroll_view.smoothScrollTo(0, $phone_layout.getTop());
+//                    Toast.makeText($new_entry_context, "Not Saved. Error in Phone Number", Toast.LENGTH_LONG).show();
+//                } else if (!validation[4]) {
+//                    $new_entry_scroll_view.smoothScrollTo(0, $salary_layout.getTop());
+//                    Toast.makeText($new_entry_context, "Not Saved. Error in Salary", Toast.LENGTH_LONG).show();
+//                }
+                if(true){
                     //For Name
                     EditText nameView = (EditText) findViewById(R.id.name_edit_text);
                     name = nameView.getText().toString();
@@ -726,7 +727,7 @@ public class NewEntryActivity  extends AppCompatActivity {
                     final String interest = "";
                     String future = "";
 
-                    message = MessageActivity.getMessage(age, sex, chewer.isChecked(), chew_freq, smoker.isChecked(), smoke_freq, med_history, m_status, habit_reason, quit_status, craving_time, morning_status);
+                    //message = MessageActivity.getMessage(age, sex, chewer.isChecked(), chew_freq, smoker.isChecked(), smoke_freq, med_history, m_status, habit_reason, quit_status, craving_time, morning_status);
 
 
                     mPatientDatabaseReference = FirebaseMethods.getFirebaseReference("patient");
@@ -743,12 +744,13 @@ public class NewEntryActivity  extends AppCompatActivity {
                                                        DatabaseReference databaseReference) {
                                     uniqueKey[0] = databaseReference.getKey();
 
-                                    DatabaseReference UpdatePatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("patient").child(uniqueKey[0]);
+                                    DatabaseReference UpdatePatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("doctors").child("doctor1").child("patients").child(uniqueKey[0]);
                                     try {
                                         patient = new Entry(name, age, sex, interest, med_history, contact, email, address, chewText, chew_days, chew_freq, chew_cost, smokeText, smoke_days, smoke_freq, smoke_cost, m_status, business, salary, formattedtime1, formattedDate1, morning_status,
                                                 family_status, habit_reason, habbit, aware_status, aware_diseases, quit_status, quit_reason, quit_before_status, craving_time, uniqueKey[0], message);
+                                        patient.setMessage(MessageActivity.getMessage(patient, chewer.isChecked(), smoker.isChecked()));
                                         UpdatePatientDatabaseReference.setValue(patient);
-                                        Toast.makeText(getBaseContext(), "Welcome" + name, Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getBaseContext(), "New Patient Added, " + name, Toast.LENGTH_SHORT).show();
                                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                         if (user != null) {
                                             Intent i = new Intent(NewEntryActivity.this, MainActivity.class);
@@ -776,3 +778,4 @@ public class NewEntryActivity  extends AppCompatActivity {
         });
     }
 }
+
