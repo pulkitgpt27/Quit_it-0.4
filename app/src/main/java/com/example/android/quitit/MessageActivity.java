@@ -11,14 +11,8 @@ class MessageActivity {
         String message="Tobacco is something that affects all your body parts from head to toe. It's consumption is deadly in any form.";
         String ageCategory=getAgeCategory(Patient.getAge());
 
-//        if(Patient.getQuit_status()== "Yes")
-//        {
-//            message+="You are at the right place.We assure we will make you quit";
-//        }
-
-        if(( isSmoking&&Patient.getSmoke_freq()<3 )||(isChewing && Patient.getChew_freq()<3))
-        {
-            message+=" You are not addicted, yet. Congratulations. But, still, there are a few factors we'd like you to consider.";
+        if(( isSmoking&&Patient.getSmoke_freq()<3 )||(isChewing && Patient.getChew_freq()<3)) {
+            message+=" You are not addicted, yet, Congratulations. But, still, there are a few factors we'd like you to consider.";
         }
 
         else {
@@ -33,11 +27,10 @@ class MessageActivity {
                 else
                     message += " According to your data, We have concluded that you are addicted to chewable forms of tobbacco.";
             }
-            message+="Hence, There are a few factors we'd like you to consider.";
+            message+=" Hence, There are a few factors we'd like you to consider.";
         }
 
-        if(ageCategory.equals("Youngster") || ageCategory.equals("Middle"))
-        {
+        if(ageCategory.equals("Youngster") || ageCategory.equals("Middle")) {
             message += " It may affect your face: In the form of dullness of skin as well as wrinkles too early for your age,";
 
             if(isSmoking)
@@ -51,8 +44,8 @@ class MessageActivity {
                 message+=" Especially, in interviews for jobs.";
             }
             if(Patient.getMarry_status().equals("Married") || Patient.getMarry_status().equals("Soon to be married")) {
-               if(Patient.getSex().equals("Female"))
-                   message += " Studies have also shown that females who consume have troubles in conceiving new their youngones. It has shown cause miscarriage and infertility in women.";
+                if(Patient.getSex().equals("Female"))
+                    message += " Studies have also shown that females who consume have troubles in conceiving new their youngones. It has shown cause miscarriage and infertility in women.";
                 else
                     message +=" Contrary to the way it has been marketed, Studies have shown that it causes sexual impotence in men.";
             }
@@ -69,19 +62,19 @@ class MessageActivity {
                     " others around you. Even if you avoid smoking at home, kids in your house are still at risk of asthama and allergies"+
                     " because its particle adhere to your clothes";
 
-//        if(isChewing){
-//            message+=" Gutkha or Khaini, also cause loose gums and mouth problems. When you spit it, it increases risk of spread of TB.";
-//        }
-//        if(isSmoking){
-//            message+=" Smoking causes lung diseases and accumulation of tar in lungs.";
-//        }
+        if(isChewing){
+            message+=" Gutkha or Khaini, also cause loose gums and mouth problems. When you spit it, it increases risk of spread of TB.";
+        }
+        if(isSmoking){
+            message+=" Smoking causes lung diseases and accumulation of tar in lungs.";
+        }
 
         if(Patient.getHabit_reason().contains("With Friends")){
             message+=" You may have started these habbits casually with your friends but It becomes an addction really quickly.";
         }
 
         if((ageCategory=="Middle" || ageCategory=="Old")) {
-            message += "Smoking, generally, increases your risk of diabetes. and its complication.";
+            message += " Smoking, generally, increases your risk of diabetes and its complication.";
             if (Patient.getMed_history().equals(R.string.disease_1)) {
                 message += " Since, you already have it, it may increase its complications by upto 30-40%.";
             }
@@ -91,21 +84,17 @@ class MessageActivity {
             }
         }
 
-        //make certain points bold.
-        //Make pdf default name as patients name and date
-//        if(!Patient.getCraving_time().equals("")) {
-//            message+=" It's best that you think of something that you like or listen to music or talk to someone you like during your craving time";
-//        }
+
         if(Patient.getMorning_status().equals("Yes")) {
-            message+=" Your risk of developing lung ,head or neck cancers is considerably higher than that of non-smokers by nearly 50%.";
+            message+=" Your risk of developing lung ,head or neck cancers is considerably higher than that of people who do not consume any tobacco by nearly 50%.";
         }
 
         if(Patient.getMed_history().contains(String.valueOf(R.string.disease_2)) || Patient.getMed_history().contains(String.valueOf(R.string.disease_3))){
             message+=" If you leave smoking, with in 20 minutes Your blood pressure and pulse rate is back to normal. Your chances of heart attack start going down with in 8 hrs if you quit smoking and in 1 year it drops to 50%";
         }
-        message+="So, You must be able to resist the thoughts and the cravings. It's best that you think of something that you like or listen to music or talk to someone you like during that time." +
+        message+=" So, You must be able to resist the thoughts and the cravings. It's best that you think of something that you like or listen to music or talk to someone you like during that time." +
                 " Studies have shown that they are extremely temporary and all one needs to do is divert their mind from it.";
-        message +=" We hope that these reasons were able to motivate and change your perception about tobacco and its harms. We wish you a healthy and tobacco free life ahead." +
+        message +=" We hope that we were able to motivate and change your perception about tobacco and its harms. We wish you to healthy and tobacco free life ahead." +
                 " Let's QuitIt.";
 
         return message;
