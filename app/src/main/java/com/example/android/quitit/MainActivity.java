@@ -16,6 +16,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -34,6 +35,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -90,7 +95,7 @@ public class MainActivity extends AppCompatActivity
 
         //firebase reference
 
-        mPatientDatabaseReference=FirebaseMethods.getFirebaseReference("patients");
+        mPatientDatabaseReference=FirebaseMethods.getFirebaseReference("doctors");
 
         //setting list view
         mPatientListView=(ListView) findViewById(R.id.listView);
@@ -237,15 +242,31 @@ public class MainActivity extends AppCompatActivity
         mChildEventListener=new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Entry patient = dataSnapshot.getValue(Entry.class);
-                patientList.add(patient);
+                Doctor doctor = dataSnapshot.getValue(Doctor.class);
+                Log.d("findme", "doc_id: "+ doctor.getMail_id()+"net_id"+FirebaseMethods.getUserId());
+                if(doctor.getMail_id().equals(FirebaseMethods.getUserId())){
+                     HashMap<String,Entry> patients=doctor.getPatients();
+                    Set<String> ks = patients.keySet();
+                    for (String key : ks) {
+                        patientList.add(patients.get(key));
+                    }
+                    mPatientAdapter=new EntriesListAdapter(MainActivity.this,R.layout.list_item,patientList);
+                    mPatientListView.setAdapter(mPatientAdapter);
 
                 if(!patientList.isEmpty())
                 {
                     spinner.setVisibility(View.GONE);
                 }
-                mPatientAdapter=new EntriesListAdapter(MainActivity.this,R.layout.list_item,patientList);
-                mPatientListView.setAdapter(mPatientAdapter);
+                    return;
+                }
+//                patientList.add(patient);
+//
+//                if(!patientList.isEmpty())
+//                {
+//                    spinner.setVisibility(View.GONE);
+//                }
+//                mPatientAdapter=new EntriesListAdapter(MainActivity.this,R.layout.list_item,patientList);
+//                mPatientListView.setAdapter(mPatientAdapter);
             }
 
             @Override
@@ -260,7 +281,6 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
-
         };
         mPatientDatabaseReference.addChildEventListener(mChildEventListener);
     }
