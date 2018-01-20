@@ -40,7 +40,7 @@
 
 
     <string name="chewing_history">Chewing History</string>
-    <string name="chewing_history_time">How long have you been chewing?</string>
+    <string name="chewing_history_time">How long have you been chewing?(Years, months)</string>
     <string name="often_chewing_text_view">How many times do you chew in a day?</string>
     <string name="cost_of_one_packet">Average cost of one packet</string>
     <string name="consumption_tumbakoo">Packets per day :</string>

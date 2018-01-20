@@ -119,7 +119,8 @@ public class Entry implements Parcelable {
     public String getMessage(){return message;}
 
     //setter
-    public void setId(String val){this.id=val;}
+    public void setId(String val){ this.id=val; }
+    public void setMessage(String message){ this.message = message; }
 
 
     //parcealable stuff

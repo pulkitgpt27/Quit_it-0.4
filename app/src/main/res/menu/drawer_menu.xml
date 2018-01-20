@@ -10,4 +10,5 @@
                 android:title="Chewing" />
         </menu>
     </item>
+    <item android:title="Logout" android:id="@+id/logout"></item>
 </menu>
