@@ -13,7 +13,7 @@ import static com.example.android.quitit.R.id.nameView;
 
 public class FirebaseMethods {
 
-    private FirebaseAuth mFirebaseAuth;
+    private static FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     public static void updatePatient(String id,Entry patient)
     {
@@ -25,7 +25,7 @@ public class FirebaseMethods {
         }
     }
 
-    public String getUserId()
+    public static String getUserId()
     {
         mFirebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser user=mFirebaseAuth.getCurrentUser();
@@ -35,7 +35,7 @@ public class FirebaseMethods {
     public static DatabaseReference getFirebaseReference(String fchild)
     {
         FirebaseDatabase mFirebaseDatabase=FirebaseDatabase.getInstance();
-        DatabaseReference childref=mFirebaseDatabase.getReference().child("doctors").child("doctor1").child(fchild);
+        DatabaseReference childref=mFirebaseDatabase.getReference().child(fchild);
         return childref;
     }
 }
