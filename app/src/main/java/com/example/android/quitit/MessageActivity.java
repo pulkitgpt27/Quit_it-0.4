@@ -8,8 +8,9 @@ class MessageActivity {
 
     //public static String getMessage(int age, String sex, boolean isChewing, int chew_freq, boolean isSmoking, int smoke_freq, String med_history, String m_status, String habbit_reason, String quit_status, String craving_time, String morning_status) {
     public static String getMessage(Entry Patient, boolean isChewing, boolean isSmoking){
-        String message="Tobacco is something that affects all your body parts from head to toe. It's consumption is deadly in any form.";
+        String message = "";
         String ageCategory=getAgeCategory(Patient.getAge());
+//        ="Tobacco is something that affects all your body parts from head to toe and It's consumption is deadly in any form. Hence, There are a few factors we'd like you to consider.";
 
         if(( isSmoking&&Patient.getSmoke_freq()<3 )||(isChewing && Patient.getChew_freq()<3)) {
             message+=" You are not addicted, yet, Congratulations. But, still, there are a few factors we'd like you to consider.";
@@ -27,7 +28,13 @@ class MessageActivity {
                 else
                     message += " According to your data, We have concluded that you are addicted to chewable forms of tobbacco.";
             }
-            message+=" Hence, There are a few factors we'd like you to consider.";
+        }
+
+        if(isSmoking){
+            message+=" Smoking causes lung diseases and accumulation of tar in lungs.";
+        }
+        if(isChewing){
+            message+=" Gutkha or Khaini, also cause loose gums and mouth problems. When you spit it, it increases risk of spread of TB.";
         }
 
         if(ageCategory.equals("Youngster") || ageCategory.equals("Middle")) {
@@ -62,12 +69,6 @@ class MessageActivity {
                     " others around you. Even if you avoid smoking at home, kids in your house are still at risk of asthama and allergies"+
                     " because its particle adhere to your clothes";
 
-        if(isChewing){
-            message+=" Gutkha or Khaini, also cause loose gums and mouth problems. When you spit it, it increases risk of spread of TB.";
-        }
-        if(isSmoking){
-            message+=" Smoking causes lung diseases and accumulation of tar in lungs.";
-        }
 
         if(Patient.getHabit_reason().contains("With Friends")){
             message+=" You may have started these habbits casually with your friends but It becomes an addction really quickly.";
@@ -92,10 +93,10 @@ class MessageActivity {
         if(Patient.getMed_history().contains(String.valueOf(R.string.disease_2)) || Patient.getMed_history().contains(String.valueOf(R.string.disease_3))){
             message+=" If you leave smoking, with in 20 minutes Your blood pressure and pulse rate is back to normal. Your chances of heart attack start going down with in 8 hrs if you quit smoking and in 1 year it drops to 50%";
         }
-        message+=" So, You must be able to resist the thoughts and the cravings. It's best that you think of something that you like or listen to music or talk to someone you like during that time." +
-                " Studies have shown that they are extremely temporary and all one needs to do is divert their mind from it.";
-        message +=" We hope that we were able to motivate and change your perception about tobacco and its harms. We wish you to healthy and tobacco free life ahead." +
-                " Let's QuitIt.";
+//        message+=" So, You must be able to resist the thoughts and the cravings. It's best that you think of something that you like or listen to music or talk to someone you like during that time." +
+//                " Studies have shown that they are extremely temporary and all one needs to do is divert their mind from it.";
+//        message +=" We hope that we were able to motivate and change your perception about tobacco and its harms. We wish you to healthy and tobacco free life ahead." +
+//                " Let's QuitIt.";
 
         return message;
     }
