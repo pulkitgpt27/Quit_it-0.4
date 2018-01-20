@@ -69,12 +69,12 @@ class MessageActivity {
                     " others around you. Even if you avoid smoking at home, kids in your house are still at risk of asthama and allergies"+
                     " because its particle adhere to your clothes";
 
-        if(isChewing){
-            message+=" Gutkha or Khaini, also cause loose gums and mouth problems. When you spit it, it increases risk of spread of TB.";
-        }
-        if(isSmoking){
-            message+=" Smoking causes lung diseases and accumulation of tar in lungs.";
-        }
+//        if(isChewing){
+//            message+=" Gutkha or Khaini, also cause loose gums and mouth problems. When you spit it, it increases risk of spread of TB.";
+//        }
+//        if(isSmoking){
+//            message+=" Smoking causes lung diseases and accumulation of tar in lungs.";
+//        }
 
         if(Patient.getHabit_reason().contains("With Friends")){
             message+=" You may have started these habbits casually with your friends but It becomes an addction really quickly.";
@@ -91,7 +91,8 @@ class MessageActivity {
             }
         }
 
-
+        //make certain points bold.
+        //Make pdf default name as patients name and date
 //        if(!Patient.getCraving_time().equals("")) {
 //            message+=" It's best that you think of something that you like or listen to music or talk to someone you like during your craving time";
 //        }
@@ -104,7 +105,7 @@ class MessageActivity {
         }
         message+="So, You must be able to resist the thoughts and the cravings. It's best that you think of something that you like or listen to music or talk to someone you like during that time." +
                 " Studies have shown that they are extremely temporary and all one needs to do is divert their mind from it.";
-        message +=" We hope that we were able to motivate and change your perception about tobacco and its harms. We wish you to healthy and tobacco free life ahead." +
+        message +=" We hope that these reasons were able to motivate and change your perception about tobacco and its harms. We wish you a healthy and tobacco free life ahead." +
                 " Let's QuitIt.";
 
         return message;

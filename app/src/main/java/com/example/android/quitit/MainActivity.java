@@ -3,6 +3,7 @@ package com.example.android.quitit;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -20,14 +21,17 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -44,6 +48,9 @@ public class MainActivity extends AppCompatActivity
     private Boolean empty;
     SearchManager searchManager;
     SearchView searchView;
+    private TextView usernameTxt,emailTxt;
+    private ImageView userImageView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,8 +70,20 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        View headerLayout = navigationView.getHeaderView(0);
+        usernameTxt = (TextView) headerLayout.findViewById(R.id.usernameTxt);
+        emailTxt = (TextView) headerLayout.findViewById(R.id.emailTxt);
+        userImageView = (ImageView) headerLayout.findViewById(R.id.imageView);
 
-        //******************FIREBASE BEGINS HERE*******************
+        usernameTxt.setText(getIntent().getStringExtra("displayName"));
+        emailTxt.setText(getIntent().getStringExtra("displayEmail"));
+        if(getIntent().getStringExtra("displayImage")!=null) {
+            Picasso.with(this).load(Uri.parse(getIntent().getStringExtra("displayImage"))).into(userImageView);
+        }
+
+
+
+                //******************FIREBASE BEGINS HERE*******************
         empty=true;
         spinner=(ProgressBar) findViewById(R.id.spinner);
 
@@ -152,7 +171,7 @@ public class MainActivity extends AppCompatActivity
        //     String name = e.getName().toLowerCase();
         //    if(name.contains(newText))
         //        temp.add(e);
-       // }
+       // }3
        // mPatientAdapter.setFilter(temp);
        return false;
     }
@@ -200,6 +219,11 @@ public class MainActivity extends AppCompatActivity
                 args.putString("ChartType","Chewing");
                 intent.putExtras(args);
                 startActivity(intent);
+                return true;
+            case R.id.logout:
+                AuthUI.getInstance().signOut(this);
+                Intent i = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(i);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

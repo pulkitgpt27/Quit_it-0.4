@@ -1,6 +1,7 @@
 package com.example.android.quitit;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -42,7 +43,8 @@ public class LoginActivity extends AppCompatActivity {
 
     public static final int RC_SIGN_IN = 2;
     private GoogleApiClient mGoogleApiClient;
-
+    private String displayName,displayEmail;
+    private String imageUri;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -57,7 +59,10 @@ public class LoginActivity extends AppCompatActivity {
                 FirebaseUser user=firebaseAuth.getCurrentUser();
                 if(user!=null){
                     toastmessage("Successfylly signed in with mail:"+ user.getEmail());
-                    onSignedInInitialize(user.getDisplayName());
+                    displayName = user.getDisplayName();
+                    displayEmail = user.getEmail();
+                    imageUri = user.getPhotoUrl().toString();
+                    onSignedInInitialize(user.getDisplayName());;
 
                 }else {
                     onSignedOutCleanUp();
@@ -146,9 +151,6 @@ public class LoginActivity extends AppCompatActivity {
                                      }
                                  }
         );
-
-
-
     }
 
     private void signIn() {
@@ -233,6 +235,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private void attachDatabaseReadListener(){
         Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+        intent.putExtra("displayName",displayName);
+        intent.putExtra("displayEmail",displayEmail);
+        intent.putExtra("displayImage",imageUri);
         startActivity(intent);
     }
 

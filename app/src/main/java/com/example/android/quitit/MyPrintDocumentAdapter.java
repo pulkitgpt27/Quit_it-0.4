@@ -60,7 +60,7 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
         personal_message_fragments = new ArrayList<String>();
         String temp_line = words[0];
         for(int i=1; i<words.length; i++){
-            if(temp_line.length() + words[i].length() < 60) {
+            if(temp_line.length() + words[i].length() < 80) {
                 temp_line = temp_line + " " + words[i];
                 if(i+1==words.length){
                     //last word.
@@ -92,7 +92,7 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
 
         if (totalpages > 0) {
             PrintDocumentInfo.Builder builder = new PrintDocumentInfo
-                    .Builder("print_output.pdf")
+                    .Builder(name + ".pdf")
                     .setContentType(PrintDocumentInfo.CONTENT_TYPE_DOCUMENT)
                     .setPageCount(totalpages);
 
@@ -150,7 +150,7 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
         int leftMargin = 54;*/
 
         Paint paint = new Paint();
-        paint.setTextSize(18);
+        paint.setTextSize(12);
         paint.setColor(Color.BLACK);
         int printed_lines = 0;
         int y;
@@ -171,7 +171,7 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
                     50,
                     130,
                     paint);
-            paint.setTextSize(18);
+            paint.setTextSize(12);
             canvas.drawText(
                     sex,
                     50,
@@ -218,7 +218,7 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
                         y,
                         paint);
                 printed_lines++;
-                y+=30;
+                y+=20;
                 if(y >= y_max)
                     return printed_lines;
 
@@ -231,7 +231,7 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
                             50,
                             y,
                             paint);
-                    y+=30;
+                    y+=20;
                     if(y >= y_max)
                         return printed_lines;
                 }
