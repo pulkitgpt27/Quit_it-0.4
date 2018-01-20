@@ -67,11 +67,15 @@ public class ReportActivity extends AppCompatActivity {
         marry.setText(ClickedEntry.getMarry_status());
 
         //how much patient smoke in a day
-        TextView cigarettes_day=(TextView) findViewById(R.id.consumptionView);
-        cigarettes_day.setText(Integer.toString(ClickedEntry.getSmoke_freq()));
+        TextView smokes_day=(TextView) findViewById(R.id.smokeConsumptionView);
+        smokes_day.setText(Integer.toString(ClickedEntry.getSmoke_freq()));
+
+        //how much patient chews in a day
+        TextView chews_day=(TextView) findViewById(R.id.chewConsumptionView);
+        chews_day.setText(Integer.toString(ClickedEntry.getChew_freq()));
 
         //for fraction of salary
-        float spent=(ClickedEntry.getSmoke_freq())*30*((float)(ClickedEntry.getSmoke_cost()));
+        float spent=(ClickedEntry.getSmoke_freq()+ClickedEntry.getChew_freq())*30*((float)(ClickedEntry.getSmoke_cost()));
         float earn=(float) (ClickedEntry.getSalary());
         float save=earn-spent;
         float percent=((float)spent/earn)*100;
@@ -117,10 +121,7 @@ public class ReportActivity extends AppCompatActivity {
         String jobName = this.getString(R.string.app_name) +
                 " Document";
 
-        printManager.print(jobName, new MyPrintDocumentAdapter(this,ClickedEntry.getName(),
-                ClickedEntry.getSex(),ClickedEntry.getAge(),ClickedEntry.getBusiness(),
-                ClickedEntry.getMarry_status(),ClickedEntry.getSmoke_freq(),disp,
-                ClickedEntry.getMessage()), null);
+        printManager.print(jobName, new MyPrintDocumentAdapter(this,ClickedEntry,disp),null);
     }
 
     @Override

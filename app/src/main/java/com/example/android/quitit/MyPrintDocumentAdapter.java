@@ -32,12 +32,16 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
     public PdfDocument myPdfDocument;
     public int totalpages = 1;
     String name,sex,bussiness,marrital_status,spent;
-    int age,consumption;
+    int age,smokeConsumption,chewConsumption;
     String personal_msg;
     String lines[];
     ArrayList<String> personal_message_fragments;
     String words[];
     String temp_line;
+    String pre_msg;
+    String post_msg;
+    String pre_msg_fragments[];
+    String post_msg_fragments[];
     int line_count;
     /*public MyPrintDocumentAdapter(Context context) {
         this.context = context;
@@ -45,19 +49,26 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
         //Entry ClickedEntry = B.getParcelable("ClickedEntry");
     }*/
 
-    public MyPrintDocumentAdapter(Context context, String name, String sex, int age, String bussiness, String marrital_status, int consumption, String spent,String msg) {
+    public MyPrintDocumentAdapter(Context context, Entry ClickedEntry, String percentage) {
         this.context = context;
-        this.name = name;
-        this.sex = sex;
-        this.age = age;
-        this.bussiness = bussiness;
-        this.marrital_status = marrital_status;
-        this.consumption = consumption;
-        this.spent = spent;
-        this.personal_msg = msg;
+        this.name = ClickedEntry.getName();
+        this.sex = ClickedEntry.getSex();
+        this.age = ClickedEntry.getAge();
+        this.bussiness = ClickedEntry.getBusiness();
+        this.marrital_status = ClickedEntry.getMarry_status();
+        this.smokeConsumption = ClickedEntry.getSmoke_freq();
+        this.chewConsumption = ClickedEntry.getChew_freq();
+        this.spent = percentage;
+        this.personal_msg = ClickedEntry.getMessage();
         this.lines = personal_msg.split("\\. ");
         personal_message_fragments = new ArrayList<String>();
-
+        pre_msg = "Tobacco is something that affects all your body parts from head to toe and It's\n consumption is deadly in any form. Hence, There are a few factors we'd like\n you to consider.";
+        pre_msg_fragments = pre_msg.split("\\n");
+        post_msg ="So, You must be able to resist the thoughts and the cravings. It's best that\n you think of something that you like or listen to music or talk to someone\n" +
+                " you like during that time. Studies have shown that they are extremely temporary\n and all one needs to do is divert their mind from it. \n" +
+                "         We hope that we were able to motivate and change your perception about\n tobacco and its harms. We wish you to healthy and tobacco free life ahead. \n" +
+                "So, Lets QuitIt";
+        post_msg_fragments = post_msg.split("\\n");
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -143,13 +154,17 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
         canvas.drawText(name, 50, 130, paint);
         paint.setTextSize(12);
         canvas.drawText(sex, 50, 160, paint);
-        canvas.drawText(String.valueOf(age), 150, 160, paint);
+        canvas.drawText(String.valueOf(age), 100, 160, paint);
         canvas.drawText("Profession: " + bussiness, 50, 180, paint);
-        canvas.drawText("Marrital Status: " + marrital_status, 50, 210, paint);
-        canvas.drawText("Cigarettes consumed per day: " + consumption, 350, 180, paint);
-        canvas.drawText("Fraction of salary spent: " + spent, 350, 210, paint);
-        canvas.drawText("Harms:", 50, 240, paint);
-        y = 270;
+        canvas.drawText("Marrital Status: " + marrital_status, 50, 200, paint);
+        canvas.drawText("Smokes/day: " + smokeConsumption, 350, 180, paint);
+        canvas.drawText("Chews/day: " + chewConsumption, 350, 200, paint);
+        canvas.drawText("Fraction of salary spent: " + spent, 50, 220, paint);
+        y = 240;
+        for(String e: pre_msg_fragments){
+            canvas.drawText(e, 50, y, paint);
+            y+=20;
+        }
         for(int i=0; i<lines.length; i++){
             if(lines[i].length()>80){
                 words = lines[i].split(" ");
@@ -186,6 +201,10 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
                 canvas.drawText(""+(i+1)+" ."+lines[i], 50, y, paint);
                 y+=20;
             }
+        }
+        for(String e: post_msg_fragments){
+            canvas.drawText(e, 50, y, paint);
+            y+=20;
         }
         PdfDocument.PageInfo pageInfo = page.getInfo();
     }
