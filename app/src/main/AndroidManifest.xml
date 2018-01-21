@@ -17,8 +17,7 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:label="Records"
-            android:parentActivityName=".MainActivity" />
+            android:label="Records" />
         <activity
             android:name=".NewEntryActivity"
             android:label="New Entry"
