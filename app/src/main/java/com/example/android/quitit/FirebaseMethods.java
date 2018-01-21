@@ -32,7 +32,10 @@ public class FirebaseMethods {
     {
         mFirebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser user=mFirebaseAuth.getCurrentUser();
-        return user.getEmail();
+        if(user!=null)
+            return user.getEmail();
+        else
+            return null;
     }
 
     public static DatabaseReference getFirebaseReference(String fchild)
