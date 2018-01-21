@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.auth.api.Auth;
@@ -38,20 +39,23 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
+
+import static com.example.android.quitit.FirebaseMethods.getUserId;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         SearchView.OnQueryTextListener{
 
     private ChildEventListener mChildEventListener;
-    private DatabaseReference mPatientDatabaseReference;
+    private ValueEventListener mValueEventListener;
+    private DatabaseReference mDoctorsDatabaseReference;
     private ListView mPatientListView;
     private EntriesListAdapter mPatientAdapter;
     private ArrayList<Entry> patientList;
@@ -61,6 +65,9 @@ public class MainActivity extends AppCompatActivity
     SearchView searchView;
     private TextView usernameTxt,emailTxt;
     private ImageView userImageView;
+    private boolean found=false;
+    private static int doctorCount = 0;
+    public static String currentdoctorKey;
     private GoogleApiClient mGoogleApiClient;
 
     @Override
@@ -78,7 +85,7 @@ public class MainActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-
+        patientList=new ArrayList<Entry>();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         View headerLayout = navigationView.getHeaderView(0);
@@ -92,24 +99,16 @@ public class MainActivity extends AppCompatActivity
             Picasso.with(this).load(Uri.parse(getIntent().getStringExtra("displayImage"))).into(userImageView);
         }
 
-
-
-                //******************FIREBASE BEGINS HERE*******************
+        //******************FIREBASE BEGINS HERE*******************
         empty=true;
         spinner=(ProgressBar) findViewById(R.id.spinner);
-
-
         //firebase reference
-
-        mPatientDatabaseReference=FirebaseMethods.getFirebaseReference("doctors");
-
+        mDoctorsDatabaseReference=FirebaseMethods.getFirebaseReference("doctors");
         //setting list view
         mPatientListView=(ListView) findViewById(R.id.listView);
-        patientList=new ArrayList<Entry>();
-
-
         //fetching data from firebase
         firebaseDataFetch();
+
 
         mPatientListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
@@ -124,7 +123,6 @@ public class MainActivity extends AppCompatActivity
         });
 
         FloatingActionButton newEntryFab = (FloatingActionButton) findViewById(R.id.fab);
-
         newEntryFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -151,21 +149,14 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
-
         searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         //SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
-
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.sign_out_menu:
-                AuthUI.getInstance().signOut(this);
-                Intent i = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(i);
-                return true;
             case R.id.search_icon:
                 searchView = (SearchView)MenuItemCompat.getActionView(item);
                 searchView.setSubmitButtonEnabled(true);
@@ -176,44 +167,6 @@ public class MainActivity extends AppCompatActivity
 
         }
     }
-    //2 mothods for searching
-    @Override
-    public boolean onQueryTextSubmit(String newText) {
-      //  newText = newText.toLowerCase();
-       // ArrayList<Entry> temp = new ArrayList<>();
-       // for(Entry e: patientList){
-       //     String name = e.getName().toLowerCase();
-        //    if(name.contains(newText))
-        //        temp.add(e);
-       // }3
-       // mPatientAdapter.setFilter(temp);
-       return false;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        newText = newText.toLowerCase();
-        ArrayList<Entry> temp = new ArrayList<>();
-        for(Entry e: patientList){
-            String name = e.getName().toLowerCase();
-            if(name.contains(newText))
-                temp.add(e);
-        }
-        mPatientAdapter.setFilter(temp);
-        return true;
-    }
-
-    //*********after the search, to reinflate*********
-    SearchView.OnCloseListener closeListener = new SearchView.OnCloseListener() {
-        @Override
-        public boolean onClose() {
-            //mPatientAdapter.clear();
-            mPatientAdapter=new EntriesListAdapter(MainActivity.this,R.layout.list_item,patientList);
-            mPatientListView.setAdapter(mPatientAdapter);
-            //mPatientAdapter.getFilter().filter("");
-            return true;
-        }
-    };
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -262,50 +215,104 @@ public class MainActivity extends AppCompatActivity
     //**************UTILITY METHODS***************
     public void firebaseDataFetch()
     {
-        mChildEventListener=new ChildEventListener() {
+        mValueEventListener = new ValueEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Doctor doctor = dataSnapshot.getValue(Doctor.class);
-                Log.d("findme", "doc_id: "+ doctor.getMail_id()+"net_id"+FirebaseMethods.getUserId());
-                if(doctor.getMail_id().equals(FirebaseMethods.getUserId())){
-                     HashMap<String,Entry> patients=doctor.getPatients();
-                    Set<String> ks = patients.keySet();
-                    for (String key : ks) {
-                        patientList.add(patients.get(key));
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean found = false;
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    Doctor currentDoctor = child.getValue(Doctor.class);
+                    String id = currentDoctor.getMail_id();
+                    if (currentDoctor.getMail_id() != null && currentDoctor.getMail_id().equals(getUserId())) {
+                        currentdoctorKey = child.getKey();
+                        found = true;
+                        HashMap<String, Entry> patients = currentDoctor.getPatients();
+                        if (patients != null) {
+                            Set<String> ks = patients.keySet();
+                            for (String key : ks) {
+                                patientList.add(patients.get(key));
+                            }
+                            mPatientAdapter = new EntriesListAdapter(MainActivity.this, R.layout.list_item, patientList);
+                            mPatientListView.setAdapter(mPatientAdapter);
+                            Toast.makeText(getBaseContext(), "Patients loaded.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getBaseContext(), "No Patients. Start by Adding some.", Toast.LENGTH_LONG).show();
+                        }
+                        spinner.setVisibility(View.GONE);
+                        break; //get out from loop
                     }
-                    mPatientAdapter=new EntriesListAdapter(MainActivity.this,R.layout.list_item,patientList);
-                    mPatientListView.setAdapter(mPatientAdapter);
-
-                if(!patientList.isEmpty())
-                {
-                    spinner.setVisibility(View.GONE);
                 }
-                    return;
+                if(found == false){
+                    //create new Doctor
+                    mDoctorsDatabaseReference
+                            .push()
+                            .setValue(null, new DatabaseReference.CompletionListener() {
+                                @Override
+                                public void onComplete(DatabaseError databaseError,
+                                                       DatabaseReference databaseReference) {
+                                    String uniqueKey = databaseReference.getKey();
+                                    DatabaseReference UpdatePatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("doctors").child(uniqueKey);
+                                    Doctor newDoctor = new Doctor(FirebaseMethods.getUserId());
+                                    try {
+                                        UpdatePatientDatabaseReference.setValue(newDoctor);
+                                        spinner.setVisibility(View.GONE);
+                                        Toast.makeText(getBaseContext(), "Welcome ,Doctor", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getBaseContext(), "No Patients. Start by Adding some.", Toast.LENGTH_LONG).show();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    Log.e("Created", "New Doctor Added :" + newDoctor.getMail_id());
+                                }
+                            });
                 }
-//                patientList.add(patient);
-//
-//                if(!patientList.isEmpty())
-//                {
-//                    spinner.setVisibility(View.GONE);
-//                }
-//                mPatientAdapter=new EntriesListAdapter(MainActivity.this,R.layout.list_item,patientList);
-//                mPatientListView.setAdapter(mPatientAdapter);
-            }
 
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-            }
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-            }
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
+
             }
         };
-        mPatientDatabaseReference.addChildEventListener(mChildEventListener);
+        mDoctorsDatabaseReference.addListenerForSingleValueEvent(mValueEventListener);
+        //mPatientDatabaseReference.addChildEventListener(mChildEventListener);
+    }
+
+
+    //****************SEARCH METHODS******************
+    @Override
+    public boolean onQueryTextSubmit(String newText) {
+
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        ArrayList<Entry> temp = new ArrayList<>();
+        if(newText.equals("")){
+            ArrayList<Entry> tempList = new ArrayList<Entry>();
+            for(int i = 0;i<patientList.size();i++){
+                tempList.add(patientList.get(i));
+            }
+            mPatientAdapter.clear();
+            mPatientAdapter.addAll(tempList);
+            mPatientAdapter.notifyDataSetChanged();
+            patientList = tempList;
+        }
+        else{
+            newText = newText.toLowerCase();
+            for (Entry e : patientList){
+                String name = e.getName().toLowerCase();
+                if (name.contains(newText))
+                    temp.add(e);
+            }
+            mPatientAdapter.clear();
+            mPatientAdapter.addAll(temp);
+            mPatientAdapter.notifyDataSetChanged();
+        }
+        return false;
+    }
+
+    public boolean onSupportNavigateUp() {
+        Toast.makeText(this, "BackButton!", Toast.LENGTH_SHORT).show();
+        return true;
     }
 
     @Override
