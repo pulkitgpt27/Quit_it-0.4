@@ -2,6 +2,7 @@ package com.example.android.quitit;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,10 +14,12 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -26,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.auth.api.Auth;
@@ -38,6 +42,9 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -267,14 +274,25 @@ public class MainActivity extends AppCompatActivity
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Doctor doctor = dataSnapshot.getValue(Doctor.class);
                 Log.d("findme", "doc_id: "+ doctor.getMail_id()+"net_id"+FirebaseMethods.getUserId());
-                if(doctor.getMail_id().equals(FirebaseMethods.getUserId())){
-                     HashMap<String,Entry> patients=doctor.getPatients();
-                    Set<String> ks = patients.keySet();
-                    for (String key : ks) {
-                        patientList.add(patients.get(key));
+                if(doctor.getMail_id() != null && doctor.getMail_id().equals(FirebaseMethods.getUserId())){
+                    HashMap<String,Entry> patients=doctor.getPatients();
+                    if(patients != null) {
+                        Set<String> ks = patients.keySet();
+                        for (String key : ks) {
+                            patientList.add(patients.get(key));
+                        }
                     }
                     mPatientAdapter=new EntriesListAdapter(MainActivity.this,R.layout.list_item,patientList);
                     mPatientListView.setAdapter(mPatientAdapter);
+                    registerForContextMenu(mPatientListView);
+                    /*mPatientListView.setLongClickable(true);
+                    mPatientListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                        @Override
+                        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                            Log.e("ListView","Long Clicked");
+                            return true;
+                        }
+                    });*/
 
                 if(!patientList.isEmpty())
                 {
@@ -309,6 +327,47 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        if (v.getId()==R.id.listView) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.menu_list, menu);
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch(item.getItemId()) {
+            case R.id.editOpt:
+                // add stuff here
+                Intent intent2 = new Intent(MainActivity.this,UpdateActivity.class);
+                Entry temp2 = patientList.get(info.position);
+                Bundle B1 = new Bundle();
+                B1.putParcelable("ClickedEntry", (Parcelable) temp2);
+                intent2.putExtras(B1);
+                startActivity(intent2);
+                return true;
+            case R.id.deleteOpt:
+                new AlertDialog.Builder(this)
+                        .setTitle("Delete")
+                        .setMessage("Are you sure you want to delete? This record will be removed permanently from the Database.")
+                        // .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                deletepatient(info.position);
+                                Intent i = new Intent(MainActivity.this, MainActivity.class);
+                                startActivity(i);
+                            }})
+                        .setNegativeButton(android.R.string.no, null).show();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
+    @Override
     protected void onStart() {
         if(LoginActivity.isGmailSigned == true) {
             GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -321,5 +380,22 @@ public class MainActivity extends AppCompatActivity
             mGoogleApiClient.connect();
         }
         super.onStart();
+    }
+    public void deletepatient(int position) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        Query nameQuery = ref.child("patient").orderByChild("name").equalTo(patientList.get(position).getName());
+
+        nameQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot appleSnapshot: dataSnapshot.getChildren()) {
+                    appleSnapshot.getRef().removeValue();
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Log.e(TAG, "onCancelled", databaseError.toException());
+            }
+        });
     }
 }
