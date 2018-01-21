@@ -41,10 +41,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -101,7 +97,7 @@ public class MainActivity extends AppCompatActivity
 
         //firebase reference
 
-        mPatientDatabaseReference=FirebaseMethods.getFirebaseReference("doctors");
+        mPatientDatabaseReference=FirebaseMethods.getFirebaseReference("patients");
 
         //setting list view
         mPatientListView=(ListView) findViewById(R.id.listView);
@@ -242,15 +238,21 @@ public class MainActivity extends AppCompatActivity
                     finish();
                 }
                 else{
-                    LoginActivity.isGmailSigned = false;
-                    mGoogleApiClient.disconnect();
-                    Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
-                        @Override
-                        public void onResult(@NonNull Status status) {
-                            startActivity(new Intent(MainActivity.this,LoginActivity.class));
-                            finish();
-                        }
-                    });
+                    if(mGoogleApiClient == null){
+                        mGoogleApiClient.connect();
+                    }
+                    if(mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+                        Log.e("Gmail",mGoogleApiClient.toString());
+                        AuthUI.getInstance().signOut(this);
+                        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
+                            @Override
+                            public void onResult(@NonNull Status status) {
+                                LoginActivity.isGmailSigned = false;
+                                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                                finish();
+                            }
+                        });
+                    }
                 }
                 return true;
             default:
@@ -265,31 +267,15 @@ public class MainActivity extends AppCompatActivity
         mChildEventListener=new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Doctor doctor = dataSnapshot.getValue(Doctor.class);
-                Log.d("findme", "doc_id: "+ doctor.getMail_id()+"net_id"+FirebaseMethods.getUserId());
-                if(doctor.getMail_id().equals(FirebaseMethods.getUserId())){
-                     HashMap<String,Entry> patients=doctor.getPatients();
-                    Set<String> ks = patients.keySet();
-                    for (String key : ks) {
-                        patientList.add(patients.get(key));
-                    }
-                    mPatientAdapter=new EntriesListAdapter(MainActivity.this,R.layout.list_item,patientList);
-                    mPatientListView.setAdapter(mPatientAdapter);
+                Entry patient = dataSnapshot.getValue(Entry.class);
+                patientList.add(patient);
 
                 if(!patientList.isEmpty())
                 {
                     spinner.setVisibility(View.GONE);
                 }
-                    return;
-                }
-//                patientList.add(patient);
-//
-//                if(!patientList.isEmpty())
-//                {
-//                    spinner.setVisibility(View.GONE);
-//                }
-//                mPatientAdapter=new EntriesListAdapter(MainActivity.this,R.layout.list_item,patientList);
-//                mPatientListView.setAdapter(mPatientAdapter);
+                mPatientAdapter=new EntriesListAdapter(MainActivity.this,R.layout.list_item,patientList);
+                mPatientListView.setAdapter(mPatientAdapter);
             }
 
             @Override
@@ -304,13 +290,13 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
+
         };
         mPatientDatabaseReference.addChildEventListener(mChildEventListener);
     }
 
     @Override
     protected void onStart() {
-        if(LoginActivity.isGmailSigned == true) {
             GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                     .requestIdToken(getString(R.string.default_web_client_id))
                     .requestEmail()
@@ -319,7 +305,6 @@ public class MainActivity extends AppCompatActivity
                     .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                     .build();
             mGoogleApiClient.connect();
-        }
         super.onStart();
     }
 }
