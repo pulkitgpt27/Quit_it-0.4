@@ -196,7 +196,6 @@ public class MainActivity extends AppCompatActivity
                 }
                 else{
                     LoginActivity.isGmailSigned = false;
-                    mGoogleApiClient.disconnect();
                     Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
                         @Override
                         public void onResult(@NonNull Status status) {
@@ -204,6 +203,7 @@ public class MainActivity extends AppCompatActivity
                             finish();
                         }
                     });
+                    mGoogleApiClient.disconnect();
                 }
                 return true;
             default:
