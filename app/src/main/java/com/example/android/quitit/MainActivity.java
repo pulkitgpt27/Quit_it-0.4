@@ -27,6 +27,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -50,7 +56,7 @@ public class MainActivity extends AppCompatActivity
     SearchView searchView;
     private TextView usernameTxt,emailTxt;
     private ImageView userImageView;
-
+    private GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,7 +135,10 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         }
     }
 
@@ -221,9 +230,23 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
                 return true;
             case R.id.logout:
-                AuthUI.getInstance().signOut(this);
-                Intent i = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(i);
+                if(LoginActivity.isGmailSigned == false) {
+                    AuthUI.getInstance().signOut(this);
+                    Intent i = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(i);
+                    finish();
+                }
+                else{
+                    LoginActivity.isGmailSigned = false;
+                    mGoogleApiClient.disconnect();
+                    Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
+                        @Override
+                        public void onResult(@NonNull Status status) {
+                            startActivity(new Intent(MainActivity.this,LoginActivity.class));
+                            finish();
+                        }
+                    });
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -263,5 +286,20 @@ public class MainActivity extends AppCompatActivity
 
         };
         mPatientDatabaseReference.addChildEventListener(mChildEventListener);
+    }
+
+    @Override
+    protected void onStart() {
+        if(LoginActivity.isGmailSigned == true) {
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(getString(R.string.default_web_client_id))
+                    .requestEmail()
+                    .build();
+            mGoogleApiClient = new GoogleApiClient.Builder(getApplicationContext())
+                    .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                    .build();
+            mGoogleApiClient.connect();
+        }
+        super.onStart();
     }
 }

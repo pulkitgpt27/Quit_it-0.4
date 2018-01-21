@@ -45,6 +45,7 @@ public class LoginActivity extends AppCompatActivity {
     private GoogleApiClient mGoogleApiClient;
     private String displayName,displayEmail;
     private String imageUri;
+    public static boolean isGmailSigned = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -61,9 +62,9 @@ public class LoginActivity extends AppCompatActivity {
                     toastmessage("Successfylly signed in with mail:"+ user.getEmail());
                     displayName = user.getDisplayName();
                     displayEmail = user.getEmail();
-                    imageUri = user.getPhotoUrl().toString();
-                    onSignedInInitialize(user.getDisplayName());;
-
+                    if(user.getPhotoUrl() != null)
+                        imageUri = user.getPhotoUrl().toString();
+                    onSignedInInitialize(user.getDisplayName());
                 }else {
                     onSignedOutCleanUp();
                 }
@@ -169,6 +170,7 @@ public class LoginActivity extends AppCompatActivity {
             if (result.isSuccess()) {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = result.getSignInAccount();
+                isGmailSigned = true;
                 firebaseAuthWithGoogle(account);
             } else {
                 toastmessage("Google Sign in Failed");
@@ -239,10 +241,18 @@ public class LoginActivity extends AppCompatActivity {
         intent.putExtra("displayEmail",displayEmail);
         intent.putExtra("displayImage",imageUri);
         startActivity(intent);
+        finish();
     }
 
     private void detachchDatabaseReadListener(){
 
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
 }
