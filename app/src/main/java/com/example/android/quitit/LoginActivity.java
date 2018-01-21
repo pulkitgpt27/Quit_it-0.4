@@ -1,19 +1,16 @@
 package com.example.android.quitit;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.ThemedSpinnerAdapter;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -28,8 +25,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-
-import java.util.Arrays;
 
 /**
  * Created by Pulkit on 07-08-2017.
@@ -65,6 +60,13 @@ public class LoginActivity extends AppCompatActivity {
                     if(user.getPhotoUrl() != null)
                         imageUri = user.getPhotoUrl().toString();
                     onSignedInInitialize(user.getDisplayName());
+
+                    displayName = user.getDisplayName();
+                    displayEmail = user.getEmail();
+                    imageUri = user.getPhotoUrl().toString();
+                    onSignedInInitialize(user.getDisplayName());
+
+
                 }else {
                     onSignedOutCleanUp();
                 }
@@ -191,9 +193,7 @@ public class LoginActivity extends AppCompatActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             toastmessage("Sign In Failed");
-
                         }
-
                         // ...
                     }
                 });

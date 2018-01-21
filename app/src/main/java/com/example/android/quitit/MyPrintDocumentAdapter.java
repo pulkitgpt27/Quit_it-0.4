@@ -30,11 +30,18 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
     private int pageHeight;
     private int pageWidth;
     public PdfDocument myPdfDocument;
-    public int totalpages = 2;
+    public int totalpages = 1;
     String name,sex,bussiness,marrital_status,spent;
-    int age,consumption;
+    int age,smokeConsumption,chewConsumption;
     String personal_msg;
+    String lines[];
     ArrayList<String> personal_message_fragments;
+    String words[];
+    String temp_line;
+    String pre_msg;
+    String post_msg;
+    String pre_msg_fragments[];
+    String post_msg_fragments[];
     int line_count;
     /*public MyPrintDocumentAdapter(Context context) {
         this.context = context;
@@ -42,37 +49,26 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
         //Entry ClickedEntry = B.getParcelable("ClickedEntry");
     }*/
 
-    public MyPrintDocumentAdapter(Context context, String name, String sex, int age, String bussiness, String marrital_status, int consumption, String spent,String msg) {
+    public MyPrintDocumentAdapter(Context context, Entry ClickedEntry, String percentage) {
         this.context = context;
-        this.name = name;
-        this.sex = sex;
-        this.age = age;
-        this.bussiness = bussiness;
-        this.marrital_status = marrital_status;
-        this.consumption = consumption;
-        this.spent = spent;
-        this.personal_msg = msg;
-
-        /*  split the personal_msg into words.
-            concatenate them into a line od page. till the character count reaches 60.
-        * */
-        String words[] = personal_msg.split(" ");
+        this.name = ClickedEntry.getName();
+        this.sex = ClickedEntry.getSex();
+        this.age = ClickedEntry.getAge();
+        this.bussiness = ClickedEntry.getBusiness();
+        this.marrital_status = ClickedEntry.getMarry_status();
+        this.smokeConsumption = ClickedEntry.getSmoke_freq();
+        this.chewConsumption = ClickedEntry.getChew_freq();
+        this.spent = percentage;
+        this.personal_msg = ClickedEntry.getMessage();
+        this.lines = personal_msg.split("\\. ");
         personal_message_fragments = new ArrayList<String>();
-        String temp_line = words[0];
-        for(int i=1; i<words.length; i++){
-            if(temp_line.length() + words[i].length() < 80) {
-                temp_line = temp_line + " " + words[i];
-                if(i+1==words.length){
-                    //last word.
-                    personal_message_fragments.add(temp_line);
-                }
-            }
-            else{
-                i--;
-                personal_message_fragments.add(temp_line);
-                temp_line = "";
-            }
-        }
+        pre_msg = "Tobacco is something that affects all your body parts from head to toe and It's\n consumption is deadly in any form. Hence, There are a few factors we'd like\n you to consider.";
+        pre_msg_fragments = pre_msg.split("\\n");
+        post_msg ="So, You must be able to resist the thoughts and the cravings. It's best that\n you think of something that you like or listen to music or talk to someone\n" +
+                " you like during that time. Studies have shown that they are extremely temporary\n and all one needs to do is divert their mind from it. \n" +
+                "         We hope that we were able to motivate and change your perception about\n tobacco and its harms. We wish you to healthy and tobacco free life ahead. \n" +
+                "So, Lets QuitIt";
+        post_msg_fragments = post_msg.split("\\n");
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -92,7 +88,7 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
 
         if (totalpages > 0) {
             PrintDocumentInfo.Builder builder = new PrintDocumentInfo
-                    .Builder(name + ".pdf")
+                    .Builder("print_output.pdf")
                     .setContentType(PrintDocumentInfo.CONTENT_TYPE_DOCUMENT)
                     .setPageCount(totalpages);
 
@@ -119,10 +115,7 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
                     myPdfDocument = null;
                     return;
                 }
-                if(i==0)
-                    line_count = drawPage(page, i, 0);
-                else
-                    line_count = drawPage(page, i, line_count);
+                drawPage(page, i);
                 myPdfDocument.finishPage(page);
             }
         }
@@ -141,7 +134,7 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
 
-    private int drawPage(PdfDocument.Page page, int pagenumber, int msg_line_count) {
+    private void drawPage(PdfDocument.Page page, int pagenumber) {
         Canvas canvas = page.getCanvas();
         int y_max = canvas.getHeight();
         pagenumber++; // Make sure page numbers start at 1
@@ -152,94 +145,68 @@ public class MyPrintDocumentAdapter extends PrintDocumentAdapter {
         Paint paint = new Paint();
         paint.setTextSize(12);
         paint.setColor(Color.BLACK);
-        int printed_lines = 0;
         int y;
-        if(msg_line_count == 0){
-            y = 370;
+        paint.setColor(Color.GRAY);
+        canvas.drawRect(35, 30, 550, 80, paint);
+        paint.setColor(Color.BLACK);
+        canvas.drawText("REPORT", 265, 60, paint);
+        paint.setTextSize(20);
+        canvas.drawText(name, 50, 130, paint);
+        paint.setTextSize(12);
+        canvas.drawText(sex, 50, 160, paint);
+        canvas.drawText(String.valueOf(age), 100, 160, paint);
+        canvas.drawText("Profession: " + bussiness, 50, 180, paint);
+        canvas.drawText("Marrital Status: " + marrital_status, 50, 200, paint);
+        canvas.drawText("Smokes/day: " + smokeConsumption, 350, 180, paint);
+        canvas.drawText("Chews/day: " + chewConsumption, 350, 200, paint);
+        canvas.drawText("Fraction of salary spent: " + spent, 50, 220, paint);
+        y = 240;
+        for(String e: pre_msg_fragments){
+            canvas.drawText(e, 50, y, paint);
+            y+=20;
         }
-        else{
-            y = 50;
-        }
-        if(msg_line_count == 0) {
-            paint.setColor(Color.GRAY);
-            canvas.drawRect(35, 30, 550, 80, paint);
-            paint.setColor(Color.BLACK);
-            canvas.drawText("REPORT", 265, 60, paint);
-            paint.setTextSize(30);
-            canvas.drawText(
-                    name,
-                    50,
-                    130,
-                    paint);
-            paint.setTextSize(12);
-            canvas.drawText(
-                    sex,
-                    50,
-                    160,
-                    paint);
-            canvas.drawText(
-                    String.valueOf(age),
-                    150,
-                    160,
-                    paint);
-            canvas.drawText(
-                    "Bussiness: " + bussiness,
-                    50,
-                    220,
-                    paint);
-            canvas.drawText(
-                    "Marrital Status: " + marrital_status,
-                    50,
-                    250,
-                    paint);
-            canvas.drawText(
-                    "Cigarettes consumed per day: " + consumption,
-                    50,
-                    280,
-                    paint);
-            canvas.drawText(
-                    "Fraction of salary spent: " + spent,
-                    50,
-                    310,
-                    paint);
-            canvas.drawText(
-                    "Harms:",
-                    50,
-                    340,
-                    paint);
-        }
-
-        for(String personal_message_fragment : personal_message_fragments)
-        {
-            if(msg_line_count == 0){ //msg hasn;t yet started
-                canvas.drawText(
-                        personal_message_fragment,
-                        50,
-                        y,
-                        paint);
-                printed_lines++;
-                y+=20;
-                if(y >= y_max)
-                    return printed_lines;
-
+        for(int i=0; i<lines.length; i++){
+            if(lines[i].length()>80){
+                words = lines[i].split(" ");
+                temp_line = words[0];
+                for(int j=1; j<words.length; j++){
+                    if(temp_line.length() + words[j].length() < 80) {
+                        temp_line = temp_line + " " + words[j];
+                        if(j+1==words.length){
+                            //last word.
+                            personal_message_fragments.add(temp_line);
+                        }
+                    }
+                    else{
+                        j--;
+                        personal_message_fragments.add(temp_line);
+                        temp_line = "";
+                    }
+                }
+                int j=0;
+                for(String e: personal_message_fragments){
+                    if(j==0){
+                        canvas.drawText(""+(i+1)+" ."+e, 50, y, paint);
+                        y+=20;
+                    }
+                    else{
+                        canvas.drawText("  "+e, 50, y, paint);
+                        y+=20;
+                    }
+                    j++;
+                }
+                personal_message_fragments.removeAll(personal_message_fragments);
             }
             else{
-                printed_lines++;
-                if(printed_lines > msg_line_count){
-                    canvas.drawText(
-                            personal_message_fragment,
-                            50,
-                            y,
-                            paint);
-                    y+=20;
-                    if(y >= y_max)
-                        return printed_lines;
-                }
+                canvas.drawText(""+(i+1)+" ."+lines[i], 50, y, paint);
+                y+=20;
             }
         }
-
+        for(String e: post_msg_fragments){
+            canvas.drawText(e, 50, y, paint);
+            y+=20;
+        }
         PdfDocument.PageInfo pageInfo = page.getInfo();
-        return printed_lines;
     }
     private boolean pageInRange(PageRange[] pageRanges, int page)
     {

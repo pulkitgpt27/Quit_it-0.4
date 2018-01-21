@@ -1,5 +1,7 @@
 package com.example.android.quitit;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -11,6 +13,8 @@ import static com.example.android.quitit.R.id.nameView;
 
 public class FirebaseMethods {
 
+    private static FirebaseAuth mFirebaseAuth;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
     public static void updatePatient(String id,Entry patient)
     {
         DatabaseReference mPatientDatabaseReference= FirebaseDatabase.getInstance().getReference().child("patient").child(id);
@@ -21,10 +25,17 @@ public class FirebaseMethods {
         }
     }
 
+    public static String getUserId()
+    {
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser user=mFirebaseAuth.getCurrentUser();
+        return user.getEmail();
+    }
+
     public static DatabaseReference getFirebaseReference(String fchild)
     {
         FirebaseDatabase mFirebaseDatabase=FirebaseDatabase.getInstance();
-        DatabaseReference childref=mFirebaseDatabase.getReference().child("doctors").child("doctor1").child(fchild);
+        DatabaseReference childref=mFirebaseDatabase.getReference().child(fchild);
         return childref;
     }
 }
