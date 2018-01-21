@@ -60,10 +60,12 @@ public class LoginActivity extends AppCompatActivity {
                     if(user.getPhotoUrl() != null)
                         imageUri = user.getPhotoUrl().toString();
 
+
                     onSignedInInitialize(user.getDisplayName());
                     displayName = user.getDisplayName();
                     displayEmail = user.getEmail();
                     onSignedInInitialize(user.getDisplayName());
+
 
 
                 }else {

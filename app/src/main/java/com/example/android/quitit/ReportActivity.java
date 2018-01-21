@@ -182,7 +182,7 @@ public class ReportActivity extends AppCompatActivity {
 
     public void deletepatient() {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-        Query nameQuery = ref.child("patient").orderByChild("name").equalTo(ClickedEntry.getName());
+        Query nameQuery = ref.child("doctors").child(MainActivity.currentdoctorKey).child("patients").orderByChild("name").equalTo(ClickedEntry.getName());
 
         nameQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

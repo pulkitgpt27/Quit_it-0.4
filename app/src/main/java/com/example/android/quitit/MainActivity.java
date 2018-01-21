@@ -34,6 +34,8 @@ import android.widget.Toast;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
+
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
@@ -69,9 +71,11 @@ public class MainActivity extends AppCompatActivity
     SearchView searchView;
     private TextView usernameTxt,emailTxt;
     private ImageView userImageView;
-    private GoogleApiClient mGoogleApiClient;
 
-    public String currentdoctorKey;
+    //private boolean found=false;
+    //private static int doctorCount = 0;
+    public static String currentdoctorKey;
+    private GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,7 +146,10 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         }
     }
 
@@ -198,6 +205,7 @@ public class MainActivity extends AppCompatActivity
                     finish();
                 }
                 else{
+
                     if(mGoogleApiClient == null){
                         mGoogleApiClient.connect();
                     }
@@ -247,7 +255,7 @@ public class MainActivity extends AppCompatActivity
                     Doctor currentDoctor = child.getValue(Doctor.class);
                     String id = currentDoctor.getMail_id();
                     if (currentDoctor.getMail_id() != null && currentDoctor.getMail_id().equals(getUserId())) {
-                        currentdoctorKey = dataSnapshot.getKey();
+                        currentdoctorKey = child.getKey();
                         found = true;
                         HashMap<String, Entry> patients = currentDoctor.getPatients();
                         if (patients != null) {
@@ -258,6 +266,7 @@ public class MainActivity extends AppCompatActivity
                             mPatientAdapter = new EntriesListAdapter(MainActivity.this, R.layout.list_item, patientList);
                             mPatientListView.setAdapter(mPatientAdapter);
                             registerForContextMenu(mPatientListView);
+
                             Toast.makeText(getBaseContext(), "Patients loaded.", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(getBaseContext(), "No Patients. Start by Adding some.", Toast.LENGTH_LONG).show();
@@ -289,7 +298,6 @@ public class MainActivity extends AppCompatActivity
                                 }
                             });
                 }
-
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -422,6 +430,7 @@ public class MainActivity extends AppCompatActivity
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
+
             }
         });
     }
