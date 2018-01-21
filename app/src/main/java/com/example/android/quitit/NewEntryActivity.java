@@ -733,6 +733,7 @@ public class NewEntryActivity  extends AppCompatActivity {
 
                     mPatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("doctors").child(MainActivity.currentdoctorKey).child("patients");//FirebaseMethods.getFirebaseReference("doctors");
 
+
                     final String[] uniqueKey = {""};
                     String key = "";
 

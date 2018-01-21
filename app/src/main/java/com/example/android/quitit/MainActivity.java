@@ -2,6 +2,7 @@ package com.example.android.quitit;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,7 +17,9 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -32,6 +35,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
+
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
@@ -40,6 +44,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
@@ -59,14 +64,16 @@ public class MainActivity extends AppCompatActivity
     private ListView mPatientListView;
     private EntriesListAdapter mPatientAdapter;
     private ArrayList<Entry> patientList;
+    private ArrayList<Entry> allPatients;
     private ProgressBar spinner;
     private Boolean empty;
     SearchManager searchManager;
     SearchView searchView;
     private TextView usernameTxt,emailTxt;
     private ImageView userImageView;
-    private boolean found=false;
-    private static int doctorCount = 0;
+
+    //private boolean found=false;
+    //private static int doctorCount = 0;
     public static String currentdoctorKey;
     private GoogleApiClient mGoogleApiClient;
 
@@ -86,6 +93,7 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
         patientList=new ArrayList<Entry>();
+        allPatients=new ArrayList<Entry>();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         View headerLayout = navigationView.getHeaderView(0);
@@ -172,17 +180,19 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.basisOfSmoking:
+                fetchAllPateints();
                 Intent intent = new Intent(MainActivity.this, AnalyticsMPChartSmoking.class);
                 Bundle args = new Bundle();
-                args.putParcelableArrayList("ARRAYLIST", patientList);
+                args.putParcelableArrayList("ARRAYLIST", allPatients);
                 args.putString("ChartType","Smoking");
                 intent.putExtras(args);
                 startActivity(intent);
                 return true;
             case R.id.basisOfChewing:
+                fetchAllPateints();
                 intent = new Intent(MainActivity.this, AnalyticsMPChartChewing.class);
                 args = new Bundle();
-                args.putParcelableArrayList("ARRAYLIST", patientList);
+                args.putParcelableArrayList("ARRAYLIST", allPatients);
                 args.putString("ChartType","Chewing");
                 intent.putExtras(args);
                 startActivity(intent);
@@ -195,15 +205,22 @@ public class MainActivity extends AppCompatActivity
                     finish();
                 }
                 else{
-                    LoginActivity.isGmailSigned = false;
-                    Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
-                        @Override
-                        public void onResult(@NonNull Status status) {
-                            startActivity(new Intent(MainActivity.this,LoginActivity.class));
-                            finish();
-                        }
-                    });
-                    mGoogleApiClient.disconnect();
+
+                    if(mGoogleApiClient == null){
+                        mGoogleApiClient.connect();
+                    }
+                    if(mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+                        Log.e("Gmail",mGoogleApiClient.toString());
+                        AuthUI.getInstance().signOut(this);
+                        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
+                            @Override
+                            public void onResult(@NonNull Status status) {
+                                LoginActivity.isGmailSigned = false;
+                                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                                finish();
+                            }
+                        });
+                    }
                 }
                 return true;
             default:
@@ -211,6 +228,21 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+
+    //***************LOGOUT SOLUTION************
+    @Override
+    protected void onStart() {
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        mGoogleApiClient = new GoogleApiClient.Builder(getApplicationContext())
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+        mGoogleApiClient.connect();
+        super.onStart();
+    }
+    //******************************************
 
     //**************UTILITY METHODS***************
     public void firebaseDataFetch()
@@ -233,6 +265,8 @@ public class MainActivity extends AppCompatActivity
                             }
                             mPatientAdapter = new EntriesListAdapter(MainActivity.this, R.layout.list_item, patientList);
                             mPatientListView.setAdapter(mPatientAdapter);
+                            registerForContextMenu(mPatientListView);
+
                             Toast.makeText(getBaseContext(), "Patients loaded.", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(getBaseContext(), "No Patients. Start by Adding some.", Toast.LENGTH_LONG).show();
@@ -264,19 +298,41 @@ public class MainActivity extends AppCompatActivity
                                 }
                             });
                 }
-
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         };
         mDoctorsDatabaseReference.addListenerForSingleValueEvent(mValueEventListener);
         //mPatientDatabaseReference.addChildEventListener(mChildEventListener);
     }
 
+    public void fetchAllPateints(){
+        mDoctorsDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Doctor currentDoctor = new Doctor();
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    currentDoctor = child.getValue(Doctor.class);
+                    currentdoctorKey = dataSnapshot.getKey();
+                    HashMap<String, Entry> patients = currentDoctor.getPatients();
+                    if (patients != null) {
+                        Set<String> ks = patients.keySet();
+                        for (String key : ks) {
+                            allPatients.add(patients.get(key));
+                        }
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+    //********************************************
 
-    //****************SEARCH METHODS******************
+    //****************SEARCH METHODS**************
+    //2 mothods for searching
     @Override
     public boolean onQueryTextSubmit(String newText) {
 
@@ -287,6 +343,8 @@ public class MainActivity extends AppCompatActivity
     public boolean onQueryTextChange(String newText) {
         ArrayList<Entry> temp = new ArrayList<>();
         if(newText.equals("")){
+            //mPatientAdapter.addThese(patientList);
+
             ArrayList<Entry> tempList = new ArrayList<Entry>();
             for(int i = 0;i<patientList.size();i++){
                 tempList.add(patientList.get(i));
@@ -309,24 +367,71 @@ public class MainActivity extends AppCompatActivity
         }
         return false;
     }
+    //*********************************************
 
     public boolean onSupportNavigateUp() {
         Toast.makeText(this, "BackButton!", Toast.LENGTH_SHORT).show();
         return true;
     }
 
+
+    //*****************Long press menu**************
     @Override
-    protected void onStart() {
-        if(LoginActivity.isGmailSigned == true) {
-            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestIdToken(getString(R.string.default_web_client_id))
-                    .requestEmail()
-                    .build();
-            mGoogleApiClient = new GoogleApiClient.Builder(getApplicationContext())
-                    .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                    .build();
-            mGoogleApiClient.connect();
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        if (v.getId()==R.id.listView) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.menu_list, menu);
         }
-        super.onStart();
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch(item.getItemId()) {
+            case R.id.editOpt:
+                // add stuff here
+                Intent intent2 = new Intent(MainActivity.this,UpdateActivity.class);
+                Entry temp2 = patientList.get(info.position);
+                Bundle B1 = new Bundle();
+                B1.putParcelable("ClickedEntry", (Parcelable) temp2);
+                intent2.putExtras(B1);
+                startActivity(intent2);
+                return true;
+            case R.id.deleteOpt:
+                new AlertDialog.Builder(this)
+                        .setTitle("Delete")
+                        .setMessage("Are you sure you want to delete? This record will be removed permanently from the Database.")
+                        // .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                deletepatient(info.position);
+                                Intent i = new Intent(MainActivity.this, MainActivity.class);
+                                startActivity(i);
+                            }})
+                        .setNegativeButton(android.R.string.no, null).show();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
+    public void deletepatient(int position) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        Query nameQuery = ref.child("patient").orderByChild("name").equalTo(patientList.get(position).getName());
+
+        nameQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot appleSnapshot: dataSnapshot.getChildren()) {
+                    appleSnapshot.getRef().removeValue();
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }

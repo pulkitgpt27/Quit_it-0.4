@@ -59,12 +59,13 @@ public class LoginActivity extends AppCompatActivity {
                     displayEmail = user.getEmail();
                     if(user.getPhotoUrl() != null)
                         imageUri = user.getPhotoUrl().toString();
+
+
+                    onSignedInInitialize(user.getDisplayName());
+                    displayName = user.getDisplayName();
+                    displayEmail = user.getEmail();
                     onSignedInInitialize(user.getDisplayName());
 
-//                    displayName = user.getDisplayName();
-//                    displayEmail = user.getEmail();
-//                    imageUri = user.getPhotoUrl().toString();
-//                    onSignedInInitialize(user.getDisplayName());
 
 
                 }else {
@@ -126,7 +127,6 @@ public class LoginActivity extends AppCompatActivity {
                                          String pass = password.getText().toString();
                                          if(mail.equals("") || pass.equals("")){
                                              toastmessage("You didnt filled all the feilds");
-
                                          }
                                          else
                                          {
