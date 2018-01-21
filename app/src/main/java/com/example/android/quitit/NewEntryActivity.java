@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -98,7 +99,7 @@ public class NewEntryActivity  extends AppCompatActivity {
 
         mUsername=ANONYMOUS;
         mFirebaseDatabase=FirebaseDatabase.getInstance();
-        mPatientDatabaseReference=mFirebaseDatabase.getReference().child("patient");
+        //mDoctorDatabaseReference=mFirebaseDatabase.getReference().child("doctors");
 
 
 
@@ -111,6 +112,11 @@ public class NewEntryActivity  extends AppCompatActivity {
         final EditText $age = (EditText) findViewById(R.id.age_edit_text);
         final EditText $email = (EditText) findViewById(R.id.email_edit_text);
         final EditText $salary = (EditText) findViewById(R.id.salary_edit_text);
+        final EditText $address = (EditText) findViewById(R.id.address_edit_text);
+        final EditText $profession = (EditText) findViewById(R.id.profession_edit_text);
+        $name.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        $address.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        $profession.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
 
         final ScrollView $new_entry_scroll_view = (ScrollView) findViewById(R.id.new_entry_scroll_view);
         final TextInputLayout $name_layout = (TextInputLayout) findViewById(R.id.name_layout);
@@ -386,6 +392,7 @@ public class NewEntryActivity  extends AppCompatActivity {
 //                if (!validation[0]) {
 //                    $new_entry_scroll_view.smoothScrollTo(0, $name_layout.getTop());
 //                    Toast.makeText($new_entry_context, "Not Saved. Error in Name", Toast.LENGTH_LONG).show();
+//                }
 //                } else if (!validation[1]) {
 //                    $new_entry_scroll_view.smoothScrollTo(0, $age_layout.getTop());
 //                    Toast.makeText($new_entry_context, "Not Saved. Error in Age", Toast.LENGTH_LONG).show();
@@ -396,7 +403,7 @@ public class NewEntryActivity  extends AppCompatActivity {
 //                    $new_entry_scroll_view.smoothScrollTo(0, $salary_layout.getTop());
 //                    Toast.makeText($new_entry_context, "Not Saved. Error in Salary", Toast.LENGTH_LONG).show();
 //                }
-                if(true){
+                if(true) {
                     //For Name
                     EditText nameView = (EditText) findViewById(R.id.name_edit_text);
                     name = nameView.getText().toString();
@@ -502,8 +509,8 @@ public class NewEntryActivity  extends AppCompatActivity {
                     //String future = futurespinner.getSelectedItem().toString();
 
                     //For Business
-                    EditText businessView = (EditText) findViewById(R.id.business_edit_text);
-                    business = (businessView.getText().toString());
+                    EditText professionView = (EditText) findViewById(R.id.profession_edit_text);
+                    business = (professionView.getText().toString());
 
                     //For Salary
                     EditText salaryView = (EditText) findViewById(R.id.salary_edit_text);
@@ -705,32 +712,26 @@ public class NewEntryActivity  extends AppCompatActivity {
                         if (craving_chackbox5.isChecked()) {
                             craving_time += craving_chackbox5.getText().toString() + "";
                         }
-
                         if (craving_chackbox6.isChecked()) {
                             craving_time += craving_chackbox6.getText().toString() + "";
                         }
-
                         if (craving_chackbox7.isChecked()) {
                             craving_time += craving_chackbox7.getText().toString() + "";
                         }
-
                         if (craving_chackbox8.isChecked()) {
                             craving_time += craving_chackbox8.getText().toString() + "";
                         }
-
                         if (craving_chackbox9.isChecked()) {
                             craving_time += craving_chackbox9.getText().toString() + "";
                         }
-
                     }
-
                     final String interest = "";
                     String future = "";
 
                     //message = MessageActivity.getMessage(age, sex, chewer.isChecked(), chew_freq, smoker.isChecked(), smoke_freq, med_history, m_status, habit_reason, quit_status, craving_time, morning_status);
 
 
-                    mPatientDatabaseReference = FirebaseMethods.getFirebaseReference("patient");
+                    mPatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("doctors").child("doctor1").child("patients");//FirebaseMethods.getFirebaseReference("doctors");
 
                     final String[] uniqueKey = {""};
                     String key = "";
@@ -743,7 +744,6 @@ public class NewEntryActivity  extends AppCompatActivity {
                                 public void onComplete(DatabaseError databaseError,
                                                        DatabaseReference databaseReference) {
                                     uniqueKey[0] = databaseReference.getKey();
-
                                     DatabaseReference UpdatePatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("doctors").child("doctor1").child("patients").child(uniqueKey[0]);
                                     try {
                                         patient = new Entry(name, age, sex, interest, med_history, contact, email, address, chewText, chew_days, chew_freq, chew_cost, smokeText, smoke_days, smoke_freq, smoke_cost, m_status, business, salary, formattedtime1, formattedDate1, morning_status,

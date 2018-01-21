@@ -36,8 +36,6 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity
@@ -245,10 +243,12 @@ public class MainActivity extends AppCompatActivity
                 Doctor doctor = dataSnapshot.getValue(Doctor.class);
                 Log.d("findme", "doc_id: "+ doctor.getMail_id()+"net_id"+FirebaseMethods.getUserId());
                 if(doctor.getMail_id().equals(FirebaseMethods.getUserId())){
-                     HashMap<String,Entry> patients=doctor.getPatients();
-                    Set<String> ks = patients.keySet();
-                    for (String key : ks) {
-                        patientList.add(patients.get(key));
+                    HashMap<String,Entry> patients=doctor.getPatients();
+                    if(patients!=null) {
+                        Set<String> ks = patients.keySet();
+                        for (String key : ks) {
+                            patientList.add(patients.get(key));
+                        }
                     }
                     mPatientAdapter=new EntriesListAdapter(MainActivity.this,R.layout.list_item,patientList);
                     mPatientListView.setAdapter(mPatientAdapter);

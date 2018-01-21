@@ -507,13 +507,12 @@
                 app:errorTextAppearance="@style/error_appearance">
 
                 <EditText
-                    android:id="@+id/business_edit_text"
+                    android:id="@+id/profession_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:singleLine="true"
                     android:hint="@string/profession" />
             </android.support.design.widget.TextInputLayout>
-
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/salary_layout"
