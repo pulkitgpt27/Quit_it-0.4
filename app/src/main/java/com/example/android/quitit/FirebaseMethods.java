@@ -20,7 +20,6 @@ public class FirebaseMethods {
     public static void updatePatient(String id,Entry patient)
     {
         DatabaseReference mPatientDatabaseReference= FirebaseDatabase.getInstance().getReference().child("doctors").child(MainActivity.currentdoctorKey).child("patients").child(id);
-        Log.d("findme",MainActivity.currentdoctorKey);
         try {
             mPatientDatabaseReference.setValue(patient);
         }catch (Exception e){

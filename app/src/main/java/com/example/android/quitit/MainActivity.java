@@ -397,6 +397,7 @@ public class MainActivity extends AppCompatActivity
                 B1.putParcelable("ClickedEntry", (Parcelable) temp2);
                 intent2.putExtras(B1);
                 startActivity(intent2);
+                finish();
                 return true;
             case R.id.deleteOpt:
                 new AlertDialog.Builder(this)
@@ -406,7 +407,7 @@ public class MainActivity extends AppCompatActivity
                         .setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                deletepatient(info.position);
+                                deletepatient(patientList.get(info.position));
                                 Intent i = new Intent(MainActivity.this, MainActivity.class);
                                 startActivity(i);
                             }})
@@ -417,9 +418,9 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public void deletepatient(int position) {
+    public void deletepatient(Entry patient ) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-        Query nameQuery = ref.child("patient").orderByChild("name").equalTo(patientList.get(position).getName());
+        Query nameQuery = ref.child("doctors").child(MainActivity.currentdoctorKey).child("patients").orderByChild("name").equalTo(patient.getName());
 
         nameQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -430,7 +431,7 @@ public class MainActivity extends AppCompatActivity
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                // Log.e(TAG, "onCancelled", databaseError.toException());
             }
         });
     }
