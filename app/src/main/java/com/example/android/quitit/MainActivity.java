@@ -198,6 +198,7 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
                 return true;
             case R.id.logout:
+                currentdoctorKey=null;
                 if(LoginActivity.isGmailSigned == false) {
                     AuthUI.getInstance().signOut(this);
                     Intent i = new Intent(MainActivity.this, LoginActivity.class);
