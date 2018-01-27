@@ -309,13 +309,12 @@ public class AnalyticsMPChartSmoking extends AppCompatActivity {
                 barEntries.add(new BarEntry(i,(ageArray[i]/(float)count) * 100));
             if(menAgeArray[i]!=0 || womenAgeArray[i]!=0) {
                 float menDivision = (menAgeArray[i] / (float) menCount) * 100;
-                float womenDivision = (womenAgeArray[i] / (float) womenCount) * 100;
-//                if(menDivision == womenDivision){
-//                    menDivision = menDivision * 2;
-//                }
                 smokingXAxis.add(String.valueOf(i));
-                //Log.e("Men","" + i);
                 menEntries.add(new BarEntry(i, menDivision));
+            }
+            if(womenAgeArray[i] != 0){
+                float womenDivision = (womenAgeArray[i] / (float) womenCount) * 100;
+                smokingXAxis.add(String.valueOf(i));
                 womenEntries.add(new BarEntry(i, womenDivision));
             }
         }
