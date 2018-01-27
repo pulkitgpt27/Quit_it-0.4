@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#F7F7F7"
+        android:orientation="vertical">
+        <android.support.v7.widget.AppCompatImageView
+            android:layout_marginTop="100dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_height="220dp"
+            android:layout_width="wrap_content"
+            android:src="@drawable/ic_snap"
+            android:paddingBottom="0dp"
+            >
+        </android.support.v7.widget.AppCompatImageView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Oh Snap!"
+            android:fontFamily="sans-serif-condensed"
+            android:textSize="24sp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="There are no Patients. \nStart by Adding Some."
+            android:fontFamily="sans-serif-condensed"
+            android:textSize="18sp"/>
+    </LinearLayout>
+</LinearLayout>

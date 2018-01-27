@@ -26,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -60,6 +61,10 @@ public class MainActivity extends AppCompatActivity
     private ValueEventListener mValueEventListener;
     private DatabaseReference mDoctorsDatabaseReference;
     private ListView mPatientListView;
+    private LinearLayout mEmptyPatientLayout;
+    private ImageView mEmptyPatientImage;
+    private TextView mEmptyPatientTextView1;
+    private TextView mEmptyPatientTextView2;
     private EntriesListAdapter mPatientAdapter;
     private ArrayList<Entry> patientList;
     private ArrayList<Entry> allPatients;
@@ -112,7 +117,12 @@ public class MainActivity extends AppCompatActivity
         mDoctorsDatabaseReference=FirebaseMethods.getFirebaseReference("doctors");
         //setting list view
         mPatientListView=(ListView) findViewById(R.id.listView);
-        //fetching data from firebase
+        mEmptyPatientLayout = (LinearLayout) findViewById(R.id.empty_layout);
+        mEmptyPatientImage = (ImageView) findViewById(R.id.empty_image_view);
+        mEmptyPatientTextView1 = (TextView) findViewById(R.id.empty_textView_1);
+        mEmptyPatientTextView2= (TextView) findViewById(R.id.empty_textView_2);
+
+        /// /fetching data from firebase
         firebaseDataFetch();
 
 
@@ -266,6 +276,11 @@ public class MainActivity extends AppCompatActivity
                                 registerForContextMenu(mPatientListView);
                                 Toast.makeText(getBaseContext(), "Patients loaded.", Toast.LENGTH_SHORT).show();
                             } else {
+                                mPatientListView.setVisibility(View.GONE);
+                                mEmptyPatientTextView1.setVisibility(View.VISIBLE);
+                                mEmptyPatientTextView2.setVisibility(View.VISIBLE);
+                                mEmptyPatientImage.setVisibility(View.VISIBLE);
+                                mEmptyPatientLayout.setVisibility(View.VISIBLE);
                                 Toast.makeText(getBaseContext(), "No Patients. Start by Adding some.", Toast.LENGTH_LONG).show();
                             }
                             spinner.setVisibility(View.GONE);
@@ -294,6 +309,11 @@ public class MainActivity extends AppCompatActivity
                                     currentdoctorKey = uniqueKey;
                                     try {
                                         UpdatePatientDatabaseReference.setValue(newDoctor);
+                                        mPatientListView.setVisibility(View.GONE);
+                                        mEmptyPatientTextView1.setVisibility(View.VISIBLE);
+                                        mEmptyPatientTextView2.setVisibility(View.VISIBLE);
+                                        mEmptyPatientImage.setVisibility(View.VISIBLE);
+                                        mEmptyPatientLayout.setVisibility(View.VISIBLE);
                                         spinner.setVisibility(View.GONE);
                                         Toast.makeText(getBaseContext(), "Welcome ,Doctor", Toast.LENGTH_SHORT).show();
                                         Toast.makeText(getBaseContext(), "No Patients. Start by Adding some.", Toast.LENGTH_LONG).show();
