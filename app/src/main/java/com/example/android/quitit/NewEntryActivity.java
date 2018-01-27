@@ -238,12 +238,12 @@ public class NewEntryActivity  extends AppCompatActivity {
                         $salary_layout.setError("Salary amount is invalid");
                         $salary_layout.getBackground().setAlpha(51);
                         $salary_layout.setErrorEnabled(true);
-                        validation[5] = false;
+                        validation[4] = false;
                     }
                     else {
                         $salary_layout.getBackground().setAlpha(0);
                         $salary_layout.setErrorEnabled(false);
-                        validation[5] = true;
+                        validation[4] = true;
                     }
                 }
             }
@@ -389,38 +389,34 @@ public class NewEntryActivity  extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //validations for scrolling view
-//                if (!validation[0]) {
-//                    $new_entry_scroll_view.smoothScrollTo(0, $name_layout.getTop());
-//                    Toast.makeText($new_entry_context, "Not Saved. Error in Name", Toast.LENGTH_LONG).show();
-//                }
-//                } else if (!validation[1]) {
-//                    $new_entry_scroll_view.smoothScrollTo(0, $age_layout.getTop());
-//                    Toast.makeText($new_entry_context, "Not Saved. Error in Age", Toast.LENGTH_LONG).show();
-//                } else if (!validation[3]) {
+                if (!validation[0]){
+                    $new_entry_scroll_view.smoothScrollTo(0, $name_layout.getTop());
+                    Toast.makeText($new_entry_context, "Not Saved. Error in Name", Toast.LENGTH_LONG).show();
+                } else if (!validation[1]){
+                    $new_entry_scroll_view.smoothScrollTo(0, $age_layout.getTop());
+                    Toast.makeText($new_entry_context, "Not Saved. Error in Age", Toast.LENGTH_LONG).show();
+                }
+                //validation[2] is for email
+//                else if (!validation[3]){
 //                    $new_entry_scroll_view.smoothScrollTo(0, $phone_layout.getTop());
 //                    Toast.makeText($new_entry_context, "Not Saved. Error in Phone Number", Toast.LENGTH_LONG).show();
-//                } else if (!validation[4]) {
+//                } else if (!validation[4]){
 //                    $new_entry_scroll_view.smoothScrollTo(0, $salary_layout.getTop());
 //                    Toast.makeText($new_entry_context, "Not Saved. Error in Salary", Toast.LENGTH_LONG).show();
 //                }
-                if(true) {
+                else {
                     //For Name
                     EditText nameView = (EditText) findViewById(R.id.name_edit_text);
                     name = nameView.getText().toString();
-
                     //For Age
                     EditText ageView = (EditText) findViewById(R.id.age_edit_text);
                     age = parseInt(ageView.getText().toString());
-
-
                     //For Sex
                     RadioGroup rg = (RadioGroup) findViewById(R.id.sex_group);
                     sex = ((RadioButton) findViewById(rg.getCheckedRadioButtonId())).getText().toString();
-
                     //For Contact No
                     EditText contactView = (EditText) findViewById(R.id.contact_edit_text);
                     contact = (contactView.getText().toString());
-
                     //For email
                     email = $email.getText().toString();
 

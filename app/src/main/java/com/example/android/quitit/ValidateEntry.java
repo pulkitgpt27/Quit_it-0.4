@@ -63,7 +63,6 @@ public class ValidateEntry
     {
         if(value.matches("[a-zA-Z]"))
             return false;
-
         return true;
     }
 
