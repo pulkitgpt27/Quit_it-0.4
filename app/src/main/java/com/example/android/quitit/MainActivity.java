@@ -179,7 +179,6 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.basisOfSmoking:
-                fetchAllPateints();
                 Intent intent = new Intent(MainActivity.this, AnalyticsMPChartSmoking.class);
                 Bundle args = new Bundle();
                 args.putParcelableArrayList("ARRAYLIST", allPatients);
@@ -188,7 +187,6 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
                 return true;
             case R.id.basisOfChewing:
-                fetchAllPateints();
                 intent = new Intent(MainActivity.this, AnalyticsMPChartChewing.class);
                 args = new Bundle();
                 args.putParcelableArrayList("ARRAYLIST", allPatients);
@@ -205,7 +203,6 @@ public class MainActivity extends AppCompatActivity
                     finish();
                 }
                 else{
-
                     if(mGoogleApiClient == null){
                         mGoogleApiClient.connect();
                     }
@@ -253,25 +250,34 @@ public class MainActivity extends AppCompatActivity
                 boolean found = false;
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     Doctor currentDoctor = child.getValue(Doctor.class);
-                    if (currentDoctor.getMail_id() != null && currentDoctor.getMail_id().equals(getUserId())) {
-                        currentdoctorKey = child.getKey();
-                        found = true;
+                    if (currentDoctor.getMail_id() != null) {
                         HashMap<String, Entry> patients = currentDoctor.getPatients();
-                        if (patients != null) {
-                            Set<String> ks = patients.keySet();
-                            for (String key : ks) {
-                                patientList.add(patients.get(key));
+                        if(currentDoctor.getMail_id().equals(getUserId())) {
+                            currentdoctorKey = child.getKey();
+                            found = true;
+                            if (patients != null) {
+                                Set<String> ks = patients.keySet();
+                                for (String key : ks) {
+                                    patientList.add(patients.get(key));
+                                    allPatients.add(patients.get(key));
+                                }
+                                mPatientAdapter = new EntriesListAdapter(MainActivity.this, R.layout.list_item, patientList);
+                                mPatientListView.setAdapter(mPatientAdapter);
+                                registerForContextMenu(mPatientListView);
+                                Toast.makeText(getBaseContext(), "Patients loaded.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getBaseContext(), "No Patients. Start by Adding some.", Toast.LENGTH_LONG).show();
                             }
-                            mPatientAdapter = new EntriesListAdapter(MainActivity.this, R.layout.list_item, patientList);
-                            mPatientListView.setAdapter(mPatientAdapter);
-                            registerForContextMenu(mPatientListView);
-
-                            Toast.makeText(getBaseContext(), "Patients loaded.", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getBaseContext(), "No Patients. Start by Adding some.", Toast.LENGTH_LONG).show();
+                            spinner.setVisibility(View.GONE);
                         }
-                        spinner.setVisibility(View.GONE);
-                        break; //get out from loop
+                        else{
+                            if(patients!=null){
+                                Set<String> ks = patients.keySet();
+                                for (String key : ks) {
+                                    allPatients.add(patients.get(key));
+                                }
+                            }
+                        }
                     }
                 }
                 if(found == false){
@@ -305,29 +311,6 @@ public class MainActivity extends AppCompatActivity
         };
         mDoctorsDatabaseReference.addListenerForSingleValueEvent(mValueEventListener);
         //mPatientDatabaseReference.addChildEventListener(mChildEventListener);
-    }
-
-    public void fetchAllPateints(){
-        mDoctorsDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Doctor currentDoctor = new Doctor();
-                for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    currentDoctor = child.getValue(Doctor.class);
-                    currentdoctorKey = dataSnapshot.getKey();
-                    HashMap<String, Entry> patients = currentDoctor.getPatients();
-                    if (patients != null) {
-                        Set<String> ks = patients.keySet();
-                        for (String key : ks) {
-                            allPatients.add(patients.get(key));
-                        }
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
     }
     //********************************************
 
