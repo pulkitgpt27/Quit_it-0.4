@@ -83,6 +83,7 @@ public class AnalyticsMPChartSmoking extends AppCompatActivity {
         smokingBarGraph.getDescription().setEnabled(false);
 
         smokingData = new BarData(smokingSet);
+
         smokingMaleFemaleData = new BarData(menSmokingSet,womenSmokingSet);
 
         final BarData combinedSmokingData = new BarData(menSmokingSet,womenSmokingSet);
@@ -131,6 +132,7 @@ public class AnalyticsMPChartSmoking extends AppCompatActivity {
         combinedMenWomenPieChart.highlightValues(null);
         combinedMenWomenPieChart.invalidate();
         combinedMenWomenPieChart.getDescription().setEnabled(false);
+        combinedMenWomenPieChart.setNoDataText("No Chart Data Available");
 
 
         ArrayList<LegendEntry> diseaseChartLegend = new ArrayList<LegendEntry>();
@@ -173,6 +175,7 @@ public class AnalyticsMPChartSmoking extends AppCompatActivity {
         diseaseChart.highlightValues(null);
         diseaseChart.invalidate();
         diseaseChart.getDescription().setEnabled(false);
+        diseaseChart.setNoDataText("No Chart Data Available");
 
 
         XAxis xaxis = smokingBarGraph.getXAxis();
@@ -195,10 +198,12 @@ public class AnalyticsMPChartSmoking extends AppCompatActivity {
         smokingBarGraph.setTouchEnabled(true);
         smokingBarGraph.setDragEnabled(true);
         smokingBarGraph.setScaleEnabled(true);
+        smokingBarGraph.setNoDataText("No Chart Data Available");
 
         combinedSmokingBarGraph.setTouchEnabled(true);
         combinedSmokingBarGraph.setDragEnabled(true);
         combinedSmokingBarGraph.setScaleEnabled(true);
+        combinedSmokingBarGraph.setNoDataText("No Chart Data Available");
 
         smokingMaleFemaleSet();
 
@@ -307,7 +312,7 @@ public class AnalyticsMPChartSmoking extends AppCompatActivity {
             //points2[i] = new DataPoint(i,(chewingArray[i]/(double)patientList.size()) * 100);
             if(ageArray[i]!=0)
                 barEntries.add(new BarEntry(i,(ageArray[i]/(float)count) * 100));
-            if(menAgeArray[i]!=0 || womenAgeArray[i]!=0) {
+            if(menAgeArray[i]!=0) {
                 float menDivision = (menAgeArray[i] / (float) menCount) * 100;
                 smokingXAxis.add(String.valueOf(i));
                 menEntries.add(new BarEntry(i, menDivision));

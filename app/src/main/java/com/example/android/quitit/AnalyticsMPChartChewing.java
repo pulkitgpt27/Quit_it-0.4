@@ -1,6 +1,10 @@
 package com.example.android.quitit;
 
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -132,6 +136,7 @@ public class AnalyticsMPChartChewing extends AppCompatActivity {
         combinedMenWomenPieChart.highlightValues(null);
         combinedMenWomenPieChart.invalidate();
         combinedMenWomenPieChart.getDescription().setEnabled(false);
+        combinedMenWomenPieChart.setNoDataText("No Chart Data Available");
 
         ArrayList<LegendEntry> diseaseChartLegend = new ArrayList<LegendEntry>();
         LegendEntry diseaseentry1 = new LegendEntry();
@@ -173,6 +178,7 @@ public class AnalyticsMPChartChewing extends AppCompatActivity {
         diseaseChart.highlightValues(null);
         diseaseChart.invalidate();
         diseaseChart.getDescription().setEnabled(false);
+        diseaseChart.setNoDataText("No Chart Data Available");
 
         XAxis xaxis = chewingBarGraph.getXAxis();
         xaxis.setPosition(XAxis.XAxisPosition.BOTH_SIDED);
@@ -185,12 +191,14 @@ public class AnalyticsMPChartChewing extends AppCompatActivity {
         chewingBarGraph.getXAxis().setAxisMinimum(0);
         chewingBarGraph.setFitBars(true);
         //chewingData.setBarWidth(1.0f);
+
         chewingBarGraph.setData(chewingData);
         //chewingBarGraph.setData();
 
         chewingBarGraph.setTouchEnabled(true);
         chewingBarGraph.setDragEnabled(true);
         chewingBarGraph.setScaleEnabled(true);
+        chewingBarGraph.setNoDataText("No chart data available!");
 
         smokingMaleFemaleSet();
     }
@@ -201,14 +209,13 @@ public class AnalyticsMPChartChewing extends AppCompatActivity {
         smokingBarMaleFemaleGraph.setScaleEnabled(false);
         smokingBarMaleFemaleGraph.setDrawBarShadow(false);
         smokingBarMaleFemaleGraph.setDrawGridBackground(false);
-        //smokingMaleFemaleData.setValueFormatter(new LargeValueFormatter());
         smokingBarMaleFemaleGraph.setData(smokingMaleFemaleData);
-        //smokingBarMaleFemaleGraph.notifyDataSetChanged();
         smokingBarMaleFemaleGraph.getBarData().setBarWidth(barWidth);
         smokingBarMaleFemaleGraph.getXAxis().setAxisMinimum(0);
         smokingBarMaleFemaleGraph.getXAxis().setAxisMaximum(0 + smokingBarMaleFemaleGraph.getBarData().getGroupWidth(groupSpace, barSpace) * smokingXAxis.size());
         smokingBarMaleFemaleGraph.groupBars(0, groupSpace, barSpace);
         smokingBarMaleFemaleGraph.getData().setHighlightEnabled(false);
+        smokingBarMaleFemaleGraph.setNoDataText("No Chart Data Available");
         smokingBarMaleFemaleGraph.invalidate();
 
         Legend l = smokingBarMaleFemaleGraph.getLegend();
