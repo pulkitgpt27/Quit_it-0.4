@@ -5,8 +5,13 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SwitchCompat;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -46,11 +51,19 @@ public class AnalyticsMPChartChewing extends AppCompatActivity {
     private float barWidth = 0.3f;
     private float groupSpace = 0.4f;
     private float barSpace = 0.00f; // x4 DataSet
+    private ScrollView chartLayout;
+    private LinearLayout mEmptyPatientLayout;
+    private ImageView mEmptyPatientImage;
+    private TextView mEmptyPatientTextView1;
+    private TextView mEmptyPatientTextView2;
+    private boolean isDataPresent;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_analytics_mpchart_chewing);
+        isDataPresent = false;
         ageArray = new int[70];
         menAgeArray = new int[70];
         womenAgeArray = new int[70];
@@ -63,6 +76,18 @@ public class AnalyticsMPChartChewing extends AppCompatActivity {
         patientList = this.getIntent().getExtras().getParcelableArrayList("ARRAYLIST");
 
         //genderSwitch = (SwitchCompat) findViewById(R.id.genderSwitch);
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        chartLayout = (ScrollView) findViewById(R.id.chartLayout);
+        mEmptyPatientLayout = (LinearLayout) findViewById(R.id.empty_layout);
+        mEmptyPatientImage = (ImageView) findViewById(R.id.empty_image_view);
+        mEmptyPatientTextView1 = (TextView) findViewById(R.id.empty_textView_1);
+        mEmptyPatientTextView2= (TextView) findViewById(R.id.empty_textView_2);
 
         combinedMenWomenPieChart = (PieChart) findViewById(R.id.pieChartMenWomen);
         combinedMenWomenPieChart.setUsePercentValues(true);
@@ -78,121 +103,141 @@ public class AnalyticsMPChartChewing extends AppCompatActivity {
         chewingBarGraph = (BarChart) findViewById(R.id.smokingBarGraph);
         smokingBarMaleFemaleGraph = (BarChart) findViewById(R.id.smokingBarMaleFemaleGraph);
 
-        addEntry();
+        for(int i = 0;i<patientList.size();i++){
+            if(patientList.get(i).getChew_freq() != 0){
+                isDataPresent = true;
+                break;
+            }
+        }
 
-        final BarDataSet smokingSet = new BarDataSet(barEntries, "Percent people");
-        final BarDataSet menSmokingSet = new BarDataSet(menEntries, "Percent of men");
-        final BarDataSet womenSmokingSet = new BarDataSet(womenEntries, "Percent of women");
-        menSmokingSet.setColor(Color.parseColor("#03A9F4"));
-        womenSmokingSet.setColor(Color.parseColor("#0D47A1"));
-        chewingBarGraph.getDescription().setEnabled(false);
+        if(isDataPresent) {
+            chartLayout.setVisibility(View.VISIBLE);
+            mEmptyPatientTextView1.setVisibility(View.GONE);
+            mEmptyPatientTextView2.setVisibility(View.GONE);
+            mEmptyPatientImage.setVisibility(View.GONE);
+            mEmptyPatientLayout.setVisibility(View.GONE);
+            addEntry();
+            final BarDataSet smokingSet = new BarDataSet(barEntries, "Percent people");
+            final BarDataSet menSmokingSet = new BarDataSet(menEntries, "Percent of men");
+            final BarDataSet womenSmokingSet = new BarDataSet(womenEntries, "Percent of women");
+            menSmokingSet.setColor(Color.parseColor("#03A9F4"));
+            womenSmokingSet.setColor(Color.parseColor("#0D47A1"));
+            chewingBarGraph.getDescription().setEnabled(false);
 
-        chewingData = new BarData(smokingSet);
-        smokingMaleFemaleData = new BarData(menSmokingSet,womenSmokingSet);
-        final BarData combinedSmokingData = new BarData(menSmokingSet,womenSmokingSet);
+            chewingData = new BarData(smokingSet);
+            smokingMaleFemaleData = new BarData(menSmokingSet,womenSmokingSet);
+            final BarData combinedSmokingData = new BarData(menSmokingSet,womenSmokingSet);
 
-        ArrayList<Integer> colorList = new ArrayList<Integer>();
-        colorList.add(Color.DKGRAY);
-        colorList.add(Color.LTGRAY);
-        colorList.add(Color.GRAY);
+            ArrayList<Integer> colorList = new ArrayList<Integer>();
+            colorList.add(Color.DKGRAY);
+            colorList.add(Color.LTGRAY);
+            colorList.add(Color.GRAY);
 
-        ArrayList<LegendEntry> pieChartLegend = new ArrayList<LegendEntry>();
-        LegendEntry entry1 = new LegendEntry();
-        LegendEntry entry2 = new LegendEntry();
-        entry1.formColor = colorList.get(0);
-        entry2.formColor = colorList.get(1);
-        entry1.label = "Men";
-        entry2.label = "Women";
-        pieChartLegend.add(entry1);
-        pieChartLegend.add(entry2);
+            ArrayList<LegendEntry> pieChartLegend = new ArrayList<LegendEntry>();
+            LegendEntry entry1 = new LegendEntry();
+            LegendEntry entry2 = new LegendEntry();
+            entry1.formColor = colorList.get(0);
+            entry2.formColor = colorList.get(1);
+            entry1.label = "Men";
+            entry2.label = "Women";
+            pieChartLegend.add(entry1);
+            pieChartLegend.add(entry2);
 
-        combinedMenWomenPieChart = (PieChart) findViewById(R.id.pieChartMenWomen);
-        combinedMenWomenPieChart.setUsePercentValues(true);
-        combinedMenWomenPieChart.setDrawHoleEnabled(true);
-        combinedMenWomenPieChart.setHoleColor(Color.TRANSPARENT);
-        combinedMenWomenPieChart.setHoleRadius(7);
-        combinedMenWomenPieChart.setTransparentCircleRadius(10);
-        combinedMenWomenPieChart.setRotationAngle(0);
-        combinedMenWomenPieChart.setRotationEnabled(true);
+            combinedMenWomenPieChart = (PieChart) findViewById(R.id.pieChartMenWomen);
+            combinedMenWomenPieChart.setUsePercentValues(true);
+            combinedMenWomenPieChart.setDrawHoleEnabled(true);
+            combinedMenWomenPieChart.setHoleColor(Color.TRANSPARENT);
+            combinedMenWomenPieChart.setHoleRadius(7);
+            combinedMenWomenPieChart.setTransparentCircleRadius(10);
+            combinedMenWomenPieChart.setRotationAngle(0);
+            combinedMenWomenPieChart.setRotationEnabled(true);
 
-        PieDataSet pieDataSet = new PieDataSet(MenWomenPieChartEnteries,"Men");
-        pieDataSet.setColors(colorList);
+            PieDataSet pieDataSet = new PieDataSet(MenWomenPieChartEnteries,"Men");
+            pieDataSet.setColors(colorList);
 
-        Legend i = combinedMenWomenPieChart.getLegend();
-        i.setPosition(Legend.LegendPosition.BELOW_CHART_RIGHT);
-        i.setXEntrySpace(7);
-        i.setYEntrySpace(5);
-        i.setCustom(pieChartLegend);
+            Legend i = combinedMenWomenPieChart.getLegend();
+            i.setPosition(Legend.LegendPosition.BELOW_CHART_RIGHT);
+            i.setXEntrySpace(7);
+            i.setYEntrySpace(5);
+            i.setCustom(pieChartLegend);
 
-        PieData data = new PieData(pieDataSet);
-        data.setValueFormatter(new PercentFormatter());
-        data.setValueTextSize(11f);
-        data.setValueTextColor(Color.BLACK);
-        combinedMenWomenPieChart.setData(data);
-        combinedMenWomenPieChart.highlightValues(null);
-        combinedMenWomenPieChart.invalidate();
-        combinedMenWomenPieChart.getDescription().setEnabled(false);
+            PieData data = new PieData(pieDataSet);
+            data.setValueFormatter(new PercentFormatter());
+            data.setValueTextSize(11f);
+            data.setValueTextColor(Color.BLACK);
+            combinedMenWomenPieChart.setData(data);
+            combinedMenWomenPieChart.highlightValues(null);
+            combinedMenWomenPieChart.invalidate();
+            combinedMenWomenPieChart.getDescription().setEnabled(false);
 
-        ArrayList<LegendEntry> diseaseChartLegend = new ArrayList<LegendEntry>();
-        LegendEntry diseaseentry1 = new LegendEntry();
-        LegendEntry diseaseentry2 = new LegendEntry();
-        LegendEntry diseaseentry3 = new LegendEntry();
-        diseaseentry1.formColor = colorList.get(0);
-        diseaseentry2.formColor = colorList.get(1);
-        diseaseentry3.formColor = colorList.get(2);
-        diseaseentry1.label = "Diabetes";
-        diseaseentry2.label = "High Blood Pressure";
-        diseaseentry3.label = "Heart Problem";
-        diseaseChartLegend.add(diseaseentry1);
-        diseaseChartLegend.add(diseaseentry2);
-        diseaseChartLegend.add(diseaseentry3);
+            ArrayList<LegendEntry> diseaseChartLegend = new ArrayList<LegendEntry>();
+            LegendEntry diseaseentry1 = new LegendEntry();
+            LegendEntry diseaseentry2 = new LegendEntry();
+            LegendEntry diseaseentry3 = new LegendEntry();
+            diseaseentry1.formColor = colorList.get(0);
+            diseaseentry2.formColor = colorList.get(1);
+            diseaseentry3.formColor = colorList.get(2);
+            diseaseentry1.label = "Diabetes";
+            diseaseentry2.label = "High Blood Pressure";
+            diseaseentry3.label = "Heart Problem";
+            diseaseChartLegend.add(diseaseentry1);
+            diseaseChartLegend.add(diseaseentry2);
+            diseaseChartLegend.add(diseaseentry3);
 
-        diseaseChart = (PieChart) findViewById(R.id.diseaseChart);
-        diseaseChart.setUsePercentValues(true);
-        diseaseChart.setDrawHoleEnabled(true);
-        diseaseChart.setHoleColor(Color.TRANSPARENT);
-        diseaseChart.setHoleRadius(7);
-        diseaseChart.setTransparentCircleRadius(10);
-        diseaseChart.setRotationAngle(0);
-        diseaseChart.setRotationEnabled(true);
+            diseaseChart = (PieChart) findViewById(R.id.diseaseChart);
+            diseaseChart.setUsePercentValues(true);
+            diseaseChart.setDrawHoleEnabled(true);
+            diseaseChart.setHoleColor(Color.TRANSPARENT);
+            diseaseChart.setHoleRadius(7);
+            diseaseChart.setTransparentCircleRadius(10);
+            diseaseChart.setRotationAngle(0);
+            diseaseChart.setRotationEnabled(true);
 
-        Legend leg = diseaseChart.getLegend();
-        leg.setPosition(Legend.LegendPosition.BELOW_CHART_RIGHT);
-        leg.setXEntrySpace(7);
-        leg.setYEntrySpace(5);
-        leg.setCustom(diseaseChartLegend);
+            Legend leg = diseaseChart.getLegend();
+            leg.setPosition(Legend.LegendPosition.BELOW_CHART_RIGHT);
+            leg.setXEntrySpace(7);
+            leg.setYEntrySpace(5);
+            leg.setCustom(diseaseChartLegend);
 
-        PieDataSet diseaseDataSet = new PieDataSet(diseaseEntries,"Men");
-        diseaseDataSet.setColors(colorList);
+            PieDataSet diseaseDataSet = new PieDataSet(diseaseEntries,"Men");
+            diseaseDataSet.setColors(colorList);
 
-        PieData diseaseData = new PieData(diseaseDataSet);
-        diseaseData.setValueFormatter(new PercentFormatter());
-        diseaseData.setValueTextSize(11f);
-        diseaseData.setValueTextColor(Color.BLACK);
-        diseaseChart.setData(diseaseData);
-        diseaseChart.highlightValues(null);
-        diseaseChart.invalidate();
-        diseaseChart.getDescription().setEnabled(false);
+            PieData diseaseData = new PieData(diseaseDataSet);
+            diseaseData.setValueFormatter(new PercentFormatter());
+            diseaseData.setValueTextSize(11f);
+            diseaseData.setValueTextColor(Color.BLACK);
+            diseaseChart.setData(diseaseData);
+            diseaseChart.highlightValues(null);
+            diseaseChart.invalidate();
+            diseaseChart.getDescription().setEnabled(false);
 
-        XAxis xaxis = chewingBarGraph.getXAxis();
-        xaxis.setPosition(XAxis.XAxisPosition.BOTH_SIDED);
+            XAxis xaxis = chewingBarGraph.getXAxis();
+            xaxis.setPosition(XAxis.XAxisPosition.BOTH_SIDED);
 
-        Legend legend = chewingBarGraph.getLegend();
-        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+            Legend legend = chewingBarGraph.getLegend();
+            legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
 
-        chewingBarGraph.getAxisLeft().setStartAtZero(true);
-        chewingBarGraph.getAxisRight().setStartAtZero(true);
-        chewingBarGraph.getXAxis().setAxisMinimum(0);
-        chewingBarGraph.setFitBars(true);
-        //chewingData.setBarWidth(1.0f);
-        chewingBarGraph.setData(chewingData);
-        //chewingBarGraph.setData();
+            chewingBarGraph.getAxisLeft().setStartAtZero(true);
+            chewingBarGraph.getAxisRight().setStartAtZero(true);
+            chewingBarGraph.getXAxis().setAxisMinimum(0);
+            chewingBarGraph.setFitBars(true);
+            //chewingData.setBarWidth(1.0f);
+            chewingBarGraph.setData(chewingData);
+            //chewingBarGraph.setData();
 
-        chewingBarGraph.setTouchEnabled(true);
-        chewingBarGraph.setDragEnabled(true);
-        chewingBarGraph.setScaleEnabled(true);
+            chewingBarGraph.setTouchEnabled(true);
+            chewingBarGraph.setDragEnabled(true);
+            chewingBarGraph.setScaleEnabled(true);
 
-        smokingMaleFemaleSet();
+            smokingMaleFemaleSet();
+        }
+        else{
+            chartLayout.setVisibility(View.GONE);
+            mEmptyPatientTextView1.setVisibility(View.VISIBLE);
+            mEmptyPatientTextView2.setVisibility(View.VISIBLE);
+            mEmptyPatientImage.setVisibility(View.VISIBLE);
+            mEmptyPatientLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     private void smokingMaleFemaleSet() {
