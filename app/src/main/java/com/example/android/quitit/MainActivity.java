@@ -14,10 +14,10 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -34,8 +34,6 @@ import android.widget.Toast;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.ConnectionResult;
-
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
@@ -116,6 +114,7 @@ public class MainActivity extends AppCompatActivity
         mPatientListView=(ListView) findViewById(R.id.listView);
         //fetching data from firebase
         firebaseDataFetch();
+
 
 
         mPatientListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
@@ -254,7 +253,6 @@ public class MainActivity extends AppCompatActivity
                 boolean found = false;
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     Doctor currentDoctor = child.getValue(Doctor.class);
-                    String id = currentDoctor.getMail_id();
                     if (currentDoctor.getMail_id() != null && currentDoctor.getMail_id().equals(getUserId())) {
                         currentdoctorKey = child.getKey();
                         found = true;
@@ -287,6 +285,7 @@ public class MainActivity extends AppCompatActivity
                                     String uniqueKey = databaseReference.getKey();
                                     DatabaseReference UpdatePatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("doctors").child(uniqueKey);
                                     Doctor newDoctor = new Doctor(FirebaseMethods.getUserId());
+                                    currentdoctorKey = uniqueKey;
                                     try {
                                         UpdatePatientDatabaseReference.setValue(newDoctor);
                                         spinner.setVisibility(View.GONE);
