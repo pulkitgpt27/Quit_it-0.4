@@ -80,7 +80,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this,NewEntryActivity.class);
+                Intent intent = new Intent(LoginActivity.this,DoctorCheckActivity.class);
                 startActivity(intent);
             }
         });
