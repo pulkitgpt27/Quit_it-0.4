@@ -1,6 +1,10 @@
 package com.example.android.quitit;
 
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -109,7 +113,6 @@ public class AnalyticsMPChartChewing extends AppCompatActivity {
                 break;
             }
         }
-
         if(isDataPresent) {
             chartLayout.setVisibility(View.VISIBLE);
             mEmptyPatientTextView1.setVisibility(View.GONE);
@@ -203,7 +206,8 @@ public class AnalyticsMPChartChewing extends AppCompatActivity {
             diseaseDataSet.setColors(colorList);
 
             PieData diseaseData = new PieData(diseaseDataSet);
-            diseaseData.setValueFormatter(new PercentFormatter());
+            
+          diseaseData.setValueFormatter(new PercentFormatter());
             diseaseData.setValueTextSize(11f);
             diseaseData.setValueTextColor(Color.BLACK);
             diseaseChart.setData(diseaseData);
@@ -246,14 +250,13 @@ public class AnalyticsMPChartChewing extends AppCompatActivity {
         smokingBarMaleFemaleGraph.setScaleEnabled(false);
         smokingBarMaleFemaleGraph.setDrawBarShadow(false);
         smokingBarMaleFemaleGraph.setDrawGridBackground(false);
-        //smokingMaleFemaleData.setValueFormatter(new LargeValueFormatter());
         smokingBarMaleFemaleGraph.setData(smokingMaleFemaleData);
-        //smokingBarMaleFemaleGraph.notifyDataSetChanged();
         smokingBarMaleFemaleGraph.getBarData().setBarWidth(barWidth);
         smokingBarMaleFemaleGraph.getXAxis().setAxisMinimum(0);
         smokingBarMaleFemaleGraph.getXAxis().setAxisMaximum(0 + smokingBarMaleFemaleGraph.getBarData().getGroupWidth(groupSpace, barSpace) * smokingXAxis.size());
         smokingBarMaleFemaleGraph.groupBars(0, groupSpace, barSpace);
         smokingBarMaleFemaleGraph.getData().setHighlightEnabled(false);
+        smokingBarMaleFemaleGraph.setNoDataText("No Chart Data Available");
         smokingBarMaleFemaleGraph.invalidate();
 
         Legend l = smokingBarMaleFemaleGraph.getLegend();

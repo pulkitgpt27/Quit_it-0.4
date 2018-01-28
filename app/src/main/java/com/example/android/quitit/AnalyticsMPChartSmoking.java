@@ -96,7 +96,6 @@ public class AnalyticsMPChartSmoking extends AppCompatActivity {
         smokingBarGraph = (BarChart) findViewById(R.id.smokingBarGraph);
         smokingBarMaleFemaleGraph = (BarChart) findViewById(R.id.smokingBarMaleFemaleGraph);
         combinedSmokingBarGraph = (BarChart) findViewById(R.id.combinedSmokingBarGraph);
-
         for(int i = 0;i<patientList.size();i++){
             if(patientList.get(i).getSmoke_freq() != 0){
                 isDataPresent = true;
@@ -244,9 +243,6 @@ public class AnalyticsMPChartSmoking extends AppCompatActivity {
             mEmptyPatientImage.setVisibility(View.VISIBLE);
             mEmptyPatientLayout.setVisibility(View.VISIBLE);
         }
-
-
-
     }
 
     private void smokingMaleFemaleSet() {
