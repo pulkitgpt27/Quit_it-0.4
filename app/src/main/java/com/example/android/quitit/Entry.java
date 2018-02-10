@@ -17,7 +17,7 @@ public class Entry implements Parcelable {
     private int chew_freq;
     private float chew_cost;
     private String smokeText;
-    private int smoke_history;
+    private int smokeHistory;
     private String interest;
     private String marry_status;
     private int smoke_freq;
@@ -58,7 +58,7 @@ public class Entry implements Parcelable {
         this.chew_freq=chew_freq;
         this.chew_cost=chew_cost;
         this.smokeText=smokeText;
-        this.smoke_history=smoke_days;
+        this.smokeHistory=smoke_days;
         this.smoke_freq=smoke_freq;
         this.smoke_cost=smoke_cost;
         this.marry_status=marry_status;
@@ -97,7 +97,7 @@ public class Entry implements Parcelable {
     public float getChew_cost(){return  chew_cost;}
 
     public String getSmokeText(){return smokeText;}
-    public int getSmokeHistory(){return  smoke_history;}
+    public int getSmokeHistory(){return  smokeHistory;}
     public int getSmoke_freq(){return  smoke_freq;}
     public float getSmoke_cost(){return  smoke_cost;}
     public String getMarry_status(){return  marry_status;}
@@ -140,7 +140,7 @@ public class Entry implements Parcelable {
         chew_cost=in.readFloat();
 
         smokeText=in.readString();
-        smoke_history = in.readInt();     // Entry patient=new Entry(name,age,sex,interest,med_history,contact,days,freq,cost,m_status,future);
+        smokeHistory = in.readInt();     // Entry patient=new Entry(name,age,sex,interest,med_history,contact,days,freq,cost,m_status,future);
         smoke_freq=in.readInt();
         smoke_cost=in.readFloat();
         marry_status = in.readString();
@@ -195,7 +195,7 @@ public class Entry implements Parcelable {
 
 
         parcel.writeString(smokeText);
-        parcel.writeInt(smoke_history);
+        parcel.writeInt(smokeHistory);
         parcel.writeInt(smoke_freq);
         parcel.writeFloat(smoke_cost);
 
