@@ -1,11 +1,20 @@
 package com.example.android.quitit;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Parcelable;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.Log;
@@ -14,7 +23,9 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.ScrollView;
@@ -22,14 +33,19 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -44,17 +60,22 @@ public class NewEntryActivity  extends AppCompatActivity {
 
     /*this is where the code for adding the data to the DATABASE will go */
     public static final String ANONYMOUS = "anonymous";
+    private final int REQUEST_CAMERA = 0;
+    private final int REQUEST_GALLERY = 1;
+    private boolean imageset = false;
 
     private String mUsername;
     private int id=1;
 
     private FirebaseStorage mFirebaseStorage;
+    private StorageReference mPhotoStorageReference;
+
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mPatientDatabaseReference;
     //private ListView mPatientListView;
     //private EntriesListAdapter mPatientAdapter;
     private Button mSaveButton;
-    private ChildEventListener mChildEventListener;
+    //private ChildEventListener mChildEventListener;
     private int chew_days;
     private int chew_freq;
     private int smoke_days;
@@ -82,14 +103,17 @@ public class NewEntryActivity  extends AppCompatActivity {
     private String address="";
     private String chewText="";
     private String smokeText="";
-
-
-
+    private Uri uri;
+    private String userChoosenTask;
+    private Bitmap a;
     //for validation
     boolean[] validation;
     private String message="";
     private String med_history="";
     private Entry patient;
+    private ImageView patientImageView;
+
+    private String dateTime;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -97,10 +121,10 @@ public class NewEntryActivity  extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_entry);
 
-        mUsername=ANONYMOUS;
-        mFirebaseDatabase=FirebaseDatabase.getInstance();
+        mUsername = ANONYMOUS;
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mFirebaseStorage=FirebaseStorage.getInstance();
         //mDoctorDatabaseReference=mFirebaseDatabase.getReference().child("doctors");
-
 
 
         //**************VALIDATIONS**************
@@ -114,6 +138,14 @@ public class NewEntryActivity  extends AppCompatActivity {
         final EditText $salary = (EditText) findViewById(R.id.salary_edit_text);
         final EditText $address = (EditText) findViewById(R.id.address_edit_text);
         final EditText $profession = (EditText) findViewById(R.id.profession_edit_text);
+        patientImageView = (ImageView) findViewById(R.id.patientImageView);
+        patientImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectImage();
+            }
+        });
+
         $name.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         $address.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         $profession.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
@@ -139,21 +171,19 @@ public class NewEntryActivity  extends AppCompatActivity {
 
         $name.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onFocusChange(View view, boolean b){
-                if(!b) {
+            public void onFocusChange(View view, boolean b) {
+                if (!b) {
                     if (!ValidateEntry.validateEmpty($name.getText().toString())) {
                         $name_layout.setErrorEnabled(true);
                         $name_layout.setError("Name is Empty!");
                         $name_layout.getBackground().setAlpha(51);
                         validation[0] = false;
-                    }
-                    else if (!ValidateEntry.validateNameDigit($name.getText().toString())){  //checks if name contains a number{
+                    } else if (!ValidateEntry.validateNameDigit($name.getText().toString())) {  //checks if name contains a number{
                         $name_layout.setError("Name contains a number!");
                         $name_layout.setErrorEnabled(true);
                         $name_layout.getBackground().setAlpha(51);
-                        validation[0]=false;
-                    }
-                    else {
+                        validation[0] = false;
+                    } else {
                         $name_layout.getBackground().setAlpha(0);
                         $name_layout.setErrorEnabled(false);
                         validation[0] = true;
@@ -166,20 +196,18 @@ public class NewEntryActivity  extends AppCompatActivity {
         $age.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
-                if(!b) {
+                if (!b) {
                     if (!ValidateEntry.validateEmpty($age.getText().toString())) {
                         $age_layout.setErrorEnabled(true);
                         $age_layout.setError("Age is empty");
                         $age_layout.getBackground().setAlpha(51);
                         validation[1] = false;
-                    }
-                    else if (!ValidateEntry.validateAge($age.getText().toString())){
+                    } else if (!ValidateEntry.validateAge($age.getText().toString())) {
                         $age_layout.setErrorEnabled(true);
                         $age_layout.setError("Age is invalid");
                         $age_layout.getBackground().setAlpha(51);
                         validation[1] = false;
-                    }
-                    else {
+                    } else {
                         $age_layout.getBackground().setAlpha(0);
                         $age_layout.setErrorEnabled(false);
                         validation[1] = true;
@@ -192,7 +220,7 @@ public class NewEntryActivity  extends AppCompatActivity {
         $email.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
-                if(!b) {
+                if (!b) {
                     if (!ValidateEntry.validateEmail($email.getText().toString())) {
 
                         $email_layout.setErrorEnabled(true);
@@ -200,8 +228,7 @@ public class NewEntryActivity  extends AppCompatActivity {
                         $email.setError("Invalid Email");
                         $email_layout.getBackground().setAlpha(51);
                         validation[2] = false;
-                    }
-                    else{
+                    } else {
                         $email_layout.getBackground().setAlpha(0);
                         $email_layout.setErrorEnabled(false);
                         validation[2] = true;
@@ -214,15 +241,14 @@ public class NewEntryActivity  extends AppCompatActivity {
         $phone.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
-                if(!b){
-                    if(!ValidateEntry.validatePhone($phone.getText().toString())) {
+                if (!b) {
+                    if (!ValidateEntry.validatePhone($phone.getText().toString())) {
                         $phone_layout.setErrorEnabled(true);
                         $phone_layout.setError("Number Invalid");
                         $phone_layout.getBackground().setAlpha(51);
                         validation[3] = false;
-                    }
-                    else
-                    {   $phone_layout.getBackground().setAlpha(0);
+                    } else {
+                        $phone_layout.getBackground().setAlpha(0);
                         $phone_layout.setErrorEnabled(false);
                         validation[3] = true;
                     }
@@ -233,14 +259,13 @@ public class NewEntryActivity  extends AppCompatActivity {
         $salary.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
-                if(!b){
-                    if(!ValidateEntry.validateInteger($salary.getText().toString())) {
+                if (!b) {
+                    if (!ValidateEntry.validateInteger($salary.getText().toString())) {
                         $salary_layout.setError("Salary amount is invalid");
                         $salary_layout.getBackground().setAlpha(51);
                         $salary_layout.setErrorEnabled(true);
                         validation[4] = false;
-                    }
-                    else {
+                    } else {
                         $salary_layout.getBackground().setAlpha(0);
                         $salary_layout.setErrorEnabled(false);
                         validation[4] = true;
@@ -272,13 +297,13 @@ public class NewEntryActivity  extends AppCompatActivity {
         final TextView cost_ciggartte = (TextView) findViewById(R.id.cost_smoking_text_view); //textView
         final EditText cost_ciggartte_input = (EditText) findViewById(R.id.cost_smoking_edit_text);
 
-        final LinearLayout smoking_history= (LinearLayout) findViewById(R.id.smoking_history_layout);
-        final LinearLayout chewing_history= (LinearLayout) findViewById(R.id.chewing_history_layout);
+        final LinearLayout smoking_history = (LinearLayout) findViewById(R.id.smoking_history_layout);
+        final LinearLayout chewing_history = (LinearLayout) findViewById(R.id.chewing_history_layout);
 
         chewer.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
-                if(!isChecked){
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (!isChecked) {
                     //chewing_heading.setVisibility(View.GONE);
                     time_chewing.setVisibility(View.GONE);
                     years_chewing_input.setVisibility(View.GONE);
@@ -288,9 +313,7 @@ public class NewEntryActivity  extends AppCompatActivity {
                     cost_packet.setVisibility(View.GONE);
                     cost_packet_input.setVisibility(View.GONE);
                     chewing_history.setVisibility(GONE);
-                }
-                else
-                {
+                } else {
                     //chewing_heading.setVisibility(View.VISIBLE);
                     time_chewing.setVisibility(View.VISIBLE);
                     years_chewing_input.setVisibility(View.VISIBLE);
@@ -306,8 +329,8 @@ public class NewEntryActivity  extends AppCompatActivity {
 
         smoker.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
-                if(!isChecked){
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (!isChecked) {
                     //smoking_heading.setVisibility(View.GONE);
                     time_smoking.setVisibility(View.GONE);
                     years_smoking_input.setVisibility(View.GONE);
@@ -317,8 +340,7 @@ public class NewEntryActivity  extends AppCompatActivity {
                     cost_ciggartte.setVisibility(View.GONE);
                     cost_ciggartte_input.setVisibility(View.GONE);
                     smoking_history.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     //smoking_heading.setVisibility(View.VISIBLE);
                     time_smoking.setVisibility(View.VISIBLE);
                     years_smoking_input.setVisibility(View.VISIBLE);
@@ -351,8 +373,7 @@ public class NewEntryActivity  extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                if(!isChecked)
-                {
+                if (!isChecked) {
 
                     morning_consumer.setVisibility(GONE);
                     family_consumes.setVisibility(GONE);
@@ -364,9 +385,7 @@ public class NewEntryActivity  extends AppCompatActivity {
                     reasonforquitting.setVisibility(GONE);
                     tried_quitting.setVisibility(GONE);
                     craving.setVisibility(GONE);
-                }
-                else
-                {
+                } else {
                     morning_consumer.setVisibility(LinearLayout.VISIBLE);
                     family_consumes.setVisibility(LinearLayout.VISIBLE);
                     started_how.setVisibility(LinearLayout.VISIBLE);
@@ -382,17 +401,24 @@ public class NewEntryActivity  extends AppCompatActivity {
             }
         });
 
+        //***********ProgressBar************
+        final ProgressBar $progress_bar = (ProgressBar) findViewById(R.id.progress_bar);
+        final LinearLayout $progress_parent = (LinearLayout) findViewById(R.id.progress_parent);
+        final TextView $progress_text = (TextView) findViewById(R.id.progress_text_view);
+        $progress_bar.setVisibility(View.INVISIBLE);
+        $progress_parent.setVisibility(View.INVISIBLE);
+        $progress_text.setVisibility(View.INVISIBLE);
 
-        mSaveButton=(Button) findViewById(R.id.save);
+        mSaveButton = (Button) findViewById(R.id.save);
 
         mSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //validations for scrolling view
-                if (!validation[0]){
+                if (!validation[0]) {
                     $new_entry_scroll_view.smoothScrollTo(0, $name_layout.getTop());
                     Toast.makeText($new_entry_context, "Not Saved. Error in Name", Toast.LENGTH_LONG).show();
-                } else if (!validation[1]){
+                } else if (!validation[1]) {
                     $new_entry_scroll_view.smoothScrollTo(0, $age_layout.getTop());
                     Toast.makeText($new_entry_context, "Not Saved. Error in Age", Toast.LENGTH_LONG).show();
                 }
@@ -405,6 +431,13 @@ public class NewEntryActivity  extends AppCompatActivity {
 //                    Toast.makeText($new_entry_context, "Not Saved. Error in Salary", Toast.LENGTH_LONG).show();
 //                }
                 else {
+                    $progress_bar.setVisibility(View.VISIBLE);
+                    $progress_bar.setScaleY(5f);
+                    $progress_bar.setScaleX(3f);
+                    $progress_parent.setVisibility(View.VISIBLE);
+                    $progress_text.setVisibility(View.VISIBLE);
+                    $progress_parent.getBackground().setAlpha(200);
+
                     //For Name
                     EditText nameView = (EditText) findViewById(R.id.name_edit_text);
                     name = nameView.getText().toString();
@@ -461,7 +494,7 @@ public class NewEntryActivity  extends AppCompatActivity {
                         EditText chew_monthView = (EditText) findViewById(R.id.months_chewing_edit_text);
 
                         int chew_months = 0;
-                        if(!chew_monthView.getText().toString().equals(""))
+                        if (!chew_monthView.getText().toString().equals(""))
                             chew_months = Integer.parseInt(chew_monthView.getText().toString());
 
                         chew_days = (chew_years * 365) + (chew_months * 30);
@@ -486,7 +519,7 @@ public class NewEntryActivity  extends AppCompatActivity {
 
                         EditText smoke_monthView = (EditText) findViewById(R.id.smoking_months_edit_text);
                         int smoke_months = 0;
-                        if(!smoke_monthView.getText().toString().equals(""))
+                        if (!smoke_monthView.getText().toString().equals(""))
                             smoke_months = Integer.parseInt(smoke_monthView.getText().toString());
 
                         smoke_days = (smoke_years * 365) + (smoke_months * 30);
@@ -526,33 +559,6 @@ public class NewEntryActivity  extends AppCompatActivity {
                     //For current date
                     SimpleDateFormat df1 = new SimpleDateFormat("dd-MMM-yyyy");
                     final String formattedDate1 = df1.format(c.getTime());
-
-                    //For id
-                    // DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-                    //Query lastQuery = databaseReference.child("patient").orderByKey().limitToLast(1);
-                    //lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                      /*  @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-
-
-
-                            if(dataSnapshot==null)
-                            {
-                                id=1;
-                            }
-                            else
-                            {
-                                id = (dataSnapshot!=null)? (int) dataSnapshot.child("id").getValue() :1;
-                                id++;
-                            }
-                        }
-
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        //Handle possible errors.
-                    }
-                });*/
 
                     //For fill more
                     if (S.isChecked()) {
@@ -726,6 +732,7 @@ public class NewEntryActivity  extends AppCompatActivity {
                             craving_time += craving_chackbox9.getText().toString() + "";
                         }
                     }
+
                     final String interest = "";
                     String future = "";
 
@@ -733,50 +740,198 @@ public class NewEntryActivity  extends AppCompatActivity {
 
 
                     mPatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("doctors").child(MainActivity.currentdoctorKey).child("patients");//FirebaseMethods.getFirebaseReference("doctors");
-
+                    mPhotoStorageReference = mFirebaseStorage.getReference().child("patient_photos");
 
                     final String[] uniqueKey = {""};
                     String key = "";
 
-
-                    mPatientDatabaseReference
-                            .push()
-                            .setValue(null, new DatabaseReference.CompletionListener() {
-                                @Override
-                                public void onComplete(DatabaseError databaseError,
-                                                       DatabaseReference databaseReference) {
-                                    uniqueKey[0] = databaseReference.getKey();
-                                    DatabaseReference UpdatePatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("doctors").child(MainActivity.currentdoctorKey).child("patients").child(uniqueKey[0]);
-                                    try {
-                                        patient = new Entry(name, age, sex, interest, med_history, contact, email, address, chewText, chew_days, chew_freq, chew_cost, smokeText, smoke_days, smoke_freq, smoke_cost, m_status, business, salary, formattedtime1, formattedDate1, morning_status,
-                                                family_status, habit_reason, habbit, aware_status, aware_diseases, quit_status, quit_reason, quit_before_status, craving_time, uniqueKey[0], message);
-                                        patient.setMessage(MessageActivity.getMessage(patient, chewer.isChecked(), smoker.isChecked()));
-                                        UpdatePatientDatabaseReference.setValue(patient);
-                                        Toast.makeText(getBaseContext(), "New Patient Added, " + name, Toast.LENGTH_SHORT).show();
-                                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                        if (user != null) {
-                                            Intent i = new Intent(NewEntryActivity.this, MainActivity.class);
-                                            startActivity(i);
-                                            finish();
-                                        } else {
-                                            Intent intent = new Intent(NewEntryActivity.this, ReportActivity.class);
-                                            Entry temp = patient;
-                                            Bundle B = new Bundle();
-                                            B.putParcelable("ClickedEntry", (Parcelable) temp);
-                                            intent.putExtras(B);
-                                            startActivity(intent);
-                                            finish();
+                    if(imageset) {
+                        StorageReference photoref = mPhotoStorageReference.child(uri.getLastPathSegment());
+                        photoref.putFile(uri).addOnProgressListener(NewEntryActivity.this, new OnProgressListener<UploadTask.TaskSnapshot>(){
+                            @Override
+                            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                                double progress = (100.0 * (taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount());
+                                Log.e("UPLOADING","progres");
+                                $progress_bar.setProgress((int)progress);
+                            }
+                        }).addOnSuccessListener(NewEntryActivity.this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                mPatientDatabaseReference.push().setValue(null, new DatabaseReference.CompletionListener() {
+                                    @Override
+                                    public void onComplete(DatabaseError databaseError,
+                                                           DatabaseReference databaseReference) {
+                                        uniqueKey[0] = databaseReference.getKey();
+                                        final DatabaseReference UpdatePatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("doctors").child(MainActivity.currentdoctorKey).child("patients").child(uniqueKey[0]);
+                                        try {
+                                            patient = new Entry(name, age, sex, interest, med_history, contact, email, address, chewText, chew_days, chew_freq, chew_cost, smokeText, smoke_days, smoke_freq, smoke_cost, m_status, business, salary, formattedtime1, formattedDate1, morning_status,
+                                                    family_status, habit_reason, habbit, aware_status, aware_diseases, quit_status, quit_reason, quit_before_status, craving_time, uniqueKey[0], message, uri.toString());
+                                            patient.setMessage(MessageActivity.getMessage(patient, chewer.isChecked(), smoker.isChecked()));
+                                            UpdatePatientDatabaseReference.setValue(patient);
+                                            Toast.makeText(getBaseContext(), "New Patient Added, " + name + ", with Image.", Toast.LENGTH_SHORT).show();
+                                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                            if (user != null) {
+                                                Intent i = new Intent(NewEntryActivity.this, MainActivity.class);
+                                                startActivity(i);
+                                                finish();
+                                            } else {
+                                                Intent intent = new Intent(NewEntryActivity.this, ReportActivity.class);
+                                                Entry temp = patient;
+                                                Bundle B = new Bundle();
+                                                B.putParcelable("ClickedEntry", (Parcelable) temp);
+                                                intent.putExtras(B);
+                                                startActivity(intent);
+                                                finish();
+                                            }
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
                                         }
-
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
+                                        Log.e("Updated", "New Patiend Added :" + patient.getId() + " with Image.");
+                                        $progress_bar.setVisibility(GONE);
+                                        $progress_parent.setVisibility(GONE);
+                                        $progress_text.setVisibility(GONE);
                                     }
-                                    Log.e("Updated", "New Patiend Added :" + patient.getId());
+                                });
+                            }
+                        });
+                    }
+                    else{
+                        mPatientDatabaseReference.push().setValue(null, new DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError,
+                                                   DatabaseReference databaseReference) {
+                                uniqueKey[0] = databaseReference.getKey();
+                                final DatabaseReference UpdatePatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("doctors").child(MainActivity.currentdoctorKey).child("patients").child(uniqueKey[0]);
+                                try {
+                                    patient = new Entry(name, age, sex, interest, med_history, contact, email, address, chewText, chew_days, chew_freq, chew_cost, smokeText, smoke_days, smoke_freq, smoke_cost, m_status, business, salary, formattedtime1, formattedDate1, morning_status,
+                                            family_status, habit_reason, habbit, aware_status, aware_diseases, quit_status, quit_reason, quit_before_status, craving_time, uniqueKey[0], message, "");
+                                    patient.setMessage(MessageActivity.getMessage(patient, chewer.isChecked(), smoker.isChecked()));
+                                    UpdatePatientDatabaseReference.setValue(patient);
+                                    Toast.makeText(getBaseContext(), "New Patient Added, " + name, Toast.LENGTH_SHORT).show();
+                                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                    if (user != null) {
+                                        Intent i = new Intent(NewEntryActivity.this, MainActivity.class);
+                                        startActivity(i);
+                                        finish();
+                                    } else {
+                                        Intent intent = new Intent(NewEntryActivity.this, ReportActivity.class);
+                                        Entry temp = patient;
+                                        Bundle B = new Bundle();
+                                        B.putParcelable("ClickedEntry", (Parcelable) temp);
+                                        intent.putExtras(B);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
-                            });
-
+                                Log.e("Updated", "New Patiend Added :" + patient.getId());
+                                $progress_bar.setVisibility(GONE);
+                                $progress_parent.setVisibility(GONE);
+                                $progress_text.setVisibility(GONE);
+                            }
+                        });
+                    }
                 }
             }
         });
+    }
+
+    public void selectImage(){
+        final CharSequence[] items = { "Take Photo", "Choose from Library", "Cancel" };
+        AlertDialog.Builder builder = new AlertDialog.Builder(NewEntryActivity.this);
+        builder.setTitle("Add Photo!");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                boolean result=Utility.checkPermission(NewEntryActivity.this);
+                if (items[item].equals("Take Photo")) {
+                    userChoosenTask="Take Photo through Camera";
+                    if(result)
+                        cameraIntent();
+                } else if (items[item].equals("Choose from Library")) {
+                    userChoosenTask="Choose from Library";
+                    if(result)
+                        galleryIntent();
+                } else if (items[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case Utility.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if(userChoosenTask.equals("Take Photo"))
+                        cameraIntent();
+                    else if(userChoosenTask.equals("Choose from Library"))
+                        galleryIntent();
+                } else {
+                    //code for deny
+                }
+                break;
+        }
+    }
+
+    private void cameraIntent()
+    {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        dateTime = sdf.format(Calendar.getInstance().getTime());
+        File direct = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "QUIT_IT");
+
+        if (!direct.exists()) {
+            File wallpaperDirectory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "QUIT_IT");
+            wallpaperDirectory.mkdirs();
+        }
+        //Uri uriSavedImage= Uri.fromFile(new File(Environment.getExternalStorageDirectory() + "/ARO" + "/" + dateTime + ".PNG"));
+        uri= Uri.fromFile(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/QUIT_IT/"  + dateTime + ".PNG"));
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        startActivityForResult(intent, REQUEST_CAMERA);
+    }
+
+    private void galleryIntent()
+    {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);//
+        startActivityForResult(Intent.createChooser(intent, "Select File"), REQUEST_GALLERY);
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_GALLERY)
+                onSelectFromGalleryResult(data);
+            else if (requestCode == REQUEST_CAMERA)
+                onSelectFromCameraResult();
+        }
+    }
+
+    private void onSelectFromCameraResult() {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = 3;
+        Bitmap bm = BitmapFactory.decodeFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/QUIT_IT" + "/" + dateTime + ".PNG", options);
+        imageset = true;
+        patientImageView.setImageBitmap(bm);
+    }
+
+    @SuppressWarnings("deprecation")
+    private void onSelectFromGalleryResult(Intent data) {
+        Bitmap bm=null;
+        if (data != null) {
+            try {
+                bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+                uri = data.getData();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        imageset = true;
+        patientImageView.setImageBitmap(bm);
     }
 }

@@ -75,5 +75,6 @@
     <string name="average_cost_of_each_ciggerate">Average cost of each ciggerate </string>
     <string name="how_many_times_do_you_smoke_in_a_day">How many times do you smoke in a day?</string>
     <string name="search_hint">Patient\'s Name</string>
+    <string name="image_msg_report_activity">This is what you may look like after too much of consumption</string>
 
 </resources>

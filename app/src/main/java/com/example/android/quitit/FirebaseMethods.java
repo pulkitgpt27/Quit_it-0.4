@@ -1,13 +1,11 @@
 package com.example.android.quitit;
 
-import android.util.Log;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import static com.example.android.quitit.R.id.nameView;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 /**
  * Created by Pulkit on 11-08-2017.
@@ -37,6 +35,9 @@ public class FirebaseMethods {
             return null;
     }
 
+    public static StorageReference getFirbaseStorageReference(String child){
+        return FirebaseStorage.getInstance().getReference().child(child);
+    }
     public static DatabaseReference getFirebaseReference(String fchild)
     {
         FirebaseDatabase mFirebaseDatabase=FirebaseDatabase.getInstance();

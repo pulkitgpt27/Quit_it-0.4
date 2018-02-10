@@ -13,11 +13,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import static com.example.android.quitit.R.id.update;
-
 /**
  * Created by Pulkit on 29-07-2017.
  */
@@ -498,7 +493,7 @@ public class UpdateActivity extends AppCompatActivity {
                         ClickedEntry.getChew_freq(), ClickedEntry.getChew_cost(),ClickedEntry.getSmokeText(), ClickedEntry.getSmokeHistory(), ClickedEntry.getSmoke_freq(), ClickedEntry.getSmoke_cost(), m_status,
                         businessView.getText().toString(), Integer.parseInt(salaryView.getText().toString()), ClickedEntry.getTime(), ClickedEntry.getFormattedDate(), ClickedEntry.getMorning_status(), ClickedEntry.getFamily_status(),
                         startConsumingReason, otherHabit, ClickedEntry.getAware_status(), tobaccoConsumptionDiseases, ClickedEntry.getQuit_status(), reasonForQuitting, ClickedEntry.getQuit_before_status(),
-                        cravingTime, ClickedEntry.getId(),ClickedEntry.getMessage());
+                        cravingTime, ClickedEntry.getId(),ClickedEntry.getMessage(),ClickedEntry.getImageUri());
 
                 //For updation
                 FirebaseMethods.updatePatient(ClickedEntry.getId(),patient);
