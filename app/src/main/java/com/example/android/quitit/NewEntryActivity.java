@@ -1,19 +1,29 @@
 package com.example.android.quitit;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -22,6 +32,9 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.vision.Frame;
+import com.google.android.gms.vision.face.Face;
+import com.google.android.gms.vision.face.FaceDetector;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -30,6 +43,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -40,13 +55,15 @@ import static java.lang.Integer.parseInt;
 /**
  * Created by Ayush vaid on 12-06-2017.
  */
-public class NewEntryActivity  extends AppCompatActivity {
+public class NewEntryActivity extends AppCompatActivity {
 
     /*this is where the code for adding the data to the DATABASE will go */
     public static final String ANONYMOUS = "anonymous";
+    private final int REQUEST_CAMERA = 0;
+    private final int REQUEST_GALLERY = 1;
 
     private String mUsername;
-    private int id=1;
+    private int id = 1;
 
     private FirebaseStorage mFirebaseStorage;
     private FirebaseDatabase mFirebaseDatabase;
@@ -61,35 +78,36 @@ public class NewEntryActivity  extends AppCompatActivity {
     private int smoke_freq;
     private float chew_cost;
     private float smoke_cost;
-    private String morning_status="";
-    private String family_status="";
-    private String habit_reason="";
-    private String habbit="";
-    private String aware_status="";
-    private String aware_diseases="";
-    private String quit_status="";
-    private String quit_reason="";
-    private String quit_before_status="";
-    private String craving_time="";
-    private String name="";
+    private String morning_status = "";
+    private String family_status = "";
+    private String habit_reason = "";
+    private String habbit = "";
+    private String aware_status = "";
+    private String aware_diseases = "";
+    private String quit_status = "";
+    private String quit_reason = "";
+    private String quit_before_status = "";
+    private String craving_time = "";
+    private String name = "";
     private int age;
-    private String sex="";
-    private String contact="";
-    private String m_status="";
-    private String business="";
-    private int salary=1;
-    private String email="";
-    private String address="";
-    private String chewText="";
-    private String smokeText="";
+    private String sex = "";
+    private String contact = "";
+    private String m_status = "";
+    private String business = "";
+    private int salary = 1;
+    private String email = "";
+    private String address = "";
+    private String chewText = "";
+    private String smokeText = "";
 
-
+    private String userChoosenTask;
 
     //for validation
     boolean[] validation;
-    private String message="";
-    private String med_history="";
+    private String message = "";
+    private String med_history = "";
     private Entry patient;
+    private ImageView patientImageView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -97,10 +115,9 @@ public class NewEntryActivity  extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_entry);
 
-        mUsername=ANONYMOUS;
-        mFirebaseDatabase=FirebaseDatabase.getInstance();
+        mUsername = ANONYMOUS;
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
         //mDoctorDatabaseReference=mFirebaseDatabase.getReference().child("doctors");
-
 
 
         //**************VALIDATIONS**************
@@ -114,6 +131,14 @@ public class NewEntryActivity  extends AppCompatActivity {
         final EditText $salary = (EditText) findViewById(R.id.salary_edit_text);
         final EditText $address = (EditText) findViewById(R.id.address_edit_text);
         final EditText $profession = (EditText) findViewById(R.id.profession_edit_text);
+        patientImageView = (ImageView) findViewById(R.id.patientImageView);
+        patientImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectImage();
+            }
+        });
+
         $name.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         $address.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         $profession.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
@@ -139,21 +164,19 @@ public class NewEntryActivity  extends AppCompatActivity {
 
         $name.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onFocusChange(View view, boolean b){
-                if(!b) {
+            public void onFocusChange(View view, boolean b) {
+                if (!b) {
                     if (!ValidateEntry.validateEmpty($name.getText().toString())) {
                         $name_layout.setErrorEnabled(true);
                         $name_layout.setError("Name is Empty!");
                         $name_layout.getBackground().setAlpha(51);
                         validation[0] = false;
-                    }
-                    else if (!ValidateEntry.validateNameDigit($name.getText().toString())){  //checks if name contains a number{
+                    } else if (!ValidateEntry.validateNameDigit($name.getText().toString())) {  //checks if name contains a number{
                         $name_layout.setError("Name contains a number!");
                         $name_layout.setErrorEnabled(true);
                         $name_layout.getBackground().setAlpha(51);
-                        validation[0]=false;
-                    }
-                    else {
+                        validation[0] = false;
+                    } else {
                         $name_layout.getBackground().setAlpha(0);
                         $name_layout.setErrorEnabled(false);
                         validation[0] = true;
@@ -166,20 +189,18 @@ public class NewEntryActivity  extends AppCompatActivity {
         $age.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
-                if(!b) {
+                if (!b) {
                     if (!ValidateEntry.validateEmpty($age.getText().toString())) {
                         $age_layout.setErrorEnabled(true);
                         $age_layout.setError("Age is empty");
                         $age_layout.getBackground().setAlpha(51);
                         validation[1] = false;
-                    }
-                    else if (!ValidateEntry.validateAge($age.getText().toString())){
+                    } else if (!ValidateEntry.validateAge($age.getText().toString())) {
                         $age_layout.setErrorEnabled(true);
                         $age_layout.setError("Age is invalid");
                         $age_layout.getBackground().setAlpha(51);
                         validation[1] = false;
-                    }
-                    else {
+                    } else {
                         $age_layout.getBackground().setAlpha(0);
                         $age_layout.setErrorEnabled(false);
                         validation[1] = true;
@@ -192,7 +213,7 @@ public class NewEntryActivity  extends AppCompatActivity {
         $email.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
-                if(!b) {
+                if (!b) {
                     if (!ValidateEntry.validateEmail($email.getText().toString())) {
 
                         $email_layout.setErrorEnabled(true);
@@ -200,8 +221,7 @@ public class NewEntryActivity  extends AppCompatActivity {
                         $email.setError("Invalid Email");
                         $email_layout.getBackground().setAlpha(51);
                         validation[2] = false;
-                    }
-                    else{
+                    } else {
                         $email_layout.getBackground().setAlpha(0);
                         $email_layout.setErrorEnabled(false);
                         validation[2] = true;
@@ -214,15 +234,14 @@ public class NewEntryActivity  extends AppCompatActivity {
         $phone.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
-                if(!b){
-                    if(!ValidateEntry.validatePhone($phone.getText().toString())) {
+                if (!b) {
+                    if (!ValidateEntry.validatePhone($phone.getText().toString())) {
                         $phone_layout.setErrorEnabled(true);
                         $phone_layout.setError("Number Invalid");
                         $phone_layout.getBackground().setAlpha(51);
                         validation[3] = false;
-                    }
-                    else
-                    {   $phone_layout.getBackground().setAlpha(0);
+                    } else {
+                        $phone_layout.getBackground().setAlpha(0);
                         $phone_layout.setErrorEnabled(false);
                         validation[3] = true;
                     }
@@ -233,14 +252,13 @@ public class NewEntryActivity  extends AppCompatActivity {
         $salary.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
-                if(!b){
-                    if(!ValidateEntry.validateInteger($salary.getText().toString())) {
+                if (!b) {
+                    if (!ValidateEntry.validateInteger($salary.getText().toString())) {
                         $salary_layout.setError("Salary amount is invalid");
                         $salary_layout.getBackground().setAlpha(51);
                         $salary_layout.setErrorEnabled(true);
                         validation[4] = false;
-                    }
-                    else {
+                    } else {
                         $salary_layout.getBackground().setAlpha(0);
                         $salary_layout.setErrorEnabled(false);
                         validation[4] = true;
@@ -272,13 +290,13 @@ public class NewEntryActivity  extends AppCompatActivity {
         final TextView cost_ciggartte = (TextView) findViewById(R.id.cost_smoking_text_view); //textView
         final EditText cost_ciggartte_input = (EditText) findViewById(R.id.cost_smoking_edit_text);
 
-        final LinearLayout smoking_history= (LinearLayout) findViewById(R.id.smoking_history_layout);
-        final LinearLayout chewing_history= (LinearLayout) findViewById(R.id.chewing_history_layout);
+        final LinearLayout smoking_history = (LinearLayout) findViewById(R.id.smoking_history_layout);
+        final LinearLayout chewing_history = (LinearLayout) findViewById(R.id.chewing_history_layout);
 
         chewer.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
-                if(!isChecked){
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (!isChecked) {
                     //chewing_heading.setVisibility(View.GONE);
                     time_chewing.setVisibility(View.GONE);
                     years_chewing_input.setVisibility(View.GONE);
@@ -288,9 +306,7 @@ public class NewEntryActivity  extends AppCompatActivity {
                     cost_packet.setVisibility(View.GONE);
                     cost_packet_input.setVisibility(View.GONE);
                     chewing_history.setVisibility(GONE);
-                }
-                else
-                {
+                } else {
                     //chewing_heading.setVisibility(View.VISIBLE);
                     time_chewing.setVisibility(View.VISIBLE);
                     years_chewing_input.setVisibility(View.VISIBLE);
@@ -306,8 +322,8 @@ public class NewEntryActivity  extends AppCompatActivity {
 
         smoker.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
-                if(!isChecked){
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (!isChecked) {
                     //smoking_heading.setVisibility(View.GONE);
                     time_smoking.setVisibility(View.GONE);
                     years_smoking_input.setVisibility(View.GONE);
@@ -317,8 +333,7 @@ public class NewEntryActivity  extends AppCompatActivity {
                     cost_ciggartte.setVisibility(View.GONE);
                     cost_ciggartte_input.setVisibility(View.GONE);
                     smoking_history.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     //smoking_heading.setVisibility(View.VISIBLE);
                     time_smoking.setVisibility(View.VISIBLE);
                     years_smoking_input.setVisibility(View.VISIBLE);
@@ -351,8 +366,7 @@ public class NewEntryActivity  extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                if(!isChecked)
-                {
+                if (!isChecked) {
 
                     morning_consumer.setVisibility(GONE);
                     family_consumes.setVisibility(GONE);
@@ -364,9 +378,7 @@ public class NewEntryActivity  extends AppCompatActivity {
                     reasonforquitting.setVisibility(GONE);
                     tried_quitting.setVisibility(GONE);
                     craving.setVisibility(GONE);
-                }
-                else
-                {
+                } else {
                     morning_consumer.setVisibility(LinearLayout.VISIBLE);
                     family_consumes.setVisibility(LinearLayout.VISIBLE);
                     started_how.setVisibility(LinearLayout.VISIBLE);
@@ -383,16 +395,16 @@ public class NewEntryActivity  extends AppCompatActivity {
         });
 
 
-        mSaveButton=(Button) findViewById(R.id.save);
+        mSaveButton = (Button) findViewById(R.id.save);
 
         mSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //validations for scrolling view
-                if (!validation[0]){
+                if (!validation[0]) {
                     $new_entry_scroll_view.smoothScrollTo(0, $name_layout.getTop());
                     Toast.makeText($new_entry_context, "Not Saved. Error in Name", Toast.LENGTH_LONG).show();
-                } else if (!validation[1]){
+                } else if (!validation[1]) {
                     $new_entry_scroll_view.smoothScrollTo(0, $age_layout.getTop());
                     Toast.makeText($new_entry_context, "Not Saved. Error in Age", Toast.LENGTH_LONG).show();
                 }
@@ -461,7 +473,7 @@ public class NewEntryActivity  extends AppCompatActivity {
                         EditText chew_monthView = (EditText) findViewById(R.id.months_chewing_edit_text);
 
                         int chew_months = 0;
-                        if(!chew_monthView.getText().toString().equals(""))
+                        if (!chew_monthView.getText().toString().equals(""))
                             chew_months = Integer.parseInt(chew_monthView.getText().toString());
 
                         chew_days = (chew_years * 365) + (chew_months * 30);
@@ -486,7 +498,7 @@ public class NewEntryActivity  extends AppCompatActivity {
 
                         EditText smoke_monthView = (EditText) findViewById(R.id.smoking_months_edit_text);
                         int smoke_months = 0;
-                        if(!smoke_monthView.getText().toString().equals(""))
+                        if (!smoke_monthView.getText().toString().equals(""))
                             smoke_months = Integer.parseInt(smoke_monthView.getText().toString());
 
                         smoke_days = (smoke_years * 365) + (smoke_months * 30);
@@ -779,4 +791,128 @@ public class NewEntryActivity  extends AppCompatActivity {
             }
         });
     }
+
+    public void selectImage() {
+        final CharSequence[] items = {"Take Photo", "Choose from Library", "Cancel"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(NewEntryActivity.this);
+        builder.setTitle("Add Photo!");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                boolean result = Utility.checkPermission(NewEntryActivity.this);
+                if (items[item].equals("Take Photo")) {
+                    userChoosenTask = "Take Photo";
+                    if (result)
+                        cameraIntent();
+                } else if (items[item].equals("Choose from Library")) {
+                    userChoosenTask = "Choose from Library";
+                    if (result)
+                        galleryIntent();
+                } else if (items[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
+
+    private void cameraIntent() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        /*intent.putExtra("crop", "true");
+        intent.putExtra("aspectX", 0);
+        intent.putExtra("aspectY", 0);
+        intent.putExtra("outputX", 200);
+        intent.putExtra("outputY", 150);*/
+        /*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        dateTime = sdf.format(Calendar.getInstance().getTime());
+
+        //File direct = new File(Environment.getExternalStorageDirectory() + "/ARO");
+        File direct = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), "ARO");
+
+        if (!direct.exists()) {
+            //File wallpaperDirectory = new File(Environment.getExternalStorageDirectory() + "/ARO");
+            File wallpaperDirectory = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_PICTURES), "ARO");
+            wallpaperDirectory.mkdirs();
+        }
+        //Uri uriSavedImage= Uri.fromFile(new File(Environment.getExternalStorageDirectory() + "/ARO" + "/" + dateTime + ".PNG"));
+        Uri uriSavedImage= Uri.fromFile(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/ARO/"  + dateTime + ".PNG"));
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uriSavedImage);*/
+        startActivityForResult(intent, REQUEST_CAMERA);
+    }
+
+    private void galleryIntent() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);//
+        startActivityForResult(Intent.createChooser(intent, "Select File"), REQUEST_GALLERY);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case Utility.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (userChoosenTask.equals("Take Photo"))
+                        cameraIntent();
+                    else if (userChoosenTask.equals("Choose from Library"))
+                        galleryIntent();
+                } else {
+                    //code for deny
+                }
+                break;
+        }
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_GALLERY)
+                onSelectFromGalleryResult(data);
+            else if (requestCode == REQUEST_CAMERA) {
+                Bitmap photo = (Bitmap) data.getExtras().get("data");
+                FaceDetector faceDetector = new FaceDetector.Builder(getApplicationContext()).setTrackingEnabled(false).setLandmarkType(FaceDetector.ALL_LANDMARKS).setMode(FaceDetector.FAST_MODE).build();
+                if (!faceDetector.isOperational()) {
+                    Toast.makeText(NewEntryActivity.this, "Face Detector could not be set up on your device", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Frame frame = new Frame.Builder().setBitmap(photo).build();
+                SparseArray<Face> sparseArray = faceDetector.detect(frame);
+
+                float x1 = 0, y1 = 0, x2 = 0, y2 = 0;
+                if (sparseArray.size() == 1) {
+
+                    Face face = sparseArray.valueAt(0);
+                    x1 = face.getPosition().x;
+                    y1 = face.getPosition().y;
+                    x2 = x1 + face.getWidth();
+                    y2 = y1 + face.getHeight();
+                    /*RectF rectF = new RectF(x1,y1,x2,y2);
+                    canvas.drawRoundRect(rectF,2,2,rectPaint);*/
+
+                    //detectLandmarks(face);
+
+
+                    patientImageView.setImageDrawable(new BitmapDrawable(getResources(), Bitmap.createBitmap(photo, (int) x1, (int) y1, (int) x2 - (int) x1, (int) y2 - (int) y1)));
+                } else {
+                    Toast.makeText(NewEntryActivity.this, "Face undetected please try again!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    private void onSelectFromGalleryResult(Intent data) {
+        Bitmap bm = null;
+        if (data != null) {
+            try {
+                bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        patientImageView.setImageBitmap(bm);
+    }
+
 }
