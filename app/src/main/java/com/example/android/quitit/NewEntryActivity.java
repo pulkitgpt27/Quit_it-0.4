@@ -459,7 +459,10 @@ public class NewEntryActivity  extends AppCompatActivity {
                         int chew_years = Integer.parseInt(chew_yearView.getText().toString());
 
                         EditText chew_monthView = (EditText) findViewById(R.id.months_chewing_edit_text);
-                        int chew_months = Integer.parseInt(chew_monthView.getText().toString());
+
+                        int chew_months = 0;
+                        if(!chew_monthView.getText().toString().equals(""))
+                            chew_months = Integer.parseInt(chew_monthView.getText().toString());
 
                         chew_days = (chew_years * 365) + (chew_months * 30);
 
@@ -482,7 +485,9 @@ public class NewEntryActivity  extends AppCompatActivity {
                         int smoke_years = Integer.parseInt(smoke_yearView.getText().toString());
 
                         EditText smoke_monthView = (EditText) findViewById(R.id.smoking_months_edit_text);
-                        int smoke_months = Integer.parseInt(smoke_monthView.getText().toString());
+                        int smoke_months = 0;
+                        if(!smoke_monthView.getText().toString().equals(""))
+                            smoke_months = Integer.parseInt(smoke_monthView.getText().toString());
 
                         smoke_days = (smoke_years * 365) + (smoke_months * 30);
 

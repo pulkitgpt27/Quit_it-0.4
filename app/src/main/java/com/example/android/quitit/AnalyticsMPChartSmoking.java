@@ -221,7 +221,7 @@ public class AnalyticsMPChartSmoking extends AppCompatActivity {
             smokingBarGraph.setData(smokingData);
             smokingBarGraph.getAxisLeft().setStartAtZero(true);
             smokingBarGraph.getAxisRight().setStartAtZero(true);
-            smokingBarGraph.getXAxis().setAxisMinimum(21);
+            smokingBarGraph.getXAxis().setAxisMinimum(0);
             smokingBarGraph.setFitBars(true);
             //smokingBarGraph.setData();
             combinedSmokingBarGraph.setData(combinedSmokingData);
@@ -319,6 +319,7 @@ public class AnalyticsMPChartSmoking extends AppCompatActivity {
             if(patientList.get(i).getSex().equals("Male") && patientList.get(i).getSmoke_freq()!=0){
                 years1 = (patientList.get(i).getSmokeHistory())/365;
                 menAgeArray[patientList.get(i).getAge() - years1]++;
+                Log.e("Starting",patientList.get(i).getSmokeHistory() + "");
                 menCount++;
             }
             else if(patientList.get(i).getSex().equals("Female") && patientList.get(i).getSmoke_freq()!=0){
