@@ -144,7 +144,9 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(MainActivity.this, NewEntryActivity.class);
+                i.putExtra("doc_key",MainActivity.currentdoctorKey);
                 startActivity(i);
+                finish();
             }
         });
     }

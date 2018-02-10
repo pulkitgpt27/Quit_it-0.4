@@ -60,13 +60,10 @@ public class LoginActivity extends AppCompatActivity {
                     if(user.getPhotoUrl() != null)
                         imageUri = user.getPhotoUrl().toString();
 
-
                     onSignedInInitialize(user.getDisplayName());
                     displayName = user.getDisplayName();
                     displayEmail = user.getEmail();
                     onSignedInInitialize(user.getDisplayName());
-
-
 
                 }else {
                     onSignedOutCleanUp();
@@ -77,11 +74,11 @@ public class LoginActivity extends AppCompatActivity {
         final EditText password =(EditText) findViewById(R.id.input_password);
         final TextView guestentry = (TextView) findViewById(R.id.guestentry);
         guestentry.setOnClickListener(new Button.OnClickListener(){
-
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this,NewEntryActivity.class);
+                Intent intent = new Intent(LoginActivity.this,DoctorCheckActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
         Button login = (Button) findViewById(R.id.btn_login);

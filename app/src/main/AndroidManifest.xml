@@ -16,6 +16,10 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".DoctorCheckActivity"
+            android:label="Doctor Check Activity"
+            android:parentActivityName=".LoginActivity" />
+        <activity
             android:name=".MainActivity"
             android:label="Records" />
         <activity

@@ -83,7 +83,7 @@ public class NewEntryActivity  extends AppCompatActivity {
     private String chewText="";
     private String smokeText="";
 
-
+    private String currentDoctorKey;
 
     //for validation
     boolean[] validation;
@@ -101,7 +101,8 @@ public class NewEntryActivity  extends AppCompatActivity {
         mFirebaseDatabase=FirebaseDatabase.getInstance();
         //mDoctorDatabaseReference=mFirebaseDatabase.getReference().child("doctors");
 
-
+        Bundle extras = getIntent().getExtras();
+        currentDoctorKey = extras.getString("doc_key");
 
         //**************VALIDATIONS**************
         //************ALL START WITH SYMBOL $************
@@ -727,7 +728,7 @@ public class NewEntryActivity  extends AppCompatActivity {
                     //message = MessageActivity.getMessage(age, sex, chewer.isChecked(), chew_freq, smoker.isChecked(), smoke_freq, med_history, m_status, habit_reason, quit_status, craving_time, morning_status);
 
 
-                    mPatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("doctors").child(MainActivity.currentdoctorKey).child("patients");//FirebaseMethods.getFirebaseReference("doctors");
+                    mPatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("doctors").child(currentDoctorKey).child("patients");//FirebaseMethods.getFirebaseReference("doctors");
 
 
                     final String[] uniqueKey = {""};
@@ -741,7 +742,7 @@ public class NewEntryActivity  extends AppCompatActivity {
                                 public void onComplete(DatabaseError databaseError,
                                                        DatabaseReference databaseReference) {
                                     uniqueKey[0] = databaseReference.getKey();
-                                    DatabaseReference UpdatePatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("doctors").child(MainActivity.currentdoctorKey).child("patients").child(uniqueKey[0]);
+                                    DatabaseReference UpdatePatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("doctors").child(currentDoctorKey).child("patients").child(uniqueKey[0]);
                                     try {
                                         patient = new Entry(name, age, sex, interest, med_history, contact, email, address, chewText, chew_days, chew_freq, chew_cost, smokeText, smoke_days, smoke_freq, smoke_cost, m_status, business, salary, formattedtime1, formattedDate1, morning_status,
                                                 family_status, habit_reason, habbit, aware_status, aware_diseases, quit_status, quit_reason, quit_before_status, craving_time, uniqueKey[0], message);
