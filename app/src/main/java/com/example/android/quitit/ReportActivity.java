@@ -52,6 +52,7 @@ public class ReportActivity extends AppCompatActivity {
     private File direct;
     private File image;
     private Uri uri;
+    private boolean directorymade;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         this.setTheme(R.style.AppTheme);
@@ -85,38 +86,39 @@ public class ReportActivity extends AppCompatActivity {
             mClikedEntryPhoto = mStorageReference.child(uri.getLastPathSegment());
             direct = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "QUIT_IT");
             if (!direct.exists()) {
-                File wallpaperDirectory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "QUIT_IT");
-                wallpaperDirectory.mkdirs();
+                directorymade = direct.mkdirs();
             }
-            image = new File(direct,uri.getLastPathSegment());
-            mClikedEntryPhoto.getFile(image).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
-                @Override
-                public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    double progress = (100.0 * (taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount());
-                    Log.e("UPLOADING","progres");
-                    $progress_bar.setProgress((int)progress);
-                }
-            }).addOnCompleteListener(new OnCompleteListener<FileDownloadTask.TaskSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<FileDownloadTask.TaskSnapshot> task) {
-                    $progress_bar.setVisibility(View.GONE);
-                    $progress_parent.setVisibility(View.GONE);
-                    $progress_text_view.setVisibility(View.GONE);
-                    Toast.makeText(getBaseContext(),"Download Completed",Toast.LENGTH_SHORT);
-                    Bitmap bitmap = BitmapFactory.decodeFile(image.getPath());
-                    $face_image.setImageBitmap(bitmap);
-                    Log.e("SUCCESS","image Shown in ImageView Successfully.");
+            if (direct.exists() || directorymade) {
+                image = new File(direct, uri.getLastPathSegment());
+                mClikedEntryPhoto.getFile(image).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        double progress = (100.0 * (taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount());
+                        Log.e("UPLOADING", "progres");
+                        $progress_bar.setProgress((int) progress);
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<FileDownloadTask.TaskSnapshot> task) {
+                        $progress_bar.setVisibility(View.GONE);
+                        $progress_parent.setVisibility(View.GONE);
+                        $progress_text_view.setVisibility(View.GONE);
+                        Toast.makeText(getBaseContext(), "Download Completed", Toast.LENGTH_SHORT);
+                        Bitmap bitmap = BitmapFactory.decodeFile(image.getPath());
+                        $face_image.setImageBitmap(bitmap);
+                        Log.e("SUCCESS", "image Shown in ImageView Successfully.");
 
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(getBaseContext(),"Error while Downloading the image.",Toast.LENGTH_SHORT);
-                    Log.e("FALIURE","Booooo Booooo.");
-                    $face_image.setVisibility(View.GONE);
-                    $image_text.setVisibility(View.GONE);
-                }
-            });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getBaseContext(), "Error while Downloading the image.", Toast.LENGTH_SHORT);
+                        Log.e("FALIURE", "Booooo Booooo.");
+                        $face_image.setVisibility(View.GONE);
+                        $image_text.setVisibility(View.GONE);
+                    }
+                });
+            }
         }
         else{
             $progress_bar.setScaleY(3f);
