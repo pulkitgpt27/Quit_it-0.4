@@ -1,28 +1,43 @@
 package com.example.android.quitit;
 
-
-
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Parcelable;
 import android.print.PrintManager;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+
+import java.io.File;
 
 /**
  * Created by Ayush vaid on 02-07-2017.
@@ -30,9 +45,13 @@ import com.google.firebase.database.ValueEventListener;
 
 public class ReportActivity extends AppCompatActivity {
 
-    Entry ClickedEntry;
-    String disp;
-
+    private Entry ClickedEntry;
+    private String disp;
+    private StorageReference mStorageReference;
+    private StorageReference mClikedEntryPhoto;
+    private File direct;
+    private File image;
+    private Uri uri;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         this.setTheme(R.style.AppTheme);
@@ -43,8 +62,68 @@ public class ReportActivity extends AppCompatActivity {
         Bundle B = this.getIntent().getExtras();
         ClickedEntry = B.getParcelable("ClickedEntry");
 
-        //patient name
+        final ImageView $face_image = (ImageView) findViewById(R.id.report_activity_image);
+        final TextView $image_text = (TextView) findViewById(R.id.image_text);
 
+        final TextView $progress_text_view = (TextView) findViewById(R.id.report_progress_text_view);
+        final LinearLayout $progress_parent = (LinearLayout) findViewById(R.id.report_progress_parent);
+        final ProgressBar $progress_bar = (ProgressBar) findViewById(R.id.report_progress_bar);
+        $progress_bar.setVisibility(View.INVISIBLE);
+        $progress_parent.setVisibility(View.INVISIBLE);
+        $progress_text_view.setVisibility(View.INVISIBLE);
+
+
+        if(ClickedEntry.getImageUri()!="") {
+            $progress_bar.setScaleY(3f);
+            $progress_bar.setScaleX(5f);
+            $progress_bar.setVisibility(View.VISIBLE);
+            $progress_parent.setVisibility(View.VISIBLE);
+            $progress_text_view.setVisibility(View.VISIBLE);
+            $progress_parent.getBackground().setAlpha(200);
+            mStorageReference = FirebaseMethods.getFirbaseStorageReference("patient_photos");
+            uri = Uri.parse(ClickedEntry.getImageUri());
+            mClikedEntryPhoto = mStorageReference.child(uri.getLastPathSegment());
+            direct = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "QUIT_IT");
+            if (!direct.exists()) {
+                File wallpaperDirectory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "QUIT_IT");
+                wallpaperDirectory.mkdirs();
+            }
+            image = new File(direct,uri.getLastPathSegment());
+            mClikedEntryPhoto.getFile(image).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    double progress = (100.0 * (taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount());
+                    Log.e("UPLOADING","progres");
+                    $progress_bar.setProgress((int)progress);
+                }
+            }).addOnCompleteListener(new OnCompleteListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<FileDownloadTask.TaskSnapshot> task) {
+                    $progress_bar.setVisibility(View.GONE);
+                    $progress_parent.setVisibility(View.GONE);
+                    $progress_text_view.setVisibility(View.GONE);
+                    Toast.makeText(getBaseContext(),"Download Completed",Toast.LENGTH_SHORT);
+                    Bitmap bitmap = BitmapFactory.decodeFile(image.getPath());
+                    $face_image.setImageBitmap(bitmap);
+                    Log.e("SUCCESS","image Shown in ImageView Successfully.");
+
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(getBaseContext(),"Error while Downloading the image.",Toast.LENGTH_SHORT);
+                    Log.e("FALIURE","Booooo Booooo.");
+                    $face_image.setVisibility(View.GONE);
+                    $image_text.setVisibility(View.GONE);
+                }
+            });
+        }
+        else{
+            $face_image.setVisibility(View.GONE);
+            $image_text.setVisibility(View.GONE);
+        }
+
+        //patient name
         TextView Name = (TextView) findViewById(R.id.nameView);
         Name.setText(ClickedEntry.getName());
 
@@ -59,8 +138,6 @@ public class ReportActivity extends AppCompatActivity {
         //patient business
         TextView business = (TextView) findViewById(R.id.bussinessView);
         business.setText(ClickedEntry.getBusiness());
-
-
 
         //patient marital status
         TextView marry=(TextView) findViewById(R.id.marrital_statusView);
@@ -86,7 +163,6 @@ public class ReportActivity extends AppCompatActivity {
 
         TextView personal_message =(TextView) findViewById(R.id.personalisedMessage);
         personal_message.setText(ClickedEntry.getMessage());
-
 
         Button printButton = (Button) findViewById(R.id.print_report_button);
         printButton.setOnClickListener(new Button.OnClickListener() {

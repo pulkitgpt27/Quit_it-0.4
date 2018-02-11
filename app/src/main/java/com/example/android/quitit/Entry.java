@@ -38,13 +38,14 @@ public class Entry implements Parcelable {
     private String quit_before_status;
     private String craving_time;
     private String message;
+    private String imageUri;
 
     public Entry() {
     }
 
     public Entry(String name, int age, String sex, String interest, String med, String contact, String email, String address, String chewText, int chew_days, int chew_freq, float chew_cost, String smokeText, int smoke_days, int smoke_freq, float smoke_cost, String marry_status, String business, int salary, String time, String date,
                  String morning_status, String family_status, String habit_reason, String habit, String aware_status, String aware_diseases, String quit_status, String quit_reason, String quit_before_status, String craving_time, String id,
-                 String message){
+                 String message, String imageUri){
         this.name=name;
         this.age=age;
         this.sex=sex;
@@ -78,6 +79,7 @@ public class Entry implements Parcelable {
         this.quit_before_status=quit_before_status;
         this.craving_time=craving_time;
         this.message=message;
+        this.imageUri = imageUri;
     }
 
     //getter methods
@@ -116,7 +118,8 @@ public class Entry implements Parcelable {
     public String getQuit_before_status(){return quit_before_status;}
     public String getCraving_time(){return craving_time;}
     public String getId(){return id;}
-    public String getMessage(){return message;}
+    public String getMessage(){return message; }
+    public String getImageUri(){ return imageUri; }
 
     //setter
     public void setId(String val){ this.id=val; }
@@ -160,6 +163,7 @@ public class Entry implements Parcelable {
         craving_time=in.readString();
         id=in.readString();
         message=in.readString();
+        imageUri = in.readString();
     }
 
     @Override
@@ -216,5 +220,6 @@ public class Entry implements Parcelable {
         parcel.writeString(craving_time);
         parcel.writeString(id);
         parcel.writeString(message);
+        parcel.writeString(imageUri);
     }
 }

@@ -6,9 +6,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.media.Image;
+
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -25,6 +28,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.ScrollView;
@@ -35,15 +39,20 @@ import android.widget.Toast;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -62,16 +71,20 @@ public class NewEntryActivity extends AppCompatActivity {
     private final int REQUEST_CAMERA = 0;
     private final int REQUEST_GALLERY = 1;
 
+    private boolean imageset = false;
+
     private String mUsername;
     private int id = 1;
 
     private FirebaseStorage mFirebaseStorage;
+    private StorageReference mPhotoStorageReference;
+
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mPatientDatabaseReference;
     //private ListView mPatientListView;
     //private EntriesListAdapter mPatientAdapter;
     private Button mSaveButton;
-    private ChildEventListener mChildEventListener;
+    //private ChildEventListener mChildEventListener;
     private int chew_days;
     private int chew_freq;
     private int smoke_days;
@@ -90,24 +103,28 @@ public class NewEntryActivity extends AppCompatActivity {
     private String craving_time = "";
     private String name = "";
     private int age;
-    private String sex = "";
-    private String contact = "";
-    private String m_status = "";
-    private String business = "";
-    private int salary = 1;
-    private String email = "";
-    private String address = "";
-    private String chewText = "";
-    private String smokeText = "";
 
+    private String sex="";
+    private String contact="";
+    private String m_status="";
+    private String business="";
+    private int salary=1;
+    private String email="";
+    private String address="";
+    private String chewText="";
+    private String smokeText="";
+    private Uri uri;
     private String userChoosenTask;
-
+    private Bitmap a;
     //for validation
     boolean[] validation;
     private String message = "";
     private String med_history = "";
     private Entry patient;
     private ImageView patientImageView;
+
+
+    private String dateTime;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -117,6 +134,8 @@ public class NewEntryActivity extends AppCompatActivity {
 
         mUsername = ANONYMOUS;
         mFirebaseDatabase = FirebaseDatabase.getInstance();
+
+        mFirebaseStorage=FirebaseStorage.getInstance();
         //mDoctorDatabaseReference=mFirebaseDatabase.getReference().child("doctors");
 
 
@@ -394,6 +413,13 @@ public class NewEntryActivity extends AppCompatActivity {
             }
         });
 
+        //***********ProgressBar************
+        final ProgressBar $progress_bar = (ProgressBar) findViewById(R.id.progress_bar);
+        final LinearLayout $progress_parent = (LinearLayout) findViewById(R.id.progress_parent);
+        final TextView $progress_text = (TextView) findViewById(R.id.progress_text_view);
+        $progress_bar.setVisibility(View.INVISIBLE);
+        $progress_parent.setVisibility(View.INVISIBLE);
+        $progress_text.setVisibility(View.INVISIBLE);
 
         mSaveButton = (Button) findViewById(R.id.save);
 
@@ -417,6 +443,13 @@ public class NewEntryActivity extends AppCompatActivity {
 //                    Toast.makeText($new_entry_context, "Not Saved. Error in Salary", Toast.LENGTH_LONG).show();
 //                }
                 else {
+                    $progress_bar.setVisibility(View.VISIBLE);
+                    $progress_bar.setScaleY(5f);
+                    $progress_bar.setScaleX(3f);
+                    $progress_parent.setVisibility(View.VISIBLE);
+                    $progress_text.setVisibility(View.VISIBLE);
+                    $progress_parent.getBackground().setAlpha(200);
+
                     //For Name
                     EditText nameView = (EditText) findViewById(R.id.name_edit_text);
                     name = nameView.getText().toString();
@@ -538,33 +571,6 @@ public class NewEntryActivity extends AppCompatActivity {
                     //For current date
                     SimpleDateFormat df1 = new SimpleDateFormat("dd-MMM-yyyy");
                     final String formattedDate1 = df1.format(c.getTime());
-
-                    //For id
-                    // DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-                    //Query lastQuery = databaseReference.child("patient").orderByKey().limitToLast(1);
-                    //lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                      /*  @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-
-
-
-                            if(dataSnapshot==null)
-                            {
-                                id=1;
-                            }
-                            else
-                            {
-                                id = (dataSnapshot!=null)? (int) dataSnapshot.child("id").getValue() :1;
-                                id++;
-                            }
-                        }
-
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        //Handle possible errors.
-                    }
-                });*/
 
                     //For fill more
                     if (S.isChecked()) {
@@ -738,61 +744,111 @@ public class NewEntryActivity extends AppCompatActivity {
                             craving_time += craving_chackbox9.getText().toString() + "";
                         }
                     }
+
                     final String interest = "";
                     String future = "";
 
                     //message = MessageActivity.getMessage(age, sex, chewer.isChecked(), chew_freq, smoker.isChecked(), smoke_freq, med_history, m_status, habit_reason, quit_status, craving_time, morning_status);
-
-
+					
                     mPatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("doctors").child(MainActivity.currentdoctorKey).child("patients");//FirebaseMethods.getFirebaseReference("doctors");
-
+                    mPhotoStorageReference = mFirebaseStorage.getReference().child("patient_photos");
 
                     final String[] uniqueKey = {""};
                     String key = "";
 
-
-                    mPatientDatabaseReference
-                            .push()
-                            .setValue(null, new DatabaseReference.CompletionListener() {
-                                @Override
-                                public void onComplete(DatabaseError databaseError,
-                                                       DatabaseReference databaseReference) {
-                                    uniqueKey[0] = databaseReference.getKey();
-                                    DatabaseReference UpdatePatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("doctors").child(MainActivity.currentdoctorKey).child("patients").child(uniqueKey[0]);
-                                    try {
-                                        patient = new Entry(name, age, sex, interest, med_history, contact, email, address, chewText, chew_days, chew_freq, chew_cost, smokeText, smoke_days, smoke_freq, smoke_cost, m_status, business, salary, formattedtime1, formattedDate1, morning_status,
-                                                family_status, habit_reason, habbit, aware_status, aware_diseases, quit_status, quit_reason, quit_before_status, craving_time, uniqueKey[0], message);
-                                        patient.setMessage(MessageActivity.getMessage(patient, chewer.isChecked(), smoker.isChecked()));
-                                        UpdatePatientDatabaseReference.setValue(patient);
-                                        Toast.makeText(getBaseContext(), "New Patient Added, " + name, Toast.LENGTH_SHORT).show();
-                                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                        if (user != null) {
-                                            Intent i = new Intent(NewEntryActivity.this, MainActivity.class);
-                                            startActivity(i);
-                                            finish();
-                                        } else {
-                                            Intent intent = new Intent(NewEntryActivity.this, ReportActivity.class);
-                                            Entry temp = patient;
-                                            Bundle B = new Bundle();
-                                            B.putParcelable("ClickedEntry", (Parcelable) temp);
-                                            intent.putExtras(B);
-                                            startActivity(intent);
-                                            finish();
+                    if(imageset) {
+                        StorageReference photoref = mPhotoStorageReference.child(uri.getLastPathSegment());
+                        photoref.putFile(uri).addOnProgressListener(NewEntryActivity.this, new OnProgressListener<UploadTask.TaskSnapshot>(){
+                            @Override
+                            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                                double progress = (100.0 * (taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount());
+                                Log.e("UPLOADING","progres");
+                                $progress_bar.setProgress((int)progress);
+                            }
+                        }).addOnSuccessListener(NewEntryActivity.this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                mPatientDatabaseReference.push().setValue(null, new DatabaseReference.CompletionListener() {
+                                    @Override
+                                    public void onComplete(DatabaseError databaseError,
+                                                           DatabaseReference databaseReference) {
+                                        uniqueKey[0] = databaseReference.getKey();
+                                        final DatabaseReference UpdatePatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("doctors").child(MainActivity.currentdoctorKey).child("patients").child(uniqueKey[0]);
+                                        try {
+                                            patient = new Entry(name, age, sex, interest, med_history, contact, email, address, chewText, chew_days, chew_freq, chew_cost, smokeText, smoke_days, smoke_freq, smoke_cost, m_status, business, salary, formattedtime1, formattedDate1, morning_status,
+                                                    family_status, habit_reason, habbit, aware_status, aware_diseases, quit_status, quit_reason, quit_before_status, craving_time, uniqueKey[0], message, uri.toString());
+                                            patient.setMessage(MessageActivity.getMessage(patient, chewer.isChecked(), smoker.isChecked()));
+                                            UpdatePatientDatabaseReference.setValue(patient);
+                                            Toast.makeText(getBaseContext(), "New Patient Added, " + name + ", with Image.", Toast.LENGTH_SHORT).show();
+                                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                            if (user != null) {
+                                                Intent i = new Intent(NewEntryActivity.this, MainActivity.class);
+                                                startActivity(i);
+                                                finish();
+                                            } else {
+                                                Intent intent = new Intent(NewEntryActivity.this, ReportActivity.class);
+                                                Entry temp = patient;
+                                                Bundle B = new Bundle();
+                                                B.putParcelable("ClickedEntry", (Parcelable) temp);
+                                                intent.putExtras(B);
+                                                startActivity(intent);
+                                                finish();
+                                            }
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
                                         }
-
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
+                                        Log.e("Updated", "New Patiend Added :" + patient.getId() + " with Image.");
+                                        $progress_bar.setVisibility(GONE);
+                                        $progress_parent.setVisibility(GONE);
+                                        $progress_text.setVisibility(GONE);
                                     }
-                                    Log.e("Updated", "New Patiend Added :" + patient.getId());
+                                });
+                            }
+                        });
+                    }
+                    else{
+                        mPatientDatabaseReference.push().setValue(null, new DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError,
+                                                   DatabaseReference databaseReference) {
+                                uniqueKey[0] = databaseReference.getKey();
+                                final DatabaseReference UpdatePatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("doctors").child(MainActivity.currentdoctorKey).child("patients").child(uniqueKey[0]);
+                                try {
+                                    patient = new Entry(name, age, sex, interest, med_history, contact, email, address, chewText, chew_days, chew_freq, chew_cost, smokeText, smoke_days, smoke_freq, smoke_cost, m_status, business, salary, formattedtime1, formattedDate1, morning_status,
+                                            family_status, habit_reason, habbit, aware_status, aware_diseases, quit_status, quit_reason, quit_before_status, craving_time, uniqueKey[0], message, "");
+                                    patient.setMessage(MessageActivity.getMessage(patient, chewer.isChecked(), smoker.isChecked()));
+                                    UpdatePatientDatabaseReference.setValue(patient);
+                                    Toast.makeText(getBaseContext(), "New Patient Added, " + name, Toast.LENGTH_SHORT).show();
+                                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                    if (user != null) {
+                                        Intent i = new Intent(NewEntryActivity.this, MainActivity.class);
+                                        startActivity(i);
+                                        finish();
+                                    } else {
+                                        Intent intent = new Intent(NewEntryActivity.this, ReportActivity.class);
+                                        Entry temp = patient;
+                                        Bundle B = new Bundle();
+                                        B.putParcelable("ClickedEntry", (Parcelable) temp);
+                                        intent.putExtras(B);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
-                            });
-
+                                Log.e("Updated", "New Patiend Added :" + patient.getId());
+                                $progress_bar.setVisibility(GONE);
+                                $progress_parent.setVisibility(GONE);
+                                $progress_text.setVisibility(GONE);
+                            }
+                        });
+                    }
                 }
             }
         });
     }
 
-    public void selectImage() {
+ 	 public void selectImage() {
         final CharSequence[] items = {"Take Photo", "Choose from Library", "Cancel"};
         AlertDialog.Builder builder = new AlertDialog.Builder(NewEntryActivity.this);
         builder.setTitle("Add Photo!");
@@ -816,8 +872,41 @@ public class NewEntryActivity extends AppCompatActivity {
         builder.show();
     }
 
-    private void cameraIntent() {
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case Utility.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if(userChoosenTask.equals("Take Photo"))
+                        cameraIntent();
+                    else if(userChoosenTask.equals("Choose from Library"))
+                        galleryIntent();
+                } else {
+                    //code for deny
+                }
+                break;
+        }
+    }
+   private void cameraIntent()
+    {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        dateTime = sdf.format(Calendar.getInstance().getTime());
+        File direct = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "QUIT_IT");
+
+        if (!direct.exists()) {
+            File wallpaperDirectory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "QUIT_IT");
+            wallpaperDirectory.mkdirs();
+        }
+        //Uri uriSavedImage= Uri.fromFile(new File(Environment.getExternalStorageDirectory() + "/ARO" + "/" + dateTime + ".PNG"));
+        uri= Uri.fromFile(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/QUIT_IT/"  + dateTime + ".PNG"));
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        startActivityForResult(intent, REQUEST_CAMERA);
+    }
+
+	//***************RISHAB SE POOCHNNA HAI**********************************************************************************
+	//private void cameraIntent() {
+      //  Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         /*intent.putExtra("crop", "true");
         intent.putExtra("aspectX", 0);
         intent.putExtra("aspectY", 0);
@@ -839,31 +928,32 @@ public class NewEntryActivity extends AppCompatActivity {
         //Uri uriSavedImage= Uri.fromFile(new File(Environment.getExternalStorageDirectory() + "/ARO" + "/" + dateTime + ".PNG"));
         Uri uriSavedImage= Uri.fromFile(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/ARO/"  + dateTime + ".PNG"));
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uriSavedImage);*/
-        startActivityForResult(intent, REQUEST_CAMERA);
-    }
-
-    private void galleryIntent() {
+        //startActivityForResult(intent, REQUEST_CAMERA);
+    //}
+	//****************************************************************************************************************************
+    private void galleryIntent()
+    {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);//
         startActivityForResult(Intent.createChooser(intent, "Select File"), REQUEST_GALLERY);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case Utility.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (userChoosenTask.equals("Take Photo"))
-                        cameraIntent();
-                    else if (userChoosenTask.equals("Choose from Library"))
-                        galleryIntent();
-                } else {
-                    //code for deny
-                }
-                break;
+    @SuppressWarnings("deprecation")
+    private void onSelectFromGalleryResult(Intent data) {
+        Bitmap bm=null;
+        if (data != null) {
+            try {
+                bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+                uri = data.getData();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+        imageset = true;
+        patientImageView.setImageBitmap(bm);
     }
+ 
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -890,10 +980,8 @@ public class NewEntryActivity extends AppCompatActivity {
                     y2 = y1 + face.getHeight();
                     /*RectF rectF = new RectF(x1,y1,x2,y2);
                     canvas.drawRoundRect(rectF,2,2,rectPaint);*/
-
                     //detectLandmarks(face);
-
-
+					imageset = true;
                     patientImageView.setImageDrawable(new BitmapDrawable(getResources(), Bitmap.createBitmap(photo, (int) x1, (int) y1, (int) x2 - (int) x1, (int) y2 - (int) y1)));
                 } else {
                     Toast.makeText(NewEntryActivity.this, "Face undetected please try again!", Toast.LENGTH_SHORT).show();
@@ -902,17 +990,5 @@ public class NewEntryActivity extends AppCompatActivity {
         }
     }
 
-    @SuppressWarnings("deprecation")
-    private void onSelectFromGalleryResult(Intent data) {
-        Bitmap bm = null;
-        if (data != null) {
-            try {
-                bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        patientImageView.setImageBitmap(bm);
-    }
 
 }

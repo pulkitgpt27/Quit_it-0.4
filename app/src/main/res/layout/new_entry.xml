@@ -8,10 +8,33 @@
     >
 
     <LinearLayout
+        android:id = "@+id/progress_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@android:color/background_dark">
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="100dp"
+            android:progress="100"
+            android:layout_gravity="center" />
+        <TextView
+            android:id="@+id/progress_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Uploading your response."
+            android:textSize="12sp"
+            android:textColor="@android:color/white"
+            android:layout_gravity="center_horizontal"/>
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:orientation="vertical">
-
         <ScrollView
             android:id="@+id/new_entry_scroll_view"
             android:layout_width="match_parent"
@@ -30,7 +53,8 @@
                     android:layout_margin="16dp"
                     android:src="@drawable/addimagecamera"
                     android:adjustViewBounds="true"
-                    android:scaleType="fitCenter"/>
+                    android:scaleType="fitCenter"
+					/>
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/name_layout"
