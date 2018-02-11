@@ -73,7 +73,7 @@ public class ReportActivity extends AppCompatActivity {
         $progress_text_view.setVisibility(View.INVISIBLE);
 
 
-        if(ClickedEntry.getImageUri()!="") {
+        if(!ClickedEntry.getImageUri().equals("")) {
             $progress_bar.setScaleY(3f);
             $progress_bar.setScaleX(5f);
             $progress_bar.setVisibility(View.VISIBLE);
@@ -119,8 +119,17 @@ public class ReportActivity extends AppCompatActivity {
             });
         }
         else{
-            $face_image.setVisibility(View.GONE);
-            $image_text.setVisibility(View.GONE);
+            $progress_bar.setScaleY(3f);
+            $progress_bar.setScaleX(5f);
+            $progress_bar.setVisibility(View.VISIBLE);
+            $progress_parent.setVisibility(View.VISIBLE);
+            $progress_text_view.setVisibility(View.VISIBLE);
+            $progress_bar.setVisibility(View.GONE);
+            $progress_parent.setVisibility(View.GONE);
+            $progress_text_view.setVisibility(View.GONE);
+            $progress_parent.getBackground().setAlpha(200);
+            $face_image.setVisibility(View.INVISIBLE);
+            $image_text.setVisibility(View.INVISIBLE);
         }
 
         //patient name
