@@ -6,10 +6,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
@@ -36,10 +35,10 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
@@ -50,8 +49,6 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -887,8 +884,7 @@ public class NewEntryActivity extends AppCompatActivity {
                 break;
         }
     }
-   private void cameraIntent()
-    {
+    private void cameraIntent() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         dateTime = sdf.format(Calendar.getInstance().getTime());
@@ -931,8 +927,7 @@ public class NewEntryActivity extends AppCompatActivity {
         //startActivityForResult(intent, REQUEST_CAMERA);
     //}
 	//****************************************************************************************************************************
-    private void galleryIntent()
-    {
+    private void galleryIntent() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);//
@@ -961,7 +956,25 @@ public class NewEntryActivity extends AppCompatActivity {
             if (requestCode == REQUEST_GALLERY)
                 onSelectFromGalleryResult(data);
             else if (requestCode == REQUEST_CAMERA) {
-                Bitmap photo = (Bitmap) data.getExtras().get("data");
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inSampleSize = 3;
+                //Bitmap imageBitmap = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory() + "/ARO" + "/" + dateTime + ".PNG", options);
+                Bitmap photo = BitmapFactory.decodeFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/QUIT_IT" + "/" + dateTime + ".PNG", options);
+                /*String fileName = "/Aro.png";
+                File file = new File(new File(Environment.getExternalStorageDirectory() + "/ARO"), fileName);
+                if (file.exists()) {
+                    file.delete();
+                }
+                try {
+                    FileOutputStream out = new FileOutputStream(file);
+                    imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                    out.flush();
+                    out.close();
+                catch (Exception e) {
+                    e.printStackTrace();
+                }*/
+                //imageView.setImageBitmap(imageBitmap);
+                //Bitmap photo = (Bitmap) data.getExtras().get("data");
                 FaceDetector faceDetector = new FaceDetector.Builder(getApplicationContext()).setTrackingEnabled(false).setLandmarkType(FaceDetector.ALL_LANDMARKS).setMode(FaceDetector.FAST_MODE).build();
                 if (!faceDetector.isOperational()) {
                     Toast.makeText(NewEntryActivity.this, "Face Detector could not be set up on your device", Toast.LENGTH_SHORT).show();
