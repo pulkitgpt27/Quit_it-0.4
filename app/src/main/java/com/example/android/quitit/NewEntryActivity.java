@@ -900,7 +900,7 @@ public class NewEntryActivity extends AppCompatActivity {
         startActivityForResult(intent, REQUEST_CAMERA);
     }
 
-	//***************RISHAB SE POOCHNNA HAI**********************************************************************************
+	//***************RISHABH SE POOCHNNA HAI**********************************************************************************
 	//private void cameraIntent() {
       //  Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         /*intent.putExtra("crop", "true");
@@ -948,7 +948,7 @@ public class NewEntryActivity extends AppCompatActivity {
         imageset = true;
         patientImageView.setImageBitmap(bm);
     }
- 
+
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
