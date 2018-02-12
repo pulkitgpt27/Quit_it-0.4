@@ -1,9 +1,12 @@
 package com.example.android.quitit;
 
+import android.app.LoaderManager;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -64,6 +67,7 @@ public class MainActivity extends AppCompatActivity
     private LinearLayout mEmptyPatientLayout;
     private ImageView mEmptyPatientImage;
     private TextView mEmptyPatientTextView1;
+    private TextView emptyTextView;
     private TextView mEmptyPatientTextView2;
     private EntriesListAdapter mPatientAdapter;
     private ArrayList<Entry> patientList;
@@ -74,6 +78,8 @@ public class MainActivity extends AppCompatActivity
     SearchView searchView;
     private TextView usernameTxt,emailTxt;
     private ImageView userImageView;
+    private static final int PATIENT_LOADER_ID = 1;
+
 
     //private boolean found=false;
     //private static int doctorCount = 0;
@@ -86,6 +92,8 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main); //changed due to navbar;
+        spinner=(ProgressBar) findViewById(R.id.spinner);
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -106,13 +114,28 @@ public class MainActivity extends AppCompatActivity
 
         usernameTxt.setText(getIntent().getStringExtra("displayName"));
         emailTxt.setText(getIntent().getStringExtra("displayEmail"));
+        emptyTextView = (TextView) findViewById(R.id.empty_view);
+
+        ConnectivityManager cm =
+                (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if(activeNetwork != null && activeNetwork.isConnected()){
+
+            spinner.setVisibility(View.VISIBLE);
+        }
+        else {
+
+            spinner.setVisibility(View.GONE);
+            emptyTextView.setText(R.string.no_internet_connection);
+        }
+
         if(getIntent().getStringExtra("displayImage")!=null) {
             Picasso.with(this).load(Uri.parse(getIntent().getStringExtra("displayImage"))).into(userImageView);
         }
 
         //******************FIREBASE BEGINS HERE*******************
         empty=true;
-        spinner=(ProgressBar) findViewById(R.id.spinner);
         //firebase reference
         mDoctorsDatabaseReference=FirebaseMethods.getFirebaseReference("doctors");
         //setting list view
@@ -124,6 +147,7 @@ public class MainActivity extends AppCompatActivity
 
         /// /fetching data from firebase
         firebaseDataFetch();
+        mPatientListView.setEmptyView(emptyTextView);
 
 
 
