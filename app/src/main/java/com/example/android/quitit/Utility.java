@@ -18,6 +18,13 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Created by kakrya on 9/6/2017.
  */
@@ -25,6 +32,30 @@ import android.view.View;
 public class Utility {
     public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+
+    static HashMap<String,Entry> sortByValues(HashMap<String,Entry> map) {
+        List<Entry> list = new LinkedList(map.values());
+        // Defined Custom Comparator here
+        HashMap<String,Entry> sortedHashMap = new LinkedHashMap();
+
+        Collections.sort(list, new Comparator<Entry>() {
+            public int compare(Entry o1, Entry o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+
+
+        // Here I am copying the sorted list in HashMap
+        // using LinkedHashMap to preserve the insertion order
+        for (int i=0; i<list.size(); i++) {
+            Entry entry = list.get(i);
+            sortedHashMap.put(entry.getId(), entry);
+
+        }
+
+        return sortedHashMap;
+    }
+
     static boolean isNetworkAvailable(Context context) {
 
         ConnectivityManager cm =
