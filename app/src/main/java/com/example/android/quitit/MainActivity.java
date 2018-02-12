@@ -55,6 +55,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 import static com.example.android.quitit.FirebaseMethods.getUserId;
+import static com.example.android.quitit.Utility.isNetworkAvailable;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -116,16 +117,12 @@ public class MainActivity extends AppCompatActivity
         emailTxt.setText(getIntent().getStringExtra("displayEmail"));
         emptyTextView = (TextView) findViewById(R.id.empty_view);
 
-        ConnectivityManager cm =
-                (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        if(activeNetwork != null && activeNetwork.isConnected()){
-
+        if(isNetworkAvailable(getBaseContext()))
+        {
             spinner.setVisibility(View.VISIBLE);
         }
-        else {
-
+        else
+        {
             spinner.setVisibility(View.GONE);
             emptyTextView.setText(R.string.no_internet_connection);
         }
