@@ -55,6 +55,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import static android.view.View.GONE;
+import static com.example.android.quitit.Utility.isNetworkAvailable;
+import static com.example.android.quitit.Utility.toastMessage;
 import static java.lang.Integer.parseInt;
 
 
@@ -425,6 +427,11 @@ public class NewEntryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //validations for scrolling view
+                //first check internet connection
+                if(!isNetworkAvailable($new_entry_context))
+                {
+                    toastMessage($new_entry_context,"No internet connection");
+                }
                 if (!validation[0]) {
                     $new_entry_scroll_view.smoothScrollTo(0, $name_layout.getTop());
                     Toast.makeText($new_entry_context, "Not Saved. Error in Name", Toast.LENGTH_LONG).show();
