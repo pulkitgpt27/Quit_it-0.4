@@ -18,8 +18,11 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -55,7 +58,13 @@ public class Utility {
 
         Collections.sort(list, new Comparator<Entry>() {
             public int compare(Entry o1, Entry o2) {
-                return o1.getName().compareTo(o2.getName());
+
+                try {
+                    return o2.getDate().compareTo(o1.getDate());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                return 0;
             }
         });
 
