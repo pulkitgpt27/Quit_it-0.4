@@ -6,10 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-
-import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
@@ -36,10 +34,10 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
@@ -50,8 +48,6 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -699,7 +695,7 @@ public class NewEntryActivity extends AppCompatActivity {
 
                         //Tried Quiting Before
                         RadioGroup rg6 = (RadioGroup) findViewById(R.id.quit_before_radiogroup);
-                        quit_before_status = ((RadioButton) findViewById(rg5.getCheckedRadioButtonId())).getText().toString();
+                        quit_before_status = ((RadioButton) findViewById(rg6.getCheckedRadioButtonId())).getText().toString();
 
                         //Craving timings
                         CheckBox craving_chackbox1 = (CheckBox) findViewById(R.id.craving_1);

@@ -2,8 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.android.quitit">
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
         android:allowBackup="true"
@@ -19,6 +24,10 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".AskDoctorAffiliationActivity"
+            android:label="Doctor Affiliation"
+            android:parentActivityName=".LoginActivity" />
+        <activity
             android:name=".MainActivity"
             android:label="Records" />
         <activity
@@ -31,11 +40,11 @@
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".ViewActivity"
-            android:label="View"
+            android:label="View Record"
             android:parentActivityName=".ReportActivity" />
         <activity
             android:name=".UpdateActivity"
-            android:label="Update"
+            android:label="Update Record"
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".AnalyticsMPChartSmoking"
@@ -45,7 +54,7 @@
             android:name=".AnalyticsMPChartChewing"
             android:label="Chewing Analytics"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".MPChartExample"></activity>
+        <activity android:name=".MPChartExample" />
     </application>
 
 </manifest>
