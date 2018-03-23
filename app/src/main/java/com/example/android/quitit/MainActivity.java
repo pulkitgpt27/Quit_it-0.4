@@ -1,6 +1,8 @@
 package com.example.android.quitit;
 
+import android.app.AlarmManager;
 import android.app.LoaderManager;
+import android.app.PendingIntent;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -51,6 +53,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -91,6 +94,16 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         this.setTheme(R.style.AppThemeNoBar);
         super.onCreate(savedInstanceState);
+
+        //Alarm for notification
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent notificationIntent = new Intent(this, AlarmReceiver.class);
+        PendingIntent broadcast = PendingIntent.getBroadcast(this, 100, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Calendar calendar= Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY,22);//set time here
+        calendar.set(Calendar.MINUTE,30);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY,broadcast);
+        //***************
 
         setContentView(R.layout.activity_main); //changed due to navbar;
         spinner=(ProgressBar) findViewById(R.id.spinner);
