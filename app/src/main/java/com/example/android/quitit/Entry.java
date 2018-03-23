@@ -3,6 +3,10 @@ package com.example.android.quitit;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class Entry implements Parcelable {
 
     private  String name;
@@ -99,6 +103,12 @@ public class Entry implements Parcelable {
     public float getChew_cost(){return  chew_cost;}
 
     public String getSmokeText(){return smokeText;}
+    public Date getDate() throws ParseException {
+        SimpleDateFormat df1 = new SimpleDateFormat("dd-MMM-yyyy");
+        Date date1;
+            date1=df1.parse(this.getFormattedDate());
+        return date1;
+    }
     public int getSmokeHistory(){return  smokeHistory;}
     public int getSmoke_freq(){return  smoke_freq;}
     public float getSmoke_cost(){return  smoke_cost;}

@@ -6,6 +6,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+
+import android.graphics.BitmapFactory;
+
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -164,6 +167,7 @@ public class NewEntryActivity extends AppCompatActivity {
         final TextInputLayout $phone_layout = (TextInputLayout) findViewById(R.id.contact_layout);
         final TextInputLayout $email_layout = (TextInputLayout) findViewById(R.id.email_layout);
         final TextInputLayout $salary_layout = (TextInputLayout) findViewById(R.id.salary_layout);
+        final LinearLayout $linear_layout = (LinearLayout) findViewById(R.id.new_entry_form);
 
         $name_layout.setBackgroundColor(getResources().getColor(R.color.magnitude9));
         $age_layout.setBackgroundColor(getResources().getColor(R.color.magnitude9));
@@ -439,32 +443,52 @@ public class NewEntryActivity extends AppCompatActivity {
 //                    Toast.makeText($new_entry_context, "Not Saved. Error in Salary", Toast.LENGTH_LONG).show();
 //                }
                 else {
+
+                    $salary.clearFocus();
+                    $profession.clearFocus();
+                    $email.clearFocus();
+                    $age.clearFocus();
+                    $phone.clearFocus();
+                    $name.clearFocus();
+
+                    mSaveButton.setEnabled(false);
+                    S.setEnabled(false);
+
                     $progress_bar.setVisibility(View.VISIBLE);
                     $progress_bar.setScaleY(5f);
                     $progress_bar.setScaleX(3f);
                     $progress_parent.setVisibility(View.VISIBLE);
                     $progress_text.setVisibility(View.VISIBLE);
                     $progress_parent.getBackground().setAlpha(200);
-
+                    $linear_layout.setVisibility(GONE);
                     //For Name
                     EditText nameView = (EditText) findViewById(R.id.name_edit_text);
                     name = nameView.getText().toString();
+                    nameView.clearFocus();
+
                     //For Age
                     EditText ageView = (EditText) findViewById(R.id.age_edit_text);
                     age = parseInt(ageView.getText().toString());
+                    ageView.clearFocus();
+
                     //For Sex
                     RadioGroup rg = (RadioGroup) findViewById(R.id.sex_group);
                     sex = ((RadioButton) findViewById(rg.getCheckedRadioButtonId())).getText().toString();
+                    rg.clearFocus();
+
                     //For Contact No
                     EditText contactView = (EditText) findViewById(R.id.contact_edit_text);
                     contact = (contactView.getText().toString());
+                    contactView.clearFocus();
+
                     //For email
                     email = $email.getText().toString();
-
+                    $email.clearFocus();
 
                     //For address
                     EditText addressView = (EditText) findViewById(R.id.address_edit_text);
                     address = (addressView.getText().toString());
+                    addressView.clearFocus();
 
                     //For Med History
                     med_history = "";
@@ -494,12 +518,16 @@ public class NewEntryActivity extends AppCompatActivity {
 
                         //For chiewer text
                         chewText = chewer.getText().toString();
+                        chewer.clearFocus();
 
                         //For chewing history
+                        int chew_years = 0;
                         EditText chew_yearView = (EditText) findViewById(R.id.years_chewing_edit_text);
-                        int chew_years = Integer.parseInt(chew_yearView.getText().toString());
+                        chew_years = Integer.parseInt(chew_yearView.getText().toString());
+                        chew_yearView.clearFocus();
 
                         EditText chew_monthView = (EditText) findViewById(R.id.months_chewing_edit_text);
+                        chew_monthView.clearFocus();
 
                         int chew_months = 0;
                         if (!chew_monthView.getText().toString().equals(""))
@@ -510,10 +538,12 @@ public class NewEntryActivity extends AppCompatActivity {
                         //For chewing frequency(in a day)
                         EditText chew_frequencyView = (EditText) findViewById(R.id.often_chewing_edit_text);
                         chew_freq = Integer.parseInt(chew_frequencyView.getText().toString());
+                        chew_frequencyView.clearFocus();
 
                         //For avg cost of each chewing thing
                         EditText chew_costView = (EditText) findViewById(R.id.cost_chewing_edit_text);
                         chew_cost = Float.parseFloat(chew_costView.getText().toString());
+                        chew_costView.clearFocus();
                     }
 
                     if (smoker.isChecked()) {
@@ -522,13 +552,17 @@ public class NewEntryActivity extends AppCompatActivity {
                         smokeText = smoker.getText().toString();
 
                         //For smoking history
+                        int smoke_years = 0;
                         EditText smoke_yearView = (EditText) findViewById(R.id.smoking_years_edit_text);
-                        int smoke_years = Integer.parseInt(smoke_yearView.getText().toString());
+                        smoke_years = Integer.parseInt(smoke_yearView.getText().toString());
+                        smoke_yearView.clearFocus();
 
                         EditText smoke_monthView = (EditText) findViewById(R.id.smoking_months_edit_text);
                         int smoke_months = 0;
                         if (!smoke_monthView.getText().toString().equals(""))
                             smoke_months = Integer.parseInt(smoke_monthView.getText().toString());
+
+                        smoke_monthView.clearFocus();
 
                         smoke_days = (smoke_years * 365) + (smoke_months * 30);
 
@@ -536,15 +570,17 @@ public class NewEntryActivity extends AppCompatActivity {
                         EditText smoke_frequencyView = (EditText) findViewById(R.id.often_smoking_edit_text);
                         smoke_freq = Integer.parseInt(smoke_frequencyView.getText().toString());
 
+                        smoke_frequencyView.clearFocus();
                         //For avg cost of each smoking thing
                         EditText smoke_costView = (EditText) findViewById(R.id.cost_smoking_edit_text);
                         smoke_cost = Float.parseFloat(smoke_costView.getText().toString());
+                        smoke_costView.clearFocus();
                     }
-
 
                     //For marital status m=marriage
                     RadioGroup rg1 = (RadioGroup) findViewById(R.id.m_status_group);
                     m_status = ((RadioButton) findViewById(rg1.getCheckedRadioButtonId())).getText().toString();
+                    rg1.clearFocus();
 
                     //For Future Plans
                     //Spinner futurespinner = (Spinner)findViewById(R.id.future_spinner);
@@ -553,10 +589,12 @@ public class NewEntryActivity extends AppCompatActivity {
                     //For Business
                     EditText professionView = (EditText) findViewById(R.id.profession_edit_text);
                     business = (professionView.getText().toString());
+                    professionView.clearFocus();
 
                     //For Salary
                     EditText salaryView = (EditText) findViewById(R.id.salary_edit_text);
                     salary = Integer.parseInt(salaryView.getText().toString());
+                    salaryView.clearFocus();
 
                     //For Current time
                     Calendar c = Calendar.getInstance();
@@ -573,10 +611,12 @@ public class NewEntryActivity extends AppCompatActivity {
                         //Morning consumer
                         RadioGroup rg2 = (RadioGroup) findViewById(R.id.within_30_mins);
                         morning_status = ((RadioButton) findViewById(rg2.getCheckedRadioButtonId())).getText().toString();
+                        rg2.clearFocus();
 
                         //Anyone in Family consume tobacco
                         RadioGroup rg3 = (RadioGroup) findViewById(R.id.family_consumes_RG);
                         family_status = ((RadioButton) findViewById(rg3.getCheckedRadioButtonId())).getText().toString();
+                        rg3.clearFocus();
 
                         //how did start consuming
 
@@ -606,7 +646,6 @@ public class NewEntryActivity extends AppCompatActivity {
                         }
                         if (hab2_checkbox.isChecked()) {
                             habbit += hab2_checkbox.getText().toString() + " ";
-
                         }
                         //Aware or not
                         RadioGroup rg4 = (RadioGroup) findViewById(R.id.aware_radio_group);
@@ -883,8 +922,7 @@ public class NewEntryActivity extends AppCompatActivity {
                 break;
         }
     }
-   private void cameraIntent()
-    {
+    private void cameraIntent() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         dateTime = sdf.format(Calendar.getInstance().getTime());
@@ -900,7 +938,7 @@ public class NewEntryActivity extends AppCompatActivity {
         startActivityForResult(intent, REQUEST_CAMERA);
     }
 
-	//***************RISHAB SE POOCHNNA HAI**********************************************************************************
+	//***************RISHABH SE POOCHNNA HAI**********************************************************************************
 	//private void cameraIntent() {
       //  Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         /*intent.putExtra("crop", "true");
@@ -927,8 +965,7 @@ public class NewEntryActivity extends AppCompatActivity {
         //startActivityForResult(intent, REQUEST_CAMERA);
     //}
 	//****************************************************************************************************************************
-    private void galleryIntent()
-    {
+    private void galleryIntent() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);//
@@ -941,15 +978,34 @@ public class NewEntryActivity extends AppCompatActivity {
         if (data != null) {
             try {
                 bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+                FaceDetector faceDetector = new FaceDetector.Builder(getApplicationContext()).setTrackingEnabled(false).setLandmarkType(FaceDetector.ALL_LANDMARKS).setMode(FaceDetector.FAST_MODE).build();
+                if (!faceDetector.isOperational()) {
+                    Toast.makeText(NewEntryActivity.this, "Face Detector could not be set up on your device", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Frame frame = new Frame.Builder().setBitmap(bm).build();
+                SparseArray<Face> sparseArray = faceDetector.detect(frame);
+
+                float x1 = 0, y1 = 0, x2 = 0, y2 = 0;
+                if (sparseArray.size() == 1) {
+
+                    Face face = sparseArray.valueAt(0);
+                    x1 = face.getPosition().x;
+                    y1 = face.getPosition().y;
+                    x2 = x1 + face.getWidth();
+                    y2 = y1 + face.getHeight();
+                    imageset = true;
+                    patientImageView.setImageDrawable(new BitmapDrawable(getResources(), Bitmap.createBitmap(bm, (int) x1, (int) y1, (int) x2 - (int) x1, (int) y2 - (int) y1)));
+                } else {
+                    Toast.makeText(NewEntryActivity.this, "Face undetected please try again!", Toast.LENGTH_SHORT).show();
+                }
                 uri = data.getData();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        imageset = true;
-        patientImageView.setImageBitmap(bm);
     }
- 
+
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -957,7 +1013,25 @@ public class NewEntryActivity extends AppCompatActivity {
             if (requestCode == REQUEST_GALLERY)
                 onSelectFromGalleryResult(data);
             else if (requestCode == REQUEST_CAMERA) {
-                Bitmap photo = (Bitmap) data.getExtras().get("data");
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inSampleSize = 3;
+                //Bitmap imageBitmap = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory() + "/ARO" + "/" + dateTime + ".PNG", options);
+                Bitmap photo = BitmapFactory.decodeFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/QUIT_IT" + "/" + dateTime + ".PNG", options);
+                /*String fileName = "/Aro.png";
+                File file = new File(new File(Environment.getExternalStorageDirectory() + "/ARO"), fileName);
+                if (file.exists()) {
+                    file.delete();
+                }
+                try {
+                    FileOutputStream out = new FileOutputStream(file);
+                    imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                    out.flush();
+                    out.close();
+                catch (Exception e) {
+                    e.printStackTrace();
+                }*/
+                //imageView.setImageBitmap(imageBitmap);
+                //Bitmap photo = (Bitmap) data.getExtras().get("data");
                 FaceDetector faceDetector = new FaceDetector.Builder(getApplicationContext()).setTrackingEnabled(false).setLandmarkType(FaceDetector.ALL_LANDMARKS).setMode(FaceDetector.FAST_MODE).build();
                 if (!faceDetector.isOperational()) {
                     Toast.makeText(NewEntryActivity.this, "Face Detector could not be set up on your device", Toast.LENGTH_SHORT).show();

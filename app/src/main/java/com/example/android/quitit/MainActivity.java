@@ -1,9 +1,14 @@
 package com.example.android.quitit;
 
+import android.app.AlarmManager;
+import android.app.LoaderManager;
+import android.app.PendingIntent;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -48,10 +53,13 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Set;
 
 import static com.example.android.quitit.FirebaseMethods.getUserId;
+import static com.example.android.quitit.Utility.isNetworkAvailable;
+import static com.example.android.quitit.Utility.sortByValues;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -64,6 +72,7 @@ public class MainActivity extends AppCompatActivity
     private LinearLayout mEmptyPatientLayout;
     private ImageView mEmptyPatientImage;
     private TextView mEmptyPatientTextView1;
+    private TextView emptyTextView;
     private TextView mEmptyPatientTextView2;
     private EntriesListAdapter mPatientAdapter;
     private ArrayList<Entry> patientList;
@@ -74,6 +83,8 @@ public class MainActivity extends AppCompatActivity
     SearchView searchView;
     private TextView usernameTxt,emailTxt;
     private ImageView userImageView;
+    private static final int PATIENT_LOADER_ID = 1;
+
 
     //private boolean found=false;
     //private static int doctorCount = 0;
@@ -85,7 +96,19 @@ public class MainActivity extends AppCompatActivity
         this.setTheme(R.style.AppThemeNoBar);
         super.onCreate(savedInstanceState);
 
+        //Alarm for notification
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent notificationIntent = new Intent(this, AlarmReceiver.class);
+        PendingIntent broadcast = PendingIntent.getBroadcast(this, 100, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Calendar calendar= Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY,22);//set time here
+        calendar.set(Calendar.MINUTE,30);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY,broadcast);
+        //***************
+
         setContentView(R.layout.activity_main); //changed due to navbar;
+        spinner=(ProgressBar) findViewById(R.id.spinner);
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -106,13 +129,24 @@ public class MainActivity extends AppCompatActivity
 
         usernameTxt.setText(getIntent().getStringExtra("displayName"));
         emailTxt.setText(getIntent().getStringExtra("displayEmail"));
+        emptyTextView = (TextView) findViewById(R.id.empty_view);
+
+        if(isNetworkAvailable(getBaseContext()))
+        {
+            spinner.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            spinner.setVisibility(View.GONE);
+            emptyTextView.setText(R.string.no_internet_connection);
+        }
+
         if(getIntent().getStringExtra("displayImage")!=null) {
             Picasso.with(this).load(Uri.parse(getIntent().getStringExtra("displayImage"))).into(userImageView);
         }
 
         //******************FIREBASE BEGINS HERE*******************
         empty=true;
-        spinner=(ProgressBar) findViewById(R.id.spinner);
         //firebase reference
         mDoctorsDatabaseReference=FirebaseMethods.getFirebaseReference("doctors");
         //setting list view
@@ -124,6 +158,7 @@ public class MainActivity extends AppCompatActivity
 
         /// /fetching data from firebase
         firebaseDataFetch();
+        mPatientListView.setEmptyView(emptyTextView);
 
 
 
@@ -266,6 +301,7 @@ public class MainActivity extends AppCompatActivity
                             currentdoctorKey = child.getKey();
                             found = true;
                             if (patients != null) {
+                                patients=sortByValues(patients);
                                 Set<String> ks = patients.keySet();
                                 for (String key : ks) {
                                     patientList.add(patients.get(key));

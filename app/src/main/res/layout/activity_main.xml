@@ -11,9 +11,20 @@
     tools:context="com.example.android.quitit.MainActivity"
     >
     <include
+        android:id="@+id/include_list_of_all_Entries"
         layout="@layout/list_of_all_entries"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+    />
+
+    <!--android:visibility="gone"-->
+
+    <include
+        android:id="@+id/include_patient_home"
+        layout="@layout/patient_home_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
 
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
