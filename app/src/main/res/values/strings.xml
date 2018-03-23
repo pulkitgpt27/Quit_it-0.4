@@ -76,7 +76,7 @@
     <string name="how_many_times_do_you_smoke_in_a_day">How many times do you smoke in a day?</string>
     <string name="search_hint">Patient\'s Name</string>
     <string name="image_msg_report_activity">This is what you may look like after too much of consumption</string>
-    <string name="title_activity_login2">Sign in</string>
+    <string name="title_activity_check_patient_registration">Sign in</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>

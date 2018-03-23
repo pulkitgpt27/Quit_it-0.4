@@ -74,9 +74,10 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:text="Sign in as a Patient"
+
+            android:text="Do you want to quit? Click here."
             android:gravity="center"
-            android:textSize="16dip"/>
+            android:textSize="16dp"/>
 
     </LinearLayout>
 </ScrollView>

@@ -6,7 +6,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+
 import android.graphics.BitmapFactory;
+
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -732,7 +734,7 @@ public class NewEntryActivity extends AppCompatActivity {
 
                         //Tried Quiting Before
                         RadioGroup rg6 = (RadioGroup) findViewById(R.id.quit_before_radiogroup);
-                        quit_before_status = ((RadioButton) findViewById(rg5.getCheckedRadioButtonId())).getText().toString();
+                        quit_before_status = ((RadioButton) findViewById(rg6.getCheckedRadioButtonId())).getText().toString();
 
                         //Craving timings
                         CheckBox craving_chackbox1 = (CheckBox) findViewById(R.id.craving_1);
