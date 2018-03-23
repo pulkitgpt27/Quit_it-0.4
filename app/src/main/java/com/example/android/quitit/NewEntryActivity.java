@@ -940,13 +940,32 @@ public class NewEntryActivity extends AppCompatActivity {
         if (data != null) {
             try {
                 bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+                FaceDetector faceDetector = new FaceDetector.Builder(getApplicationContext()).setTrackingEnabled(false).setLandmarkType(FaceDetector.ALL_LANDMARKS).setMode(FaceDetector.FAST_MODE).build();
+                if (!faceDetector.isOperational()) {
+                    Toast.makeText(NewEntryActivity.this, "Face Detector could not be set up on your device", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Frame frame = new Frame.Builder().setBitmap(bm).build();
+                SparseArray<Face> sparseArray = faceDetector.detect(frame);
+
+                float x1 = 0, y1 = 0, x2 = 0, y2 = 0;
+                if (sparseArray.size() == 1) {
+
+                    Face face = sparseArray.valueAt(0);
+                    x1 = face.getPosition().x;
+                    y1 = face.getPosition().y;
+                    x2 = x1 + face.getWidth();
+                    y2 = y1 + face.getHeight();
+                    imageset = true;
+                    patientImageView.setImageDrawable(new BitmapDrawable(getResources(), Bitmap.createBitmap(bm, (int) x1, (int) y1, (int) x2 - (int) x1, (int) y2 - (int) y1)));
+                } else {
+                    Toast.makeText(NewEntryActivity.this, "Face undetected please try again!", Toast.LENGTH_SHORT).show();
+                }
                 uri = data.getData();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        imageset = true;
-        patientImageView.setImageBitmap(bm);
     }
  
 

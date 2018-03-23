@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:title="Analysis">
+    <item android:title="Analysis"
+        android:visible="false">
         <menu>
             <item
                 android:id="@+id/basisOfSmoking"
@@ -10,7 +11,24 @@
                 android:title="Chewing" />
         </menu>
     </item>
+
+    <item
+        android:id="@+id/patientViewDetails"
+        android:title="View Details"
+        android:visible="false"></item>
+
+    <item
+        android:id="@+id/patientReport"
+        android:title="Report"
+        android:visible="false"></item>
+
+    <item
+        android:id="@+id/patientHome"
+        android:title="Home"
+        android:visible="false"></item>
+
     <item
         android:title="Logout"
+        android:visible="false"
         android:id="@+id/logout"></item>
 </menu>
