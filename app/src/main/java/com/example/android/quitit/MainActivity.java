@@ -59,6 +59,7 @@ import java.util.Set;
 
 import static com.example.android.quitit.FirebaseMethods.getUserId;
 import static com.example.android.quitit.Utility.isNetworkAvailable;
+import static com.example.android.quitit.Utility.sortByValues;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -300,6 +301,7 @@ public class MainActivity extends AppCompatActivity
                             currentdoctorKey = child.getKey();
                             found = true;
                             if (patients != null) {
+                                patients=sortByValues(patients);
                                 Set<String> ks = patients.keySet();
                                 for (String key : ks) {
                                     patientList.add(patients.get(key));

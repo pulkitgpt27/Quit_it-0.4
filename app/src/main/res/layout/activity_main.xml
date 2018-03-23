@@ -15,7 +15,9 @@
         layout="@layout/list_of_all_entries"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"/>
+    />
+
+    <!--android:visibility="gone"-->
 
     <include
         android:id="@+id/include_patient_home"
