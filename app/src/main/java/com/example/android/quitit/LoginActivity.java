@@ -41,12 +41,15 @@ public class LoginActivity extends AppCompatActivity {
     private String displayName,displayEmail;
     private String imageUri;
     public static boolean isGmailSigned = false;
+    public static String USER;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_layout);
+
+        USER = "Doctor";
 
         mFirebaseAuth=FirebaseAuth.getInstance();
         mAuthStateListener= new FirebaseAuth.AuthStateListener() {
@@ -80,6 +83,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
+                USER = "Patient";
                 Intent intent = new Intent(LoginActivity.this,PatientLoginActivity.class);
                 startActivity(intent);
             }

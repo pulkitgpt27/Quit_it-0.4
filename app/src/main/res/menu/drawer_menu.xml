@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:title="Analysis"
-        android:visible="false">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/doctorAnalysis"
+        android:title="Analysis"
+        android:visible="false"
+        app:actionViewClass="android.widget.Button">
         <menu>
             <item
                 android:id="@+id/basisOfSmoking"
@@ -15,20 +19,23 @@
     <item
         android:id="@+id/patientViewDetails"
         android:title="View Details"
-        android:visible="false"></item>
+        android:visible="false"
+        app:actionViewClass="android.widget.Button"></item>
 
     <item
         android:id="@+id/patientReport"
         android:title="Report"
-        android:visible="false"></item>
+        android:visible="false"
+        app:actionViewClass="android.widget.Button"></item>
 
     <item
         android:id="@+id/patientHome"
         android:title="Home"
-        android:visible="false"></item>
+        android:visible="false"
+        app:actionViewClass="android.widget.Button"></item>
 
     <item
         android:title="Logout"
-        android:visible="false"
+        android:visible="true"
         android:id="@+id/logout"></item>
 </menu>

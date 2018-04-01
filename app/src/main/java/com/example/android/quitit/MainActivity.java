@@ -23,6 +23,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.Layout;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -107,6 +108,11 @@ public class MainActivity extends AppCompatActivity
         //***************
 
         setContentView(R.layout.activity_main); //changed due to navbar;
+
+        View list_of_all_Enteries = (View) findViewById(R.id.include_list_of_all_Entries);
+        View patient_home = (View) findViewById(R.id.include_patient_home);
+
+
         spinner=(ProgressBar) findViewById(R.id.spinner);
 
 
@@ -146,42 +152,50 @@ public class MainActivity extends AppCompatActivity
         }
 
         //******************FIREBASE BEGINS HERE*******************
-        empty=true;
-        //firebase reference
-        mDoctorsDatabaseReference=FirebaseMethods.getFirebaseReference("doctors");
-        //setting list view
-        mPatientListView=(ListView) findViewById(R.id.listView);
-        mEmptyPatientLayout = (LinearLayout) findViewById(R.id.empty_layout);
-        mEmptyPatientImage = (ImageView) findViewById(R.id.empty_image_view);
-        mEmptyPatientTextView1 = (TextView) findViewById(R.id.empty_textView_1);
-        mEmptyPatientTextView2= (TextView) findViewById(R.id.empty_textView_2);
+        if(LoginActivity.USER.equals("Doctor")) {
+            patient_home.setVisibility(View.GONE);
+            list_of_all_Enteries.setVisibility(View.VISIBLE);
+            empty = true;
+            //firebase reference
+            mDoctorsDatabaseReference = FirebaseMethods.getFirebaseReference("doctors");
+            //setting list view
+            mPatientListView = (ListView) findViewById(R.id.listView);
+            mEmptyPatientLayout = (LinearLayout) findViewById(R.id.empty_layout);
+            mEmptyPatientImage = (ImageView) findViewById(R.id.empty_image_view);
+            mEmptyPatientTextView1 = (TextView) findViewById(R.id.empty_textView_1);
+            mEmptyPatientTextView2 = (TextView) findViewById(R.id.empty_textView_2);
 
-        /// /fetching data from firebase
-        firebaseDataFetch();
-        mPatientListView.setEmptyView(emptyTextView);
+            /// /fetching data from firebase
+            firebaseDataFetch();
+            mPatientListView.setEmptyView(emptyTextView);
 
 
+            mPatientListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    Intent intent = new Intent(MainActivity.this, ReportActivity.class);
+                    Entry temp = patientList.get(i);
+                    Bundle B = new Bundle();
+                    B.putParcelable("ClickedEntry", (Parcelable) temp);
+                    intent.putExtras(B);
+                    startActivity(intent);
+                }
+            });
 
-        mPatientListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(MainActivity.this,ReportActivity.class);
-                Entry temp = patientList.get(i);
-                Bundle B = new Bundle();
-                B.putParcelable("ClickedEntry", (Parcelable) temp);
-                intent.putExtras(B);
-                startActivity(intent);
-            }
-        });
-
-        FloatingActionButton newEntryFab = (FloatingActionButton) findViewById(R.id.fab);
-        newEntryFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(MainActivity.this, NewEntryActivity.class);
-                startActivity(i);
-            }
-        });
+            FloatingActionButton newEntryFab = (FloatingActionButton) findViewById(R.id.fab);
+            newEntryFab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent i = new Intent(MainActivity.this, NewEntryActivity.class);
+                    startActivity(i);
+                }
+            });
+        }
+        else if(LoginActivity.USER.equals("Patient"))
+        {
+            list_of_all_Enteries.setVisibility(View.GONE);
+            patient_home.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -202,7 +216,28 @@ public class MainActivity extends AppCompatActivity
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
         searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        //SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+        SearchView search_icon = (SearchView) menu.findItem(R.id.search_icon).getActionView();
+        //MenuItem search_icon = (MenuItem) findViewById(R.id.search_icon);
+        MenuItem doctorAnalysis = (MenuItem) findViewById(R.id.doctorAnalysis);
+        MenuItem patientViewDetails = (MenuItem) findViewById(R.id.patientViewDetails);
+        MenuItem patientReport = (MenuItem) findViewById(R.id.patientReport);
+        MenuItem patientHome = (MenuItem) findViewById(R.id.patientHome);
+        if(LoginActivity.USER.equals("Doctor"))
+        {
+            search_icon.setVisibility(View.VISIBLE);
+            doctorAnalysis.setVisible(true);
+            patientViewDetails.setVisible(false);
+            patientReport.setVisible(false);
+            patientHome.setVisible(false);
+        }
+        else if(LoginActivity.USER.equals("Patient"))
+        {
+            search_icon.setVisibility(View.INVISIBLE);
+            doctorAnalysis.setVisible(false);
+            patientViewDetails.setVisible(true);
+            patientReport.setVisible(true);
+            patientHome.setVisible(true);
+        }
         return true;
     }
 
@@ -264,6 +299,12 @@ public class MainActivity extends AppCompatActivity
                         });
                     }
                 }
+                return true;
+            case R.id.patientViewDetails:
+                return true;
+            case R.id.patientReport:
+                return true;
+            case R.id.patientHome:
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
