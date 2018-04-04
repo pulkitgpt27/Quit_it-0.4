@@ -185,12 +185,12 @@ public class NewEntryActivity extends AppCompatActivity {
             @Override
             public void onFocusChange(View view, boolean b) {
                 if (!b) {
-                    if (!ValidateEntry.validateEmpty($name.getText().toString())) {
+                    if (!ValidationClass.validateEmpty($name.getText().toString())) {
                         $name_layout.setErrorEnabled(true);
                         $name_layout.setError("Name is Empty!");
                         $name_layout.getBackground().setAlpha(51);
                         validation[0] = false;
-                    } else if (!ValidateEntry.validateNameDigit($name.getText().toString())) {  //checks if name contains a number{
+                    } else if (!ValidationClass.validateNameDigit($name.getText().toString())) {  //checks if name contains a number{
                         $name_layout.setError("Name contains a number!");
                         $name_layout.setErrorEnabled(true);
                         $name_layout.getBackground().setAlpha(51);
@@ -209,12 +209,12 @@ public class NewEntryActivity extends AppCompatActivity {
             @Override
             public void onFocusChange(View view, boolean b) {
                 if (!b) {
-                    if (!ValidateEntry.validateEmpty($age.getText().toString())) {
+                    if (!ValidationClass.validateEmpty($age.getText().toString())) {
                         $age_layout.setErrorEnabled(true);
                         $age_layout.setError("Age is empty");
                         $age_layout.getBackground().setAlpha(51);
                         validation[1] = false;
-                    } else if (!ValidateEntry.validateAge($age.getText().toString())) {
+                    } else if (!ValidationClass.validateAge($age.getText().toString())) {
                         $age_layout.setErrorEnabled(true);
                         $age_layout.setError("Age is invalid");
                         $age_layout.getBackground().setAlpha(51);
@@ -233,7 +233,7 @@ public class NewEntryActivity extends AppCompatActivity {
             @Override
             public void onFocusChange(View view, boolean b) {
                 if (!b) {
-                    if (!ValidateEntry.validateEmail($email.getText().toString())) {
+                    if (!ValidationClass.validateEmail($email.getText().toString())) {
 
                         $email_layout.setErrorEnabled(true);
                         $email_layout.setError("Invalid Email");
@@ -254,7 +254,7 @@ public class NewEntryActivity extends AppCompatActivity {
             @Override
             public void onFocusChange(View view, boolean b) {
                 if (!b) {
-                    if (!ValidateEntry.validatePhone($phone.getText().toString())) {
+                    if (!ValidationClass.validatePhone($phone.getText().toString())) {
                         $phone_layout.setErrorEnabled(true);
                         $phone_layout.setError("Number Invalid");
                         $phone_layout.getBackground().setAlpha(51);
@@ -272,7 +272,7 @@ public class NewEntryActivity extends AppCompatActivity {
             @Override
             public void onFocusChange(View view, boolean b) {
                 if (!b) {
-                    if (!ValidateEntry.validateInteger($salary.getText().toString())) {
+                    if (!ValidationClass.validateInteger($salary.getText().toString())) {
                         $salary_layout.setError("Salary amount is invalid");
                         $salary_layout.getBackground().setAlpha(51);
                         $salary_layout.setErrorEnabled(true);

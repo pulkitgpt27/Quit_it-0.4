@@ -48,9 +48,7 @@ public class LoginActivity extends AppCompatActivity {
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_layout);
-
         USER = "Doctor";
-
         mFirebaseAuth=FirebaseAuth.getInstance();
         mAuthStateListener= new FirebaseAuth.AuthStateListener() {
             @Override
@@ -68,8 +66,6 @@ public class LoginActivity extends AppCompatActivity {
                     displayName = user.getDisplayName();
                     displayEmail = user.getEmail();
                     onSignedInInitialize(user.getDisplayName());
-
-
 
                 }else {
                     onSignedOutCleanUp();
@@ -125,38 +121,36 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
         login.setOnClickListener(new Button.OnClickListener() {
-                                     @Override
-                                     public void onClick(View v) {
-                                         String mail = email.getText().toString();
-                                         String pass = password.getText().toString();
-                                         if(mail.equals("") || pass.equals("")){
-                                             toastmessage("You didnt filled all the feilds");
-                                         }
-                                         else
-                                         {
-                                             mFirebaseAuth.signInWithEmailAndPassword(mail, pass)
-                                                     .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-                                                         @Override
-                                                         public void onComplete(@NonNull Task<AuthResult> task) {
-                                                             // If sign in fails, display a message to the user. If sign in succeeds
-                                                             // the auth state listener will be notified and logic to handle the
-                                                             // signed in user can be handled in the listener.
-                                                             if (!task.isSuccessful()) {
-                                                                 // there was an error
-                                                                 toastmessage("Credentials are wrong");
-                                                             } else {
-
-                                                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                                                 startActivity(intent);
-                                                                 finish();
-                                                             }
-                                                         }
-                                                     });
-                                         }
-
-
-                                     }
+            @Override
+            public void onClick(View v) {
+                String mail = email.getText().toString();
+                String pass = password.getText().toString();
+                if(mail.equals("") || pass.equals("")){
+                    toastmessage("You didnt filled all the feilds");
+                }
+                else
+                {
+                    mFirebaseAuth.signInWithEmailAndPassword(mail, pass)
+                            .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                             @Override
+                             public void onComplete(@NonNull Task<AuthResult> task) {
+                                 // If sign in fails, display a message to the user. If sign in succeeds
+                                 // the auth state listener will be notified and logic to handle the
+                                 // signed in user can be handled in the listener.
+                                 if (!task.isSuccessful()) {
+                                     // there was an error
+                                     toastmessage("Credentials are wrong");
+                                 } else {
+                                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                     startActivity(intent);
+                                     finish();
                                  }
+                             }
+                         });
+             }
+
+     }
+ }
         );
     }
 
@@ -249,7 +243,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void detachchDatabaseReadListener(){
-
     }
 
     @Override
@@ -259,4 +252,5 @@ public class LoginActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
+
 }
