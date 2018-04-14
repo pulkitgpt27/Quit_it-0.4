@@ -106,12 +106,12 @@ public class PatientRegistration extends AppCompatActivity {
                 else {
                     startSpinner();
                     firebasedatafetch();
+                    patient.setUsername(patient_uname.getText().toString());
+                    patient.setEmailId(patientEmailEdt.getText().toString());
+                    patient.setPassword(patient_pword.getText().toString());
                     if (found == true) {
                         //SET THE THE VALUE OF ENTRY_KEY in PATIENT OBJECT
                         //INTENT TO PATIENT-HOME-SCREEN
-                        patient.setUsername(patient_uname.getText().toString());
-                        patient.setEmailId(patientEmailEdt.getText().toString());
-                        patient.setPassword(patient_pword.getText().toString());
                         patient.setEntry_key(entry_key);
                         patient.setDoctor_key(doctor_key);
                         mPatientsDatabaseReference.push().setValue(null, new DatabaseReference.CompletionListener() {
@@ -121,7 +121,7 @@ public class PatientRegistration extends AppCompatActivity {
                                 uniqueKey[0] = databaseReference.getKey();
                                 final DatabaseReference UpdatePatientUserDB = FirebaseDatabase.getInstance().getReference().child("patients").child(uniqueKey[0]);
                                 UpdatePatientUserDB.setValue(patient);
-                                RegisterUser(patient.getEmailId(),patient.getPassword());
+                                registerUser(patient.getEmailId(),patient.getPassword());
                                 endSpinner();
                             }
                         });
@@ -138,6 +138,7 @@ public class PatientRegistration extends AppCompatActivity {
                         Log.e("notfoundentry","");
                         Intent i = new Intent(PatientRegistration.this, AskDoctorAffiliationActivity.class);
                         Bundle B1 = new Bundle();
+                        registerUser(patient.getEmailId(), patient.getPassword());
                         B1.putParcelable("new_patient", (Parcelable) patient);
                         i.putExtras(B1);
                         startActivity(i);
@@ -148,7 +149,7 @@ public class PatientRegistration extends AppCompatActivity {
         });
     }
 
-    protected void RegisterUser(String email, String password){
+    protected void registerUser(String email, String password){
 
         //VALIDATIONS IDHAR DAALNI HAIN
 

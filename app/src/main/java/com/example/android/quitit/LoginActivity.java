@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.ui.User;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -42,7 +43,6 @@ public class LoginActivity extends AppCompatActivity {
     private String imageUri;
     public static boolean isGmailSigned = false;
     public static String USER;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
@@ -72,6 +72,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         };
+
         final EditText email =(EditText) findViewById(R.id.input_email);
         final EditText password =(EditText) findViewById(R.id.input_password);
         final TextView guestentry = (TextView) findViewById(R.id.guestentry);
