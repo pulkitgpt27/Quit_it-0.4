@@ -62,7 +62,7 @@ public class AskDoctorAffiliationActivity extends AppCompatActivity {
         noDoctor.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(AskDoctorAffiliationActivity.this, PatientRegistration.class);
+                Intent i = new Intent(AskDoctorAffiliationActivity.this, NewEntryActivity.class);
                 i.putExtra("doc_key", "no-doctor");
                 startActivity(i);
                 finish();

@@ -58,6 +58,7 @@ public class PatientLoginActivity extends AppCompatActivity {
                         i.putExtra("displayName",CurrentPatient.getUsername());
                         i.putExtra("displayEmail",CurrentPatient.getEmailId());
                         i.putExtra("displayImage",displayImage);
+                        i.putExtra("CurrentPatient",CurrentPatient);
                         startActivity(i);
                         finish();
                     }

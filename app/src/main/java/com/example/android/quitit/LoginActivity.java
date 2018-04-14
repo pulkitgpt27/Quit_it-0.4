@@ -49,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_layout);
 
-        USER = "Doctor";
+        USER = "Patient";
 
         mFirebaseAuth=FirebaseAuth.getInstance();
         mAuthStateListener= new FirebaseAuth.AuthStateListener() {
