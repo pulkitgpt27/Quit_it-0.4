@@ -23,6 +23,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.Layout;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -30,6 +31,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -84,6 +86,7 @@ public class MainActivity extends AppCompatActivity
     private TextView usernameTxt,emailTxt;
     private ImageView userImageView;
     private static final int PATIENT_LOADER_ID = 1;
+    private Patient patient;
 
 
     //private boolean found=false;
@@ -107,6 +110,11 @@ public class MainActivity extends AppCompatActivity
         //***************
 
         setContentView(R.layout.activity_main); //changed due to navbar;
+
+        View list_of_all_Enteries = (View) findViewById(R.id.include_list_of_all_Entries);
+        View patient_home = (View) findViewById(R.id.include_patient_home);
+
+
         spinner=(ProgressBar) findViewById(R.id.spinner);
 
 
@@ -123,6 +131,11 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         View headerLayout = navigationView.getHeaderView(0);
+        Menu menu =navigationView.getMenu();
+        MenuItem doctorAnalysis = menu.findItem(R.id.doctorAnalysis);
+        MenuItem patientViewDetails = menu.findItem(R.id.patientViewDetails);
+        MenuItem patientReport = menu.findItem(R.id.patientReport);
+        MenuItem patientHome = menu.findItem(R.id.patientHome);
         usernameTxt = (TextView) headerLayout.findViewById(R.id.usernameTxt);
         emailTxt = (TextView) headerLayout.findViewById(R.id.emailTxt);
         userImageView = (ImageView) headerLayout.findViewById(R.id.imageView);
@@ -130,6 +143,7 @@ public class MainActivity extends AppCompatActivity
         usernameTxt.setText(getIntent().getStringExtra("displayName"));
         emailTxt.setText(getIntent().getStringExtra("displayEmail"));
         emptyTextView = (TextView) findViewById(R.id.empty_view);
+        patient = (Patient) getIntent().getSerializableExtra("CurrentPatient");
 
         if(isNetworkAvailable(getBaseContext()))
         {
@@ -146,42 +160,62 @@ public class MainActivity extends AppCompatActivity
         }
 
         //******************FIREBASE BEGINS HERE*******************
-        empty=true;
-        //firebase reference
-        mDoctorsDatabaseReference=FirebaseMethods.getFirebaseReference("doctors");
-        //setting list view
-        mPatientListView=(ListView) findViewById(R.id.listView);
-        mEmptyPatientLayout = (LinearLayout) findViewById(R.id.empty_layout);
-        mEmptyPatientImage = (ImageView) findViewById(R.id.empty_image_view);
-        mEmptyPatientTextView1 = (TextView) findViewById(R.id.empty_textView_1);
-        mEmptyPatientTextView2= (TextView) findViewById(R.id.empty_textView_2);
+        if(LoginActivity.USER != null) {
+            if (LoginActivity.USER.equals("Doctor")) {
+                patient_home.setVisibility(View.GONE);
+                list_of_all_Enteries.setVisibility(View.VISIBLE);
+                empty = true;
+                //firebase reference
+                mDoctorsDatabaseReference = FirebaseMethods.getFirebaseReference("doctors");
+                //setting list view
+                mPatientListView = (ListView) findViewById(R.id.listView);
+                mEmptyPatientLayout = (LinearLayout) findViewById(R.id.empty_layout);
+                mEmptyPatientImage = (ImageView) findViewById(R.id.empty_image_view);
+                mEmptyPatientTextView1 = (TextView) findViewById(R.id.empty_textView_1);
+                mEmptyPatientTextView2 = (TextView) findViewById(R.id.empty_textView_2);
 
-        /// /fetching data from firebase
-        firebaseDataFetch();
-        mPatientListView.setEmptyView(emptyTextView);
+                doctorAnalysis.setVisible(true);
+                patientViewDetails.setVisible(false);
+                patientReport.setVisible(false);
+                patientHome.setVisible(false);
+
+                /// /fetching data from firebase
+                firebaseDataFetch();
+                mPatientListView.setEmptyView(emptyTextView);
 
 
+                mPatientListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        Intent intent = new Intent(MainActivity.this, ReportActivity.class);
+                        Entry temp = patientList.get(i);
+                        Bundle B = new Bundle();
+                        B.putParcelable("ClickedEntry", (Parcelable) temp);
+                        intent.putExtras(B);
+                        startActivity(intent);
+                    }
+                });
 
-        mPatientListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(MainActivity.this,ReportActivity.class);
-                Entry temp = patientList.get(i);
-                Bundle B = new Bundle();
-                B.putParcelable("ClickedEntry", (Parcelable) temp);
-                intent.putExtras(B);
-                startActivity(intent);
+                FloatingActionButton newEntryFab = (FloatingActionButton) findViewById(R.id.fab);
+                newEntryFab.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent i = new Intent(MainActivity.this, NewEntryActivity.class);
+                        startActivity(i);
+                    }
+                });
+            } else if (LoginActivity.USER.equals("Patient")) {
+
+                list_of_all_Enteries.setVisibility(View.GONE);
+                patient_home.setVisibility(View.VISIBLE);
+
+
+                doctorAnalysis.setVisible(false);
+                patientViewDetails.setVisible(true);
+                patientReport.setVisible(true);
+                patientHome.setVisible(true);
             }
-        });
-
-        FloatingActionButton newEntryFab = (FloatingActionButton) findViewById(R.id.fab);
-        newEntryFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(MainActivity.this, NewEntryActivity.class);
-                startActivity(i);
-            }
-        });
+        }
     }
 
     @Override
@@ -202,7 +236,14 @@ public class MainActivity extends AppCompatActivity
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
         searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        //SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+        SearchView search_icon = (SearchView) menu.findItem(R.id.search_icon).getActionView();
+        if(LoginActivity.USER != null) {
+            if (LoginActivity.USER.equals("Doctor")) {
+                search_icon.setVisibility(View.VISIBLE);
+            } else if (LoginActivity.USER.equals("Patient")) {
+                search_icon.setVisibility(View.GONE);
+            }
+        }
         return true;
     }
 
@@ -264,6 +305,13 @@ public class MainActivity extends AppCompatActivity
                         });
                     }
                 }
+                return true;
+            case R.id.patientViewDetails:
+                return true;
+            case R.id.patientReport:
+                firebasePatientDataFetch();
+                return true;
+            case R.id.patientHome:
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -369,6 +417,41 @@ public class MainActivity extends AppCompatActivity
         //mPatientDatabaseReference.addChildEventListener(mChildEventListener);
     }
     //********************************************
+
+    //********************************************
+    public void firebasePatientDataFetch()
+    {
+        mValueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    if (patient.getDoctor_key().equals(child.getKey())) {
+                        Doctor currentDoctor = child.getValue(Doctor.class);
+                        if (currentDoctor.getMail_id() != null) {
+                            HashMap<String, Entry> patients = currentDoctor.getPatients();
+                            if (patients != null) {
+                                Set<String> ks = patients.keySet();
+                                for (String key : ks) {
+                                    if (ks.equals(patient.getEntry_key())) {
+                                        Intent intent = new Intent(MainActivity.this, ReportActivity.class);
+                                        Entry temp = patients.get(key);
+                                        Bundle B = new Bundle();
+                                        B.putParcelable("ClickedEntry", (Parcelable) temp);
+                                        intent.putExtras(B);
+                                        startActivity(intent);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+    }
 
     //****************SEARCH METHODS**************
     //2 mothods for searching

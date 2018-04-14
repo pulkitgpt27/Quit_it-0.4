@@ -73,8 +73,8 @@ public class ReportActivity extends AppCompatActivity {
         $progress_parent.setVisibility(View.INVISIBLE);
         $progress_text_view.setVisibility(View.INVISIBLE);
 
-
-        if(!ClickedEntry.getImageUri().equals("")) {
+        if(ClickedEntry.getImageUri() != null){
+        //else if(ClickedEntry.getImageUri().equals("")) {
             $progress_bar.setScaleY(3f);
             $progress_bar.setScaleX(5f);
             $progress_bar.setVisibility(View.VISIBLE);

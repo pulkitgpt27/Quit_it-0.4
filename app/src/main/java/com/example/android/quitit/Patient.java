@@ -1,10 +1,12 @@
 package com.example.android.quitit;
 
+import java.io.Serializable;
+
 /**
  * Created by kakrya on 3/23/2018.
  */
 
-public class Patient {
+public class Patient implements Serializable{
     private String emailId;
     private String username;
     private String password;

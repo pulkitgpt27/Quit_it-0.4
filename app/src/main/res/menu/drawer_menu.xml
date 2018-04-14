@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:title="Analysis"
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/doctorAnalysis"
+        android:title="Analysis"
         android:visible="false">
         <menu>
             <item
@@ -14,21 +17,17 @@
 
     <item
         android:id="@+id/patientViewDetails"
-        android:title="View Details"
-        android:visible="false"></item>
+        android:title="View Details"></item>
 
     <item
         android:id="@+id/patientReport"
-        android:title="Report"
-        android:visible="false"></item>
+        android:title="Report"></item>
 
     <item
         android:id="@+id/patientHome"
-        android:title="Home"
-        android:visible="false"></item>
+        android:title="Home"></item>
 
     <item
         android:title="Logout"
-        android:visible="false"
         android:id="@+id/logout"></item>
 </menu>
