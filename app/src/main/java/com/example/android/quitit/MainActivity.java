@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity
         MenuItem doctorAnalysis = menu.findItem(R.id.doctorAnalysis);
         MenuItem patientViewDetails = menu.findItem(R.id.patientViewDetails);
         MenuItem patientReport = menu.findItem(R.id.patientReport);
-        MenuItem patientHome = menu.findItem(R.id.patientHome);
+
         usernameTxt = (TextView) headerLayout.findViewById(R.id.usernameTxt);
         emailTxt = (TextView) headerLayout.findViewById(R.id.emailTxt);
         userImageView = (ImageView) headerLayout.findViewById(R.id.imageView);
@@ -177,7 +177,6 @@ public class MainActivity extends AppCompatActivity
                 doctorAnalysis.setVisible(true);
                 patientViewDetails.setVisible(false);
                 patientReport.setVisible(false);
-                patientHome.setVisible(false);
 
                 /// /fetching data from firebase
                 firebaseDataFetch();
@@ -213,7 +212,6 @@ public class MainActivity extends AppCompatActivity
                 doctorAnalysis.setVisible(false);
                 patientViewDetails.setVisible(true);
                 patientReport.setVisible(true);
-                patientHome.setVisible(true);
             }
         }
     }
@@ -309,9 +307,23 @@ public class MainActivity extends AppCompatActivity
             case R.id.patientViewDetails:
                 return true;
             case R.id.patientReport:
-                firebasePatientDataFetch();
-                return true;
-            case R.id.patientHome:
+                Entry temp = new Entry();
+                FirebaseDatabase.getInstance().getReference().child("doctors").child(patient.getDoctor_key()).child("patients").child(patient.getEntry_key()).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Entry temp = dataSnapshot.getValue(Entry.class);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+                intent = new Intent(MainActivity.this, ReportActivity.class);
+                Bundle B = new Bundle();
+                B.putParcelable("ClickedEntry", (Parcelable) temp);
+                intent.putExtras(B);
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -432,7 +444,7 @@ public class MainActivity extends AppCompatActivity
                             if (patients != null) {
                                 Set<String> ks = patients.keySet();
                                 for (String key : ks) {
-                                    if (ks.equals(patient.getEntry_key())) {
+                                    if (key.equals(patient.getEntry_key())) {
                                         Intent intent = new Intent(MainActivity.this, ReportActivity.class);
                                         Entry temp = patients.get(key);
                                         Bundle B = new Bundle();
