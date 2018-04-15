@@ -2,6 +2,7 @@ package com.example.android.quitit;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
@@ -189,28 +190,34 @@ public class PatientRegistration extends AppCompatActivity {
                 else if (!validation.get("password_confirm"))
                     Toast.makeText(getBaseContext(), "Passwords do not match.", Toast.LENGTH_SHORT);
                 else {
-                    final String uname = patient_uname.getText().toString();
+                    final String uname = patient_email.getText().toString();
                     final String pword = patient_pword.getText().toString();
-                    firebasedatafetch();
                     //mPatientsDatabaseReference.addListenerForSingleValueEvent(mValueEventListener);
                     patient.setUsername(patient_uname.getText().toString());
                     patient.setEmailId(patient_email.getText().toString());
                     patient.setPassword(patient_pword.getText().toString());
-                    if (found == true) {
-                        registerUser(uname, pword);
-                        //SET THE THE VALUE OF ENTRY_KEY in PATIENT OBJECT
-                        //INTENT TO PATIENT-HOME-SCREEN
-                        patient.setEntry_key(entry_key);
-                        patient.setDoctor_key(doctor_key);
-                        mPatientsDatabaseReference.push().setValue(null, new DatabaseReference.CompletionListener() {
-                            @Override
-                            public void onComplete(DatabaseError databaseError,
-                                                   DatabaseReference databaseReference) {
-                                final DatabaseReference UpdatePatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("patients").child(key);
-                                UpdatePatientDatabaseReference.setValue(patient);
-                            }
-                        });
-                        if(!entry_key.equals(patient.getEntry_key()) || !doctor_key.equals(patient.getDoctor_key()))
+                    registerUser(uname, pword);
+                }
+            }
+        });
+    }
+
+    public void Update()
+    {
+        if (found == true) {
+            //SET THE THE VALUE OF ENTRY_KEY in PATIENT OBJECT
+            //INTENT TO PATIENT-HOME-SCREEN
+            patient.setEntry_key(entry_key);
+            patient.setDoctor_key(doctor_key);
+            mPatientsDatabaseReference.push().setValue(null, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError databaseError,
+                                       DatabaseReference databaseReference) {
+                    final DatabaseReference UpdatePatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("patients").child(key);
+                    UpdatePatientDatabaseReference.setValue(patient);
+                }
+            });
+                        /*if(!entry_key.equals(patient.getEntry_key()) || !doctor_key.equals(patient.getDoctor_key()))
                         {
                             patient.setDoctor_key(doctor_key);
                             patient.setEntry_key(entry_key);
@@ -227,26 +234,30 @@ public class PatientRegistration extends AppCompatActivity {
                             i.putExtra("displayEmail",patient.getEmailId());
                             i.putExtra("CurrentPatient",patient);
                             finish();
-                        }
-                    } else {
-                        registerUser(uname, pword);
-                        patient.setEntry_key(entry_key);
-                        patient.setDoctor_key(doctor_key);
-                        mPatientsDatabaseReference.push().setValue(null, new DatabaseReference.CompletionListener() {
-                            @Override
-                            public void onComplete(DatabaseError databaseError,
-                                                   DatabaseReference databaseReference) {
-                                final DatabaseReference UpdatePatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("patients").child(key);
-                                UpdatePatientDatabaseReference.setValue(patient);
-                            }
-                        });
-
-                        startActivity((new Intent(PatientRegistration.this, AskDoctorAffiliationActivity.class)));
-                        finish();
-                    }
+                        }*/
+            Intent i = new Intent(PatientRegistration.this, MainActivity.class);
+            i.putExtra("displayName",patient.getUsername());
+            i.putExtra("displayEmail",patient.getEmailId());
+            Bundle B = new Bundle();
+            B.putParcelable("patient", (Parcelable) patient);
+            i.putExtras(B);
+            startActivity(i);
+            finish();
+        } else {
+            patient.setEntry_key(entry_key);
+            patient.setDoctor_key(doctor_key);
+            mPatientsDatabaseReference.push().setValue(null, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError databaseError,
+                                       DatabaseReference databaseReference) {
+                    final DatabaseReference UpdatePatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("patients").child(key);
+                    UpdatePatientDatabaseReference.setValue(patient);
                 }
-            }
-        });
+            });
+
+            startActivity((new Intent(PatientRegistration.this, AskDoctorAffiliationActivity.class)));
+            finish();
+        }
     }
 
     protected void registerUser(String username, String password) {
@@ -260,6 +271,7 @@ public class PatientRegistration extends AppCompatActivity {
                             //Log.d("", "createPatientUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             key = user.getUid();
+                            firebasedatafetch();
                         } else {
                             // If sign in fails, display a message to the user.
                             //Log.w("", "createUserWithEmail:failure", task.getException());
@@ -301,6 +313,7 @@ public class PatientRegistration extends AppCompatActivity {
                     if(found)
                         break;
                 }
+                Update();
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {

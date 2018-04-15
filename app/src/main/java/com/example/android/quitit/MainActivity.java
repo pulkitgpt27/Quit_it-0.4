@@ -143,7 +143,8 @@ public class MainActivity extends AppCompatActivity
         usernameTxt.setText(getIntent().getStringExtra("displayName"));
         emailTxt.setText(getIntent().getStringExtra("displayEmail"));
         emptyTextView = (TextView) findViewById(R.id.empty_view);
-        patient = (Patient) getIntent().getSerializableExtra("CurrentPatient");
+        Bundle B = getIntent().getExtras();
+        patient = B.getParcelable("patient");
 
         if(isNetworkAvailable(getBaseContext()))
         {
@@ -312,6 +313,11 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Entry temp = dataSnapshot.getValue(Entry.class);
+                        Intent intent = new Intent(MainActivity.this, ReportActivity.class);
+                        Bundle B = new Bundle();
+                        B.putParcelable("ClickedEntry", (Parcelable) temp);
+                        intent.putExtras(B);
+                        startActivity(intent);
                     }
 
                     @Override
@@ -319,11 +325,6 @@ public class MainActivity extends AppCompatActivity
 
                     }
                 });
-                intent = new Intent(MainActivity.this, ReportActivity.class);
-                Bundle B = new Bundle();
-                B.putParcelable("ClickedEntry", (Parcelable) temp);
-                intent.putExtras(B);
-                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
