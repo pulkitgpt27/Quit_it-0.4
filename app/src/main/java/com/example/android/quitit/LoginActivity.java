@@ -75,23 +75,23 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         };
-        FirebaseDatabase.getInstance().getReference().child("usertype").child(mFirebaseAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                UserType userType = dataSnapshot.getValue(UserType.class);
-                if(userType.getType().equals("Patient"))
-                {
-                    USER = "Patient";
+        if(mFirebaseAuth.getCurrentUser()!=null) {
+            FirebaseDatabase.getInstance().getReference().child("usertype").child(mFirebaseAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    UserType userType = dataSnapshot.getValue(UserType.class);
+                    if (userType.getType().equals("Patient")) {
+                        USER = "Patient";
+                    } else
+                        USER = "Doctor";
                 }
-                else
-                    USER = "Doctor";
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
+        }
         final EditText email =(EditText) findViewById(R.id.input_email);
         final EditText password =(EditText) findViewById(R.id.input_password);
         final TextView guestentry = (TextView) findViewById(R.id.guestentry);

@@ -3,6 +3,8 @@ package com.example.android.quitit;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.HashMap;
+
 /**
  * Created by Ayush Vaid on 3/23/2018.
  */
@@ -13,6 +15,7 @@ public class Patient implements Parcelable{
     private String password;
     private String doctor_key;
     private String entry_key;
+    private HashMap<String,Integer> day_map=new HashMap<String, Integer>();
 
     //Constructors
     public Patient(Parcel in){
@@ -28,6 +31,15 @@ public class Patient implements Parcelable{
     };
 
     //getters
+
+    public HashMap<String, Integer> getDay_map() {
+//        if(getDay_map().size()==0)
+//        {
+//            day_map.put();
+//        }
+         return this.day_map;
+    }
+
     public String getEmailId() {
         return emailId;
     }
@@ -54,6 +66,10 @@ public class Patient implements Parcelable{
     }
 
     //setters
+    public void addDay_map(String key,Integer value) {
+        day_map.put(key,value);
+    }
+
     public void setDoctor_key(String doctor_key) {
         this.doctor_key = doctor_key;
     }
