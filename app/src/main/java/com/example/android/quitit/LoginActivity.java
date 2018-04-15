@@ -25,6 +25,10 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * Created by Pulkit on 07-08-2017.
@@ -49,8 +53,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_layout);
 
-        USER = "Patient";
-
         mFirebaseAuth=FirebaseAuth.getInstance();
         mAuthStateListener= new FirebaseAuth.AuthStateListener() {
             @Override
@@ -73,6 +75,23 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         };
+        FirebaseDatabase.getInstance().getReference().child("usertype").child(mFirebaseAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                UserType userType = dataSnapshot.getValue(UserType.class);
+                if(userType.getType().equals("Patient"))
+                {
+                    USER = "Patient";
+                }
+                else
+                    USER = "Doctor";
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
         final EditText email =(EditText) findViewById(R.id.input_email);
         final EditText password =(EditText) findViewById(R.id.input_password);
         final TextView guestentry = (TextView) findViewById(R.id.guestentry);

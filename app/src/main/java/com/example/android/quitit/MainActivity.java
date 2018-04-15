@@ -308,7 +308,6 @@ public class MainActivity extends AppCompatActivity
             case R.id.patientViewDetails:
                 return true;
             case R.id.patientReport:
-                Entry temp = new Entry();
                 FirebaseDatabase.getInstance().getReference().child("doctors").child(patient.getDoctor_key()).child("patients").child(patient.getEntry_key()).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
