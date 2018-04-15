@@ -51,8 +51,7 @@ public class PatientRegistration extends AppCompatActivity {
     private Patient patient;
     protected FirebaseAuth mAuth;
     public HashMap<String,Boolean> validation;
-    private DatabaseReference mDoctorsDatabaseReference;
-    private String key
+    private String key;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -187,7 +186,7 @@ public class PatientRegistration extends AppCompatActivity {
                     Toast.makeText(getBaseContext(), "Username error.", Toast.LENGTH_SHORT);
                 else if (!validation.get("password"))
                     Toast.makeText(getBaseContext(), "Password error.", Toast.LENGTH_SHORT);
-                else if (!validation.get("passowrd_confirm"))
+                else if (!validation.get("password_confirm"))
                     Toast.makeText(getBaseContext(), "Passwords do not match.", Toast.LENGTH_SHORT);
                 else {
                     final String uname = patient_uname.getText().toString();
@@ -195,7 +194,7 @@ public class PatientRegistration extends AppCompatActivity {
                     firebasedatafetch();
                     //mPatientsDatabaseReference.addListenerForSingleValueEvent(mValueEventListener);
                     patient.setUsername(patient_uname.getText().toString());
-                    patient.setEmailId(patientEmailEdt.getText().toString());
+                    patient.setEmailId(patient_email.getText().toString());
                     patient.setPassword(patient_pword.getText().toString());
                     if (found == true) {
                         registerUser(uname, pword);
@@ -294,16 +293,19 @@ public class PatientRegistration extends AppCompatActivity {
                                     doctor_key = child.getKey();
                                     entry_key = key;
                                     found = true;
+                                    break;
                                 }
                             }
                         }
                     }
+                    if(found)
+                        break;
                 }
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
         };
-        mDoctorsDatabaseReference.addValueEventListener(mValueEventListener);
+        mDoctorsDatabaseReference.addListenerForSingleValueEvent(mValueEventListener);
     }
 }
