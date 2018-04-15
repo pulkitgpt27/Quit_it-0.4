@@ -168,18 +168,18 @@ public class NewEntryActivity extends AppCompatActivity {
         final TextInputLayout $email_layout = (TextInputLayout) findViewById(R.id.email_layout);
         final TextInputLayout $salary_layout = (TextInputLayout) findViewById(R.id.salary_layout);
         final LinearLayout $linear_layout = (LinearLayout) findViewById(R.id.new_entry_form);
-
-        $name_layout.setBackgroundColor(getResources().getColor(R.color.magnitude9));
-        $age_layout.setBackgroundColor(getResources().getColor(R.color.magnitude9));
-        $phone_layout.setBackgroundColor(getResources().getColor(R.color.magnitude9));
-        $email_layout.setBackgroundColor(getResources().getColor(R.color.magnitude9));
-        $salary_layout.setBackgroundColor(getResources().getColor(R.color.magnitude9));
-
-        $name_layout.getBackground().setAlpha(0);
-        $phone_layout.getBackground().setAlpha(0);
-        $age_layout.getBackground().setAlpha(0);
-        $email_layout.getBackground().setAlpha(0);
-        $salary_layout.getBackground().setAlpha(0);
+//
+//        $name_layout.setBackgroundColor(getResources().getColor(R.color.magnitude9));
+//        $age_layout.setBackgroundColor(getResources().getColor(R.color.magnitude9));
+//        $phone_layout.setBackgroundColor(getResources().getColor(R.color.magnitude9));
+//        $email_layout.setBackgroundColor(getResources().getColor(R.color.magnitude9));
+//        $salary_layout.setBackgroundColor(getResources().getColor(R.color.magnitude9));
+//
+//        $name_layout.getBackground().setAlpha(0);
+//        $phone_layout.getBackground().setAlpha(0);
+//        $age_layout.getBackground().setAlpha(0);
+//        $email_layout.getBackground().setAlpha(0);
+//        $salary_layout.getBackground().setAlpha(0);
 
         $name.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -188,15 +188,15 @@ public class NewEntryActivity extends AppCompatActivity {
                     if (!ValidateEntry.validateEmpty($name.getText().toString())) {
                         $name_layout.setErrorEnabled(true);
                         $name_layout.setError("Name is Empty!");
-                        $name_layout.getBackground().setAlpha(51);
+//                        $name_layout.getBackground().setAlpha(51);
                         validation[0] = false;
                     } else if (!ValidateEntry.validateNameDigit($name.getText().toString())) {  //checks if name contains a number{
                         $name_layout.setError("Name contains a number!");
                         $name_layout.setErrorEnabled(true);
-                        $name_layout.getBackground().setAlpha(51);
+//                        $name_layout.getBackground().setAlpha(51);
                         validation[0] = false;
                     } else {
-                        $name_layout.getBackground().setAlpha(0);
+//                        $name_layout.getBackground().setAlpha(0);
                         $name_layout.setErrorEnabled(false);
                         validation[0] = true;
                     }
@@ -212,15 +212,15 @@ public class NewEntryActivity extends AppCompatActivity {
                     if (!ValidateEntry.validateEmpty($age.getText().toString())) {
                         $age_layout.setErrorEnabled(true);
                         $age_layout.setError("Age is empty");
-                        $age_layout.getBackground().setAlpha(51);
+  //                      $age_layout.getBackground().setAlpha(51);
                         validation[1] = false;
                     } else if (!ValidateEntry.validateAge($age.getText().toString())) {
                         $age_layout.setErrorEnabled(true);
                         $age_layout.setError("Age is invalid");
-                        $age_layout.getBackground().setAlpha(51);
+    //                    $age_layout.getBackground().setAlpha(51);
                         validation[1] = false;
                     } else {
-                        $age_layout.getBackground().setAlpha(0);
+      //                  $age_layout.getBackground().setAlpha(0);
                         $age_layout.setErrorEnabled(false);
                         validation[1] = true;
                     }
@@ -234,14 +234,13 @@ public class NewEntryActivity extends AppCompatActivity {
             public void onFocusChange(View view, boolean b) {
                 if (!b) {
                     if (!ValidateEntry.validateEmail($email.getText().toString())) {
-
                         $email_layout.setErrorEnabled(true);
                         $email_layout.setError("Invalid Email");
                         $email.setError("Invalid Email");
-                        $email_layout.getBackground().setAlpha(51);
+                        //$email_layout.getBackground().setAlpha(51);
                         validation[2] = false;
                     } else {
-                        $email_layout.getBackground().setAlpha(0);
+                        //$email_layout.getBackground().setAlpha(0);
                         $email_layout.setErrorEnabled(false);
                         validation[2] = true;
                     }
@@ -257,10 +256,10 @@ public class NewEntryActivity extends AppCompatActivity {
                     if (!ValidateEntry.validatePhone($phone.getText().toString())) {
                         $phone_layout.setErrorEnabled(true);
                         $phone_layout.setError("Number Invalid");
-                        $phone_layout.getBackground().setAlpha(51);
+                        //$phone_layout.getBackground().setAlpha(51);
                         validation[3] = false;
                     } else {
-                        $phone_layout.getBackground().setAlpha(0);
+                        //$phone_layout.getBackground().setAlpha(0);
                         $phone_layout.setErrorEnabled(false);
                         validation[3] = true;
                     }
@@ -274,11 +273,11 @@ public class NewEntryActivity extends AppCompatActivity {
                 if (!b) {
                     if (!ValidateEntry.validateInteger($salary.getText().toString())) {
                         $salary_layout.setError("Salary amount is invalid");
-                        $salary_layout.getBackground().setAlpha(51);
+                        //$salary_layout.getBackground().setAlpha(51);
                         $salary_layout.setErrorEnabled(true);
                         validation[4] = false;
                     } else {
-                        $salary_layout.getBackground().setAlpha(0);
+                        //$salary_layout.getBackground().setAlpha(0);
                         $salary_layout.setErrorEnabled(false);
                         validation[4] = true;
                     }
@@ -453,7 +452,6 @@ public class NewEntryActivity extends AppCompatActivity {
 
                     mSaveButton.setEnabled(false);
                     S.setEnabled(false);
-
                     $progress_bar.setVisibility(View.VISIBLE);
                     $progress_bar.setScaleY(5f);
                     $progress_bar.setScaleX(3f);
