@@ -76,4 +76,19 @@ public class ValidateEntry
 
         return true;
     }
+
+    public static boolean validatePasswordLength(String password){
+
+        if(password.length()<8)
+            return false;
+        else
+            return true;
+    }
+
+    public static boolean validateConfirmPassword(String password, String confirm_password){
+        if(confirm_password.equals(password))
+            return true;
+        else
+            return false;
+    }
 }
