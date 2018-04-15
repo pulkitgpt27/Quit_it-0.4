@@ -19,11 +19,6 @@
         <!--app:popupTheme="@style/AppThemeNoBar.PopupOverlay"-->
     </android.support.design.widget.AppBarLayout>
 
-    <EditText
-        android:id="@+id/editText2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name" />
+
+
 </LinearLayout>

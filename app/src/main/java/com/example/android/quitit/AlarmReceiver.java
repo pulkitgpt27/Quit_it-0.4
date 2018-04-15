@@ -28,8 +28,8 @@ public class AlarmReceiver extends BroadcastReceiver{
         Notification.Builder builder = new Notification.Builder(context);
 
         //All notification part
-        Notification notification = builder.setContentTitle("Quit It App Notification")//title
-                .setContentText("New Notification From Quit It App..")//text
+        Notification notification = builder.setContentTitle("Quit It")//title
+                .setContentText("Give us your daily status")//text
                 .setTicker("New Message Alert!")
                 .setSmallIcon(R.mipmap.icon)
                 .setAutoCancel(true)
