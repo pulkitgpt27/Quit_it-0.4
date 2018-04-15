@@ -91,5 +91,8 @@
         completions."
     </string>
     <string name="no_internet_connection">No internet connection</string>
+    <string name="dialogueText">Daily Updates</string>
+    <string name="save">Save</string>
+    <string name="dialogue_hint1">Todays Intake</string>
 
 </resources>
