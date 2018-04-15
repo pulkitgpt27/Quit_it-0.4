@@ -2,6 +2,7 @@ package com.example.android.quitit;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -10,6 +11,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,6 +34,7 @@ public class PatientLoginActivity extends AppCompatActivity {
     private Patient CurrentPatient;
     private EditText unameEdt;
     private EditText pwordEdt;
+    private FirebaseAuth mFirebaseAuth;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,6 +45,7 @@ public class PatientLoginActivity extends AppCompatActivity {
         TextView pregister = (TextView) findViewById(R.id.patient_register);
         Button loginButton = (Button) findViewById(R.id.btn_login);
 
+        mFirebaseAuth=FirebaseAuth.getInstance();
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,22 +56,34 @@ public class PatientLoginActivity extends AppCompatActivity {
                 if(mPatientDatabaseReference == null)
                     Toast.makeText(getBaseContext(),"Patients are null. Please register.",Toast.LENGTH_SHORT);
                 else {
-                    firebaseDataFetch();
-                    if(found)
-                    {
-                        String displayImage = null;
-                        Toast.makeText(PatientLoginActivity.this, "Successful Login!", Toast.LENGTH_SHORT).show();
-                        Intent i = new Intent(PatientLoginActivity.this,MainActivity.class);
-                        i.putExtra("displayName",CurrentPatient.getUsername());
-                        i.putExtra("displayEmail",CurrentPatient.getEmailId());
-                        i.putExtra("displayImage",displayImage);
-                        i.putExtra("CurrentPatient",CurrentPatient);
-                        startActivity(i);
-                        finish();
+                    if(username.equals("") || password.equals("")){
+                        toastMessage("You didnt filled all the feilds");
                     }
-                    else if(!found)
-                    {
-                        Toast.makeText(PatientLoginActivity.this, "Invalid Credentials!", Toast.LENGTH_SHORT).show();
+                    else {
+                        mFirebaseAuth.signInWithEmailAndPassword(username, password)
+                                .addOnCompleteListener(PatientLoginActivity.this, new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                        // If sign in fails, display a message to the user. If sign in succeeds
+                                        // the auth state listener will be notified and logic to handle the
+                                        // signed in user can be handled in the listener.
+                                        if (!task.isSuccessful()) {
+                                            // there was an error
+                                            toastMessage("Credentials are wrong");
+                                        } else {
+                                            firebaseDataFetch();
+                                            String displayImage = null;
+                                            Toast.makeText(PatientLoginActivity.this, "Successful Login!", Toast.LENGTH_SHORT).show();
+                                            Intent i = new Intent(PatientLoginActivity.this,MainActivity.class);
+                                            i.putExtra("displayName",CurrentPatient.getUsername());
+                                            i.putExtra("displayEmail",CurrentPatient.getEmailId());
+                                            i.putExtra("displayImage",displayImage);
+                                            i.putExtra("CurrentPatient",CurrentPatient);
+                                            startActivity(i);
+                                            finish();
+                                        }
+                                    }
+                                });
                     }
                 }
             }
@@ -83,13 +102,11 @@ public class PatientLoginActivity extends AppCompatActivity {
         mValueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                found = false;
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     //HERE CHECK PATIENT
                     Patient currentPatient = child.getValue(Patient.class);
                     if (currentPatient.getUsername().equals(username) && currentPatient.getPassword().equals(password)) {
                         CurrentPatient = currentPatient;
-                        found = true;
                     }
                 }
             }
@@ -98,5 +115,9 @@ public class PatientLoginActivity extends AppCompatActivity {
             }
         };
         mPatientDatabaseReference.addListenerForSingleValueEvent(mValueEventListener);
+    }
+
+    private void toastMessage(String msg) {
+        Toast.makeText(this,msg,Toast.LENGTH_SHORT).show();
     }
 }

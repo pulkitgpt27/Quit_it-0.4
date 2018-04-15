@@ -63,13 +63,10 @@ public class LoginActivity extends AppCompatActivity {
                     if(user.getPhotoUrl() != null)
                         imageUri = user.getPhotoUrl().toString();
 
-
                     onSignedInInitialize(user.getDisplayName());
                     displayName = user.getDisplayName();
                     displayEmail = user.getEmail();
                     onSignedInInitialize(user.getDisplayName());
-
-
 
                 }else {
                     onSignedOutCleanUp();
@@ -132,8 +129,7 @@ public class LoginActivity extends AppCompatActivity {
                                          if(mail.equals("") || pass.equals("")){
                                              toastmessage("You didnt filled all the feilds");
                                          }
-                                         else
-                                         {
+                                         else {
                                              mFirebaseAuth.signInWithEmailAndPassword(mail, pass)
                                                      .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                                                          @Override
@@ -153,8 +149,6 @@ public class LoginActivity extends AppCompatActivity {
                                                          }
                                                      });
                                          }
-
-
                                      }
                                  }
         );
