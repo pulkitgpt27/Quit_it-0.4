@@ -45,6 +45,7 @@ public class PatientRegistration extends AppCompatActivity {
 
     private Button checkPatientBtn;
     private DatabaseReference mPatientsDatabaseReference;
+    private DatabaseReference mUserDatabaseReference;
     private DatabaseReference mDoctorsDatabaseReference;
     private ValueEventListener mValueEventListener;
     private boolean found;
@@ -168,6 +169,7 @@ public class PatientRegistration extends AppCompatActivity {
 
         patient = new Patient();
         mPatientsDatabaseReference = FirebaseDatabase.getInstance().getReference().child("patients");
+        mUserDatabaseReference = FirebaseDatabase.getInstance().getReference().child("patients");
         mDoctorsDatabaseReference = FirebaseDatabase.getInstance().getReference().child("doctors");
 
 
@@ -217,6 +219,16 @@ public class PatientRegistration extends AppCompatActivity {
                     UpdatePatientDatabaseReference.setValue(patient);
                 }
             });
+            mUserDatabaseReference.push().setValue(null, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError databaseError,
+                                       DatabaseReference databaseReference) {
+                    final DatabaseReference UpdatePatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("usertype").child(key);
+                    UserType user = new UserType();
+                    user.setType("Patient");
+                    UpdatePatientDatabaseReference.setValue(user);
+                }
+            });
                         /*if(!entry_key.equals(patient.getEntry_key()) || !doctor_key.equals(patient.getDoctor_key()))
                         {
                             patient.setDoctor_key(doctor_key);
@@ -254,7 +266,16 @@ public class PatientRegistration extends AppCompatActivity {
                     UpdatePatientDatabaseReference.setValue(patient);
                 }
             });
-
+            mUserDatabaseReference.push().setValue(null, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError databaseError,
+                                       DatabaseReference databaseReference) {
+                    final DatabaseReference UpdatePatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("usertype").child(key);
+                    UserType user = new UserType();
+                    user.setType("Patient");
+                    UpdatePatientDatabaseReference.setValue(user);
+                }
+            });
             startActivity((new Intent(PatientRegistration.this, AskDoctorAffiliationActivity.class)));
             finish();
         }
