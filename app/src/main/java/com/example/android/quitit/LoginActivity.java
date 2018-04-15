@@ -57,41 +57,46 @@ public class LoginActivity extends AppCompatActivity {
         mAuthStateListener= new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user=firebaseAuth.getCurrentUser();
+                final FirebaseUser user=firebaseAuth.getCurrentUser();
                 if(user!=null){
-                    toastmessage("Successfylly signed in with mail:"+ user.getEmail());
-                    displayName = user.getDisplayName();
-                    displayEmail = user.getEmail();
-                    if(user.getPhotoUrl() != null)
-                        imageUri = user.getPhotoUrl().toString();
+                    FirebaseDatabase.getInstance().getReference().child("usertype").child(mFirebaseAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            UserType userType = dataSnapshot.getValue(UserType.class);
+                            if (userType.getType().equals("Patient")) {
+                                USER = "Patient";
+                                displayName = user.getDisplayName();
+                                displayEmail = user.getEmail();
+                                if(user.getPhotoUrl() != null)
+                                    imageUri = user.getPhotoUrl().toString();
+                                onSignedInInitialize(user.getDisplayName());
+                                return;
+                            } else {
+                                USER = "Doctor";
+                                displayName = user.getDisplayName();
+                                displayEmail = user.getEmail();
+                                if(user.getPhotoUrl() != null)
+                                    imageUri = user.getPhotoUrl().toString();
+                                onSignedInInitialize(user.getDisplayName());
+                                return;
+                            }
+                        }
 
-                    onSignedInInitialize(user.getDisplayName());
-                    displayName = user.getDisplayName();
-                    displayEmail = user.getEmail();
-                    onSignedInInitialize(user.getDisplayName());
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                    toastmessage("Successfylly signed in with type " + USER + " mail:"+ user.getEmail());
+
 
                 }else {
                     onSignedOutCleanUp();
                 }
             }
         };
-        if(mFirebaseAuth.getCurrentUser()!=null) {
-            FirebaseDatabase.getInstance().getReference().child("usertype").child(mFirebaseAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    UserType userType = dataSnapshot.getValue(UserType.class);
-                    if (userType.getType().equals("Patient")) {
-                        USER = "Patient";
-                    } else
-                        USER = "Doctor";
-                }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
 
-                }
-            });
-        }
         final EditText email =(EditText) findViewById(R.id.input_email);
         final EditText password =(EditText) findViewById(R.id.input_password);
         final TextView guestentry = (TextView) findViewById(R.id.guestentry);
