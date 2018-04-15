@@ -19,11 +19,21 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 public class NotificationActivity extends Activity {
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
+    FirebaseUser user=null;
+    Patient current_patient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +41,10 @@ public class NotificationActivity extends Activity {
         setContentView(R.layout.notification);
 
         mFirebaseAuth= FirebaseAuth.getInstance();
-                FirebaseUser user=mFirebaseAuth.getCurrentUser();
+                user=mFirebaseAuth.getCurrentUser();
                 if(user!=null){
                     //For dialogue box
+
                             AlertDialog.Builder mbuilder = new AlertDialog.Builder(NotificationActivity.this);
 
                             final View mview=getLayoutInflater().inflate(R.layout.update_dialogue,null);
@@ -46,7 +57,40 @@ public class NotificationActivity extends Activity {
                                 public void onClick(View view) {
                                     if(!updated_val.getText().toString().isEmpty())
                                     {
-                                        Toast.makeText(NotificationActivity.this,"Value Updated SuccessFully",Toast.LENGTH_SHORT).show();
+                                        final String key=user.getUid();
+                                        FirebaseDatabase.getInstance().getReference().child("patients").child(key).addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                current_patient = dataSnapshot.getValue(Patient.class);
+                                                if(current_patient!=null)
+                                                {
+                                                    Date cDate = new Date();
+                                                    String fDate = new SimpleDateFormat("dd-MM-yyyy").format(cDate);
+                                                    current_patient.getDay_map().put(fDate,Integer.parseInt(String.valueOf(updated_val.getText())));
+                                                    FirebaseMethods.updatePatient2(key,current_patient);
+
+                                                    Toast.makeText(NotificationActivity.this,"Value Updated SuccessFully",Toast.LENGTH_SHORT).show();
+                                                    Intent intent = new Intent(NotificationActivity.this, MainActivity.class);
+                                                    intent.putExtra("displayName",current_patient.getUsername());
+                                                    intent.putExtra("displayEmail",current_patient.getEmailId());
+                                                    String displayImage = null;
+                                                    intent.putExtra("displayImage",displayImage);
+                                                    intent.putExtra("CurrentPatient",current_patient);
+                                                    startActivity(intent);
+                                                    finish();
+                                                    return;
+
+                                                }
+
+                                            }
+
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+
+                                            }
+                                        });
+
+
                                     }else
                                     {
                                         Toast.makeText(NotificationActivity.this,"Please Fill Some Value",Toast.LENGTH_SHORT).show();

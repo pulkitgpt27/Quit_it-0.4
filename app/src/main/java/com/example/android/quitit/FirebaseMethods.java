@@ -15,9 +15,20 @@ public class FirebaseMethods {
 
     private static FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
+
     public static void updatePatient(String id,Entry patient)
     {
         DatabaseReference mPatientDatabaseReference= FirebaseDatabase.getInstance().getReference().child("doctors").child(MainActivity.currentdoctorKey).child("patients").child(id);
+        try {
+            mPatientDatabaseReference.setValue(patient);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void updatePatient2(String id, Patient patient)
+    {
+        DatabaseReference mPatientDatabaseReference= FirebaseDatabase.getInstance().getReference().child("patients").child(id);
         try {
             mPatientDatabaseReference.setValue(patient);
         }catch (Exception e){
