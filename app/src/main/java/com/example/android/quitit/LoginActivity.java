@@ -77,6 +77,7 @@ public class LoginActivity extends AppCompatActivity {
                 USER = "Patient";
                 Intent intent = new Intent(LoginActivity.this,PatientRegistration.class);
                 startActivity(intent);
+                finish();
             }
         });
         Button login = (Button) findViewById(R.id.btn_login);
@@ -165,7 +166,6 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
     private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
-
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
         mFirebaseAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {

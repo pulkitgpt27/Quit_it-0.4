@@ -6,14 +6,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-
 import android.graphics.BitmapFactory;
-
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
@@ -121,7 +118,7 @@ public class NewEntryActivity extends AppCompatActivity {
     private String med_history = "";
     private Entry patient;
     private ImageView patientImageView;
-
+    private Patient patientOfEntry;
 
     private String dateTime;
 
@@ -131,7 +128,12 @@ public class NewEntryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_entry);
 
-        mUsername = ANONYMOUS;
+        Bundle B = getIntent().getExtras();
+        if(B!=null){
+            patientOfEntry = B.getParcelable("patient");
+        }
+
+
         mFirebaseDatabase = FirebaseDatabase.getInstance();
 
         mFirebaseStorage=FirebaseStorage.getInstance();
@@ -789,92 +791,171 @@ public class NewEntryActivity extends AppCompatActivity {
                     final String[] uniqueKey = {""};
                     String key = "";
 
-                    if(imageset) {
-                        StorageReference photoref = mPhotoStorageReference.child(uri.getLastPathSegment());
-                        photoref.putFile(uri).addOnProgressListener(NewEntryActivity.this, new OnProgressListener<UploadTask.TaskSnapshot>(){
-                            @Override
-                            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                                double progress = (100.0 * (taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount());
-                                Log.e("UPLOADING","progres");
-                                $progress_bar.setProgress((int)progress);
-                            }
-                        }).addOnSuccessListener(NewEntryActivity.this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                mPatientDatabaseReference.push().setValue(null, new DatabaseReference.CompletionListener() {
-                                    @Override
-                                    public void onComplete(DatabaseError databaseError,
-                                                           DatabaseReference databaseReference) {
-                                        uniqueKey[0] = databaseReference.getKey();
-                                        final DatabaseReference UpdatePatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("doctors").child(MainActivity.currentdoctorKey).child("patients").child(uniqueKey[0]);
-                                        try {
-                                            patient = new Entry(name, age, sex, interest, med_history, contact, email, address, chewText, chew_days, chew_freq, chew_cost, smokeText, smoke_days, smoke_freq, smoke_cost, m_status, business, salary, formattedtime1, formattedDate1, morning_status,
-                                                    family_status, habit_reason, habbit, aware_status, aware_diseases, quit_status, quit_reason, quit_before_status, craving_time, uniqueKey[0], message, uri.toString());
-                                            patient.setMessage(MessageActivity.getMessage(patient, chewer.isChecked(), smoker.isChecked()));
-                                            UpdatePatientDatabaseReference.setValue(patient);
-                                            Toast.makeText(getBaseContext(), "New Patient Added, " + name + ", with Image.", Toast.LENGTH_SHORT).show();
-                                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                            if (user != null) {
-                                                Intent i = new Intent(NewEntryActivity.this, MainActivity.class);
-                                                startActivity(i);
-                                                finish();
-                                            } else {
-                                                Intent intent = new Intent(NewEntryActivity.this, ReportActivity.class);
-                                                Entry temp = patient;
-                                                Bundle B = new Bundle();
-                                                B.putParcelable("ClickedEntry", (Parcelable) temp);
-                                                intent.putExtras(B);
-                                                startActivity(intent);
-                                                finish();
-                                            }
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-                                        Log.e("Updated", "New Patiend Added :" + patient.getId() + " with Image.");
-                                        $progress_bar.setVisibility(GONE);
-                                        $progress_parent.setVisibility(GONE);
-                                        $progress_text.setVisibility(GONE);
-                                    }
-                                });
-                            }
-                        });
-                    }
-                    else{
-                        mPatientDatabaseReference.push().setValue(null, new DatabaseReference.CompletionListener() {
-                            @Override
-                            public void onComplete(DatabaseError databaseError,
-                                                   DatabaseReference databaseReference) {
-                                uniqueKey[0] = databaseReference.getKey();
-                                final DatabaseReference UpdatePatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("doctors").child(MainActivity.currentdoctorKey).child("patients").child(uniqueKey[0]);
-                                try {
-                                    patient = new Entry(name, age, sex, interest, med_history, contact, email, address, chewText, chew_days, chew_freq, chew_cost, smokeText, smoke_days, smoke_freq, smoke_cost, m_status, business, salary, formattedtime1, formattedDate1, morning_status,
-                                            family_status, habit_reason, habbit, aware_status, aware_diseases, quit_status, quit_reason, quit_before_status, craving_time, uniqueKey[0], message, "");
-                                    patient.setMessage(MessageActivity.getMessage(patient, chewer.isChecked(), smoker.isChecked()));
-                                    UpdatePatientDatabaseReference.setValue(patient);
-                                    Toast.makeText(getBaseContext(), "New Patient Added, " + name, Toast.LENGTH_SHORT).show();
-                                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                    if (user != null) {
-                                        Intent i = new Intent(NewEntryActivity.this, MainActivity.class);
-                                        startActivity(i);
-                                        finish();
-                                    } else {
-                                        Intent intent = new Intent(NewEntryActivity.this, ReportActivity.class);
-                                        Entry temp = patient;
-                                        Bundle B = new Bundle();
-                                        B.putParcelable("ClickedEntry", (Parcelable) temp);
-                                        intent.putExtras(B);
-                                        startActivity(intent);
-                                        finish();
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
+                    if(patientOfEntry!=null){
+                        if(imageset) {
+                            StorageReference photoref = mPhotoStorageReference.child(uri.getLastPathSegment());
+                            photoref.putFile(uri).addOnProgressListener(NewEntryActivity.this, new OnProgressListener<UploadTask.TaskSnapshot>(){
+                                @Override
+                                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                                    double progress = (100.0 * (taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount());
+                                    Log.e("UPLOADING","progres");
+                                    $progress_bar.setProgress((int)progress);
                                 }
-                                Log.e("Updated", "New Patiend Added :" + patient.getId());
-                                $progress_bar.setVisibility(GONE);
-                                $progress_parent.setVisibility(GONE);
-                                $progress_text.setVisibility(GONE);
-                            }
-                        });
+                            }).addOnSuccessListener(NewEntryActivity.this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    mPatientDatabaseReference.push().setValue(null, new DatabaseReference.CompletionListener() {
+                                        @Override
+                                        public void onComplete(DatabaseError databaseError,
+                                                               DatabaseReference databaseReference) {
+                                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                            uniqueKey[0] = databaseReference.getKey();
+                                            final DatabaseReference UpdatePatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("doctors").child(patientOfEntry.getDoctor_key()).child("patients").child(uniqueKey[0]);
+                                            try {
+                                                patient = new Entry(name, age, sex, interest, med_history, contact, email, address, chewText, chew_days, chew_freq, chew_cost, smokeText, smoke_days, smoke_freq, smoke_cost, m_status, business, salary, formattedtime1, formattedDate1, morning_status,
+                                                        family_status, habit_reason, habbit, aware_status, aware_diseases, quit_status, quit_reason, quit_before_status, craving_time, uniqueKey[0], message, uri.toString());
+                                                patient.setMessage(MessageActivity.getMessage(patient, chewer.isChecked(), smoker.isChecked()));
+                                                UpdatePatientDatabaseReference.setValue(patient);
+                                                Toast.makeText(getBaseContext(), "New Patient Added, " + name + ", with Image.", Toast.LENGTH_SHORT).show();
+                                                if (user != null) {
+                                                    Intent i = new Intent(NewEntryActivity.this, MainActivity.class);
+                                                    startActivity(i);
+                                                    finish();
+                                                }
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+                                            Log.e("Updated", "New Patiend Added :" + patient.getId() + " with Image.");
+                                            patientOfEntry.setEntry_key(uniqueKey[0]);
+                                            final DatabaseReference TEMP = FirebaseDatabase.getInstance()
+                                                    .getReference().child("patients").child(user.getUid());
+                                            TEMP.push().setValue(null, new DatabaseReference.CompletionListener(){
+                                                @Override
+                                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                                    TEMP.setValue(patientOfEntry);
+                                                    Toast.makeText(getBaseContext(),"Patientd updated with ENTRY-KEY",Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                            $progress_bar.setVisibility(GONE);
+                                            $progress_parent.setVisibility(GONE);
+                                            $progress_text.setVisibility(GONE);
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                        else{
+                            mPatientDatabaseReference.push().setValue(null, new DatabaseReference.CompletionListener() {
+                                @Override
+                                public void onComplete(DatabaseError databaseError,
+                                                       DatabaseReference databaseReference) {
+                                    uniqueKey[0] = databaseReference.getKey();
+                                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                    final DatabaseReference UpdatePatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("doctors").child(patientOfEntry.getDoctor_key()).child("patients").child(uniqueKey[0]);
+                                    try {
+                                        patient = new Entry(name, age, sex, interest, med_history, contact, email, address, chewText, chew_days, chew_freq, chew_cost, smokeText, smoke_days, smoke_freq, smoke_cost, m_status, business, salary, formattedtime1, formattedDate1, morning_status,
+                                                family_status, habit_reason, habbit, aware_status, aware_diseases, quit_status, quit_reason, quit_before_status, craving_time, uniqueKey[0], message, "");
+                                        patient.setMessage(MessageActivity.getMessage(patient, chewer.isChecked(), smoker.isChecked()));
+                                        UpdatePatientDatabaseReference.setValue(patient);
+                                        Toast.makeText(getBaseContext(), "New Patient Added, " + name, Toast.LENGTH_SHORT).show();
+                                        if (user != null) {
+                                            Intent i = new Intent(NewEntryActivity.this, MainActivity.class);
+                                            startActivity(i);
+                                            finish();
+                                        }
+                                        patientOfEntry.setEntry_key(uniqueKey[0]);
+                                        final DatabaseReference TEMP = FirebaseDatabase.getInstance()
+                                                .getReference().child("patients").child(user.getUid());
+                                        TEMP.push().setValue(null, new DatabaseReference.CompletionListener(){
+                                            @Override
+                                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                                TEMP.setValue(patientOfEntry);
+                                                Toast.makeText(getBaseContext(),"Patientd updated with ENTRY-KEY",Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    Log.e("Updated", "New Patiend Added :" + patient.getId());
+                                    $progress_bar.setVisibility(GONE);
+                                    $progress_parent.setVisibility(GONE);
+                                    $progress_text.setVisibility(GONE);
+                                }
+                            });
+                        }
+                    }
+                    else{ //set by docter
+                        if(imageset) {
+                            StorageReference photoref = mPhotoStorageReference.child(uri.getLastPathSegment());
+                            photoref.putFile(uri).addOnProgressListener(NewEntryActivity.this, new OnProgressListener<UploadTask.TaskSnapshot>(){
+                                @Override
+                                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                                    double progress = (100.0 * (taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount());
+                                    Log.e("UPLOADING","progres");
+                                    $progress_bar.setProgress((int)progress);
+                                }
+                            }).addOnSuccessListener(NewEntryActivity.this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    mPatientDatabaseReference.push().setValue(null, new DatabaseReference.CompletionListener() {
+                                        @Override
+                                        public void onComplete(DatabaseError databaseError,
+                                                               DatabaseReference databaseReference) {
+                                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                            uniqueKey[0] = databaseReference.getKey();
+                                            final DatabaseReference UpdatePatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("doctors").child(MainActivity.currentdoctorKey).child("patients").child(uniqueKey[0]);
+                                            try {
+                                                patient = new Entry(name, age, sex, interest, med_history, contact, email, address, chewText, chew_days, chew_freq, chew_cost, smokeText, smoke_days, smoke_freq, smoke_cost, m_status, business, salary, formattedtime1, formattedDate1, morning_status,
+                                                        family_status, habit_reason, habbit, aware_status, aware_diseases, quit_status, quit_reason, quit_before_status, craving_time, uniqueKey[0], message, uri.toString());
+                                                patient.setMessage(MessageActivity.getMessage(patient, chewer.isChecked(), smoker.isChecked()));
+                                                UpdatePatientDatabaseReference.setValue(patient);
+                                                Toast.makeText(getBaseContext(), "New Patient Added, " + name + ", with Image.", Toast.LENGTH_SHORT).show();
+                                                if (user != null) {
+                                                    Intent i = new Intent(NewEntryActivity.this, MainActivity.class);
+                                                    startActivity(i);
+                                                    finish();
+                                                }
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+                                            Log.e("Updated", "New Patiend Added :" + patient.getId() + " with Image.");
+                                            $progress_bar.setVisibility(GONE);
+                                            $progress_parent.setVisibility(GONE);
+                                            $progress_text.setVisibility(GONE);
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                        else{
+                            mPatientDatabaseReference.push().setValue(null, new DatabaseReference.CompletionListener() {
+                                @Override
+                                public void onComplete(DatabaseError databaseError,
+                                                       DatabaseReference databaseReference) {
+                                    uniqueKey[0] = databaseReference.getKey();
+                                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                    final DatabaseReference UpdatePatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("doctors").child(MainActivity.currentdoctorKey).child("patients").child(uniqueKey[0]);
+                                    try {
+                                        patient = new Entry(name, age, sex, interest, med_history, contact, email, address, chewText, chew_days, chew_freq, chew_cost, smokeText, smoke_days, smoke_freq, smoke_cost, m_status, business, salary, formattedtime1, formattedDate1, morning_status,
+                                                family_status, habit_reason, habbit, aware_status, aware_diseases, quit_status, quit_reason, quit_before_status, craving_time, uniqueKey[0], message, "");
+                                        patient.setMessage(MessageActivity.getMessage(patient, chewer.isChecked(), smoker.isChecked()));
+                                        UpdatePatientDatabaseReference.setValue(patient);
+                                        Toast.makeText(getBaseContext(), "New Patient Added, " + name, Toast.LENGTH_SHORT).show();
+                                        if (user != null) {
+                                            Intent i = new Intent(NewEntryActivity.this, MainActivity.class);
+                                            startActivity(i);
+                                            finish();
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    Log.e("Updated", "New Patiend Added :" + patient.getId());
+                                    $progress_bar.setVisibility(GONE);
+                                    $progress_parent.setVisibility(GONE);
+                                    $progress_text.setVisibility(GONE);
+                                }
+                            });
+                        }
                     }
                 }
             }
@@ -1057,6 +1138,4 @@ public class NewEntryActivity extends AppCompatActivity {
             }
         }
     }
-
-
 }

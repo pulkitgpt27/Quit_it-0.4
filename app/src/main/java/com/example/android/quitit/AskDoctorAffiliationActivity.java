@@ -2,6 +2,7 @@ package com.example.android.quitit;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 /**
@@ -26,35 +28,30 @@ public class AskDoctorAffiliationActivity extends AppCompatActivity {
     private boolean found;
     private String doctor_key;
     private String doctor_id;
+    private Patient patient;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ask_doctor_affiliation);
         $doctorEmailId = (EditText) findViewById(R.id.doctor_id_edit_text);
-        doctor_id = $doctorEmailId.getText().toString();
         Button checkDoctor = (Button) findViewById(R.id.check_doctor);
         Button noDoctor = (Button) findViewById(R.id.proceed_without_a_doctor);
+        patient = getIntent().getExtras().getParcelable("patient");
 
         checkDoctor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                doctor_id = $doctorEmailId.getText().toString();
                 if(doctor_id.equals("")){
                     Toast.makeText(getBaseContext(), "Email-address is missing. Please check.",Toast.LENGTH_SHORT);
                 }
+                else if(!ValidateEntry.validateEmail(doctor_id.toString())) {
+                    Toast.makeText(getBaseContext(), "Invalid Email.",Toast.LENGTH_SHORT);
+                }
                 else {
-                    mDoctorsDatabaseReference = FirebaseMethods.getFirebaseReference("doctors");
+                    mDoctorsDatabaseReference = FirebaseDatabase.getInstance().getReference().child("doctors");
                     firebaseDataFetch();
-                    if (found && doctor_key != null) {
-                        Intent intent2 = new Intent(AskDoctorAffiliationActivity.this, NewEntryActivity.class);
-                        intent2.putExtra("doc_key", doctor_key);
-                        intent2.putExtra("doc_id",doctor_id);
-                        startActivity(intent2);
-                        finish();
-                    } else {
-                        Toast.makeText(getBaseContext(),
-                                "Doctor not found. \nPlease check the email address", Toast.LENGTH_LONG);
-                    }
                 }
             }
         });
@@ -63,7 +60,10 @@ public class AskDoctorAffiliationActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(AskDoctorAffiliationActivity.this, NewEntryActivity.class);
-                i.putExtra("doc_key", "no-doctor");
+                patient.setDoctor_key("no-doctor");
+                Bundle b = new Bundle();
+                b.putParcelable("patient",(Parcelable) patient);
+                i.putExtras(b);
                 startActivity(i);
                 finish();
             }
@@ -81,7 +81,21 @@ public class AskDoctorAffiliationActivity extends AppCompatActivity {
                         doctor_key = child.getKey();
                         doctor_id = currentDoctor.getMail_id();
                         found = true;
+                        break;
                     }
+                }
+                if (found && doctor_key != null) {
+                    Intent intent2 = new Intent(AskDoctorAffiliationActivity.this, NewEntryActivity.class);
+                    patient.setDoctor_key(doctor_key);
+                    Bundle B = new Bundle();
+                    B.putParcelable("patient",(Parcelable) patient);
+                    intent2.putExtras(B);
+                    startActivity(intent2);
+                    finish();
+                }
+                else{
+                    Toast.makeText(getBaseContext(),
+                            "Doctor not found. \nPlease check the email address", Toast.LENGTH_LONG).show();
                 }
             }
             @Override
