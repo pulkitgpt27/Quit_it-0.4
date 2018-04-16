@@ -15,7 +15,7 @@ public class Patient implements Parcelable{
     private String password;
     private String doctor_key;
     private String entry_key;
-    private HashMap<String,Integer> day_map_smoke=new HashMap<String, Integer>();// String in "dd-mm-yyyyy"
+    private HashMap<String,Integer> day_map_smoke=new HashMap<String, Integer>();   // String in "dd-mm-yyyyy"
     private HashMap<String,Integer> day_map_chew=new HashMap<String, Integer>();
 
     //Constructors

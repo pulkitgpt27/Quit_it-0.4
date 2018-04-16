@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 /**
@@ -34,7 +35,6 @@ public class AskDoctorAffiliationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ask_doctor_affiliation);
         $doctorEmailId = (EditText) findViewById(R.id.doctor_id_edit_text);
-        doctor_id = $doctorEmailId.getText().toString();
         Button checkDoctor = (Button) findViewById(R.id.check_doctor);
         Button noDoctor = (Button) findViewById(R.id.proceed_without_a_doctor);
         patient = getIntent().getExtras().getParcelable("patient");
@@ -42,6 +42,7 @@ public class AskDoctorAffiliationActivity extends AppCompatActivity {
         checkDoctor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                doctor_id = $doctorEmailId.getText().toString();
                 if(doctor_id.equals("")){
                     Toast.makeText(getBaseContext(), "Email-address is missing. Please check.",Toast.LENGTH_SHORT);
                 }
@@ -49,7 +50,7 @@ public class AskDoctorAffiliationActivity extends AppCompatActivity {
                     Toast.makeText(getBaseContext(), "Invalid Email.",Toast.LENGTH_SHORT);
                 }
                 else {
-                    mDoctorsDatabaseReference = FirebaseMethods.getFirebaseReference("doctors");
+                    mDoctorsDatabaseReference = FirebaseDatabase.getInstance().getReference().child("doctors");
                     firebaseDataFetch();
                 }
             }
@@ -85,6 +86,7 @@ public class AskDoctorAffiliationActivity extends AppCompatActivity {
                 }
                 if (found && doctor_key != null) {
                     Intent intent2 = new Intent(AskDoctorAffiliationActivity.this, NewEntryActivity.class);
+                    patient.setDoctor_key(doctor_key);
                     Bundle B = new Bundle();
                     B.putParcelable("patient",(Parcelable) patient);
                     intent2.putExtras(B);
