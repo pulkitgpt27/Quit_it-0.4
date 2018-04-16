@@ -35,11 +35,16 @@ public class PatientLoginActivity extends AppCompatActivity {
     private EditText unameEdt;
     private EditText pwordEdt;
     private FirebaseAuth mFirebaseAuth;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
+    private String mUsername;
+    public static final String ANONYMOUS = "anonymous";
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_login);
+
         unameEdt = (EditText) findViewById(R.id.username);
         pwordEdt = (EditText) findViewById(R.id.password);
         TextView pregister = (TextView) findViewById(R.id.patient_register);
@@ -69,18 +74,10 @@ public class PatientLoginActivity extends AppCompatActivity {
                                         // signed in user can be handled in the listener.
                                         if (!task.isSuccessful()) {
                                             // there was an error
-                                            toastMessage("Credentials are wrong");
+                                            toastMessage(task.getException().getMessage());
                                         } else {
                                             firebaseDataFetch();
-                                            String displayImage = null;
-                                            Toast.makeText(PatientLoginActivity.this, "Successful Login!", Toast.LENGTH_SHORT).show();
-                                            Intent i = new Intent(PatientLoginActivity.this,MainActivity.class);
-                                            i.putExtra("displayName",CurrentPatient.getUsername());
-                                            i.putExtra("displayEmail",CurrentPatient.getEmailId());
-                                            i.putExtra("displayImage",displayImage);
-                                            i.putExtra("CurrentPatient",CurrentPatient);
-                                            startActivity(i);
-                                            finish();
+
                                         }
                                     }
                                 });
@@ -107,6 +104,16 @@ public class PatientLoginActivity extends AppCompatActivity {
                     Patient currentPatient = child.getValue(Patient.class);
                     if (currentPatient.getUsername().equals(username) && currentPatient.getPassword().equals(password)) {
                         CurrentPatient = currentPatient;
+                        String displayImage = null;
+                        Toast.makeText(PatientLoginActivity.this, "Successful Login!", Toast.LENGTH_SHORT).show();
+                        Intent i = new Intent(PatientLoginActivity.this,MainActivity.class);
+                        i.putExtra("displayName",CurrentPatient.getUsername());
+                        i.putExtra("displayEmail",CurrentPatient.getEmailId());
+                        i.putExtra("displayImage",displayImage);
+                        i.putExtra("CurrentPatient",CurrentPatient);
+                        startActivity(i);
+                        finish();
+                        return;
                     }
                 }
             }

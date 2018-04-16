@@ -63,12 +63,13 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             UserType userType = dataSnapshot.getValue(UserType.class);
-                            if (userType.getType().equals("Patient")) {
+                            if (userType!=null && userType.getType().equals("Patient")) {
                                 USER = "Patient";
                                 displayName = user.getDisplayName();
                                 displayEmail = user.getEmail();
                                 if(user.getPhotoUrl() != null)
                                     imageUri = user.getPhotoUrl().toString();
+                                toastmessage("Successfylly signed in with type " + USER + " mail:"+ user.getEmail());
                                 onSignedInInitialize(user.getDisplayName());
                                 return;
                             } else {
@@ -77,6 +78,7 @@ public class LoginActivity extends AppCompatActivity {
                                 displayEmail = user.getEmail();
                                 if(user.getPhotoUrl() != null)
                                     imageUri = user.getPhotoUrl().toString();
+                                toastmessage("Successfylly signed in with type " + USER + " mail:"+ user.getEmail());
                                 onSignedInInitialize(user.getDisplayName());
                                 return;
                             }
@@ -87,7 +89,6 @@ public class LoginActivity extends AppCompatActivity {
 
                         }
                     });
-                    toastmessage("Successfylly signed in with type " + USER + " mail:"+ user.getEmail());
 
 
                 }else {
