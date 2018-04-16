@@ -113,9 +113,6 @@ public class MainActivity extends AppCompatActivity
         spinner=(ProgressBar) findViewById(R.id.spinner);
 
         empty = true;
-        if(getIntent().getStringExtra("displayImage")!=null) {
-            Picasso.with(this).load(Uri.parse(getIntent().getStringExtra("displayImage"))).into(userImageView);
-        }
 
         //setting list view
         mPatientListView = (ListView) findViewById(R.id.listView);
@@ -147,6 +144,10 @@ public class MainActivity extends AppCompatActivity
         emailTxt = (TextView) headerLayout.findViewById(R.id.emailTxt);
         userImageView = (ImageView) headerLayout.findViewById(R.id.imageView);
 
+        if(getIntent().getStringExtra("displayImage")!=null) {
+            Picasso.with(this).load(Uri.parse(getIntent().getStringExtra("displayImage"))).into(userImageView);
+        }
+
         usernameTxt.setText(getIntent().getStringExtra("displayName"));
         emailTxt.setText(getIntent().getStringExtra("displayEmail"));
         emptyTextView = (TextView) findViewById(R.id.empty_view);
@@ -165,14 +166,13 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 UserType userType = dataSnapshot.getValue(UserType.class);
-                if (userType!=null && userType.getType().equals("Patient")) {
-                    mPatientDatabaseRefernce = FirebaseDatabase.getInstance().getReference().child("patitent").child(mAuth.getCurrentUser().getUid());
-                    initiatePatientHome(mAuth.getCurrentUser().getUid());
-                } else {
-                    mDoctorsDatabaseReference = FirebaseMethods.getFirebaseReference("doctors");
-                    Intent intentForMainActivity = getIntent();
-                    initiateDoctorHome(intentForMainActivity);
-                }
+                    if (userType!=null && userType.getType().equals("Patient")) {
+                        initiatePatientHome(mAuth.getCurrentUser().getUid());
+                    } else {
+                        mDoctorsDatabaseReference = FirebaseMethods.getFirebaseReference("doctors");
+                        Intent intentForMainActivity = getIntent();
+                        initiateDoctorHome(intentForMainActivity);
+                    }
             }
 
             @Override
@@ -320,8 +320,26 @@ public class MainActivity extends AppCompatActivity
                 }
                 return true;
             case R.id.patientViewDetails:
+                if(patient != null)
+                    FirebaseDatabase.getInstance().getReference().child("doctors").child(patient.getDoctor_key()).child("patients").child(patient.getEntry_key()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Entry temp = dataSnapshot.getValue(Entry.class);
+                            Intent intent = new Intent(MainActivity.this, ViewActivity.class);
+                            Bundle B = new Bundle();
+                            B.putParcelable("ClickedEntry", (Parcelable) temp);
+                            intent.putExtras(B);
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
                 return true;
             case R.id.patientReport:
+                if(patient != null)
                 FirebaseDatabase.getInstance().getReference().child("doctors").child(patient.getDoctor_key()).child("patients").child(patient.getEntry_key()).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -447,22 +465,24 @@ public class MainActivity extends AppCompatActivity
     //********************************************
     public void firebasePatientDataFetch()
     {
-        mValueEventListener = new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference().child("patients").child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 patient = dataSnapshot.getValue(Patient.class);
+                currentdoctorKey = patient.getDoctor_key();
                 spinner.setVisibility(View.GONE);
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        };
-        mPatientDatabaseRefernce.addListenerForSingleValueEvent(mValueEventListener);
+        });
+        //mPatientDatabaseRefernce.addListenerForSingleValueEvent(mValueEventListener);
     }
 
     //****************SEARCH METHODS**************
-    //2 mothods for searching
+    //2 methods for searching
     @Override
     public boolean onQueryTextSubmit(String newText) {
         return false;

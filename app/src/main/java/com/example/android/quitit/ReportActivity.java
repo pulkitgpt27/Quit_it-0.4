@@ -221,7 +221,7 @@ public class ReportActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId())
         {
-            case R.id.delete:
+            /*case R.id.delete:
                 new AlertDialog.Builder(this)
                         .setTitle("Delete")
                         .setMessage("Are you sure you want to delete? This record will be removed permanently from the Database.")
@@ -235,7 +235,7 @@ public class ReportActivity extends AppCompatActivity {
                             }})
                         .setNegativeButton(android.R.string.no, null).show();
 
-                return true;
+                return true;*/
             case R.id.view_all:
                 Intent intent = new Intent(ReportActivity.this,ViewActivity.class);
 

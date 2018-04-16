@@ -8,10 +8,10 @@
         android:title="@string/update_patient"
         app:showAsAction="never" />
 
-    <item
+    <!--<item
         android:id="@+id/delete"
         android:title="@string/delete_patient"
-        app:showAsAction="never" />
+        app:showAsAction="never" />-->
 
     <item
         android:id="@+id/view_all"

@@ -125,7 +125,7 @@ public class NotificationActivity extends Activity {
 
                 }else {
                     Toast.makeText(NotificationActivity.this,"Doesn't Exist Already",Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(NotificationActivity.this, PatientLoginActivity.class);
+                    Intent intent = new Intent(NotificationActivity.this, LoginActivity.class);
                     startActivity(intent);
 
                     //Some Intent

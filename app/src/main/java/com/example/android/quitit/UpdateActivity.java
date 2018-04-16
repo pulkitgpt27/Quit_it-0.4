@@ -502,14 +502,10 @@ public class UpdateActivity extends AppCompatActivity {
 
                 Toast.makeText(getBaseContext(), "Successfully updated" , Toast.LENGTH_SHORT).show();
                 startActivity(intent);
-
-
+                finish();
             }
 
         });
-
-
-
     }
 
 
