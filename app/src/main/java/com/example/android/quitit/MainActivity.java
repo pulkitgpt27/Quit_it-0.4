@@ -1,14 +1,11 @@
 package com.example.android.quitit;
 
 import android.app.AlarmManager;
-import android.app.LoaderManager;
 import android.app.PendingIntent;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -23,7 +20,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.text.Layout;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -31,7 +27,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -45,7 +40,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -67,9 +62,9 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         SearchView.OnQueryTextListener{
 
-    private ChildEventListener mChildEventListener;
     private ValueEventListener mValueEventListener;
     private DatabaseReference mDoctorsDatabaseReference;
+    private DatabaseReference mPatientDatabaseRefernce;
     private ListView mPatientListView;
     private LinearLayout mEmptyPatientLayout;
     private ImageView mEmptyPatientImage;
@@ -87,18 +82,107 @@ public class MainActivity extends AppCompatActivity
     private ImageView userImageView;
     private static final int PATIENT_LOADER_ID = 1;
     private Patient patient;
+    private FirebaseAuth mAuth;
+    private View list_of_all_Enteries;
+    private View patient_home;
+    private MenuItem doctorAnalysis;
+    private MenuItem patientViewDetails;
+    private MenuItem patientReport;
+    private FloatingActionButton newEntryFab;
+    private NavigationView navigationView;
+    private View headerLayout;
+    private Menu menu;
+    private  SearchView search_icon;
+    private MenuInflater inflater;
+    private DrawerLayout drawer;
 
-
-    //private boolean found=false;
-    //private static int doctorCount = 0;
     public static String currentdoctorKey;
     private GoogleApiClient mGoogleApiClient;
+    private String USER;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         this.setTheme(R.style.AppThemeNoBar);
         super.onCreate(savedInstanceState);
 
+        setContentView(R.layout.activity_main); //changed due to navbar;
+
+        list_of_all_Enteries = (View) findViewById(R.id.include_list_of_all_Entries);
+        patient_home = (View) findViewById(R.id.include_patient_home);
+        spinner=(ProgressBar) findViewById(R.id.spinner);
+
+        empty = true;
+        if(getIntent().getStringExtra("displayImage")!=null) {
+            Picasso.with(this).load(Uri.parse(getIntent().getStringExtra("displayImage"))).into(userImageView);
+        }
+
+        //setting list view
+        mPatientListView = (ListView) findViewById(R.id.listView);
+        mEmptyPatientLayout = (LinearLayout) findViewById(R.id.empty_layout);
+        mEmptyPatientImage = (ImageView) findViewById(R.id.empty_image_view);
+        mEmptyPatientTextView1 = (TextView) findViewById(R.id.empty_textView_1);
+        mEmptyPatientTextView2 = (TextView) findViewById(R.id.empty_textView_2);
+        /// /fetching data from firebase
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout_activity_main);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+        patientList=new ArrayList<Entry>();
+        allPatients=new ArrayList<Entry>();
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        headerLayout = navigationView.getHeaderView(0);
+        menu = navigationView.getMenu();
+        doctorAnalysis = menu.findItem(R.id.doctorAnalysis);
+        patientViewDetails = menu.findItem(R.id.patientViewDetails);
+        patientReport = menu.findItem(R.id.patientReport);
+
+        usernameTxt = (TextView) headerLayout.findViewById(R.id.usernameTxt);
+        emailTxt = (TextView) headerLayout.findViewById(R.id.emailTxt);
+        userImageView = (ImageView) headerLayout.findViewById(R.id.imageView);
+
+        usernameTxt.setText(getIntent().getStringExtra("displayName"));
+        emailTxt.setText(getIntent().getStringExtra("displayEmail"));
+        emptyTextView = (TextView) findViewById(R.id.empty_view);
+
+
+        if(isNetworkAvailable(getBaseContext())){
+            spinner.setVisibility(View.VISIBLE);
+        }
+        else {
+            spinner.setVisibility(View.GONE);
+            emptyTextView.setText(R.string.no_internet_connection);
+        }
+
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseDatabase.getInstance().getReference().child("usertype").child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                UserType userType = dataSnapshot.getValue(UserType.class);
+                if (userType!=null && userType.getType().equals("Patient")) {
+                    mPatientDatabaseRefernce = FirebaseDatabase.getInstance().getReference().child("patitent").child(mAuth.getCurrentUser().getUid());
+                    initiatePatientHome(mAuth.getCurrentUser().getUid());
+                } else {
+                    mDoctorsDatabaseReference = FirebaseMethods.getFirebaseReference("doctors");
+                    Intent intentForMainActivity = getIntent();
+                    initiateDoctorHome(intentForMainActivity);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
+    protected  void initiatePatientHome(String uid){
         //Alarm for notification
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent notificationIntent = new Intent(this, AlarmReceiver.class);
@@ -109,117 +193,52 @@ public class MainActivity extends AppCompatActivity
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY,broadcast);
         //***************
 
-        setContentView(R.layout.activity_main); //changed due to navbar;
+        firebasePatientDataFetch();
+        list_of_all_Enteries.setVisibility(View.GONE);
+        patient_home.setVisibility(View.VISIBLE);
+        doctorAnalysis.setVisible(false);
+        patientViewDetails.setVisible(true);
+        patientReport.setVisible(true);
 
-        View list_of_all_Enteries = (View) findViewById(R.id.include_list_of_all_Entries);
-        View patient_home = (View) findViewById(R.id.include_patient_home);
+        search_icon.setVisibility(View.GONE);
+    }
 
+    protected void initiateDoctorHome(Intent intent){
+        patient_home.setVisibility(View.GONE);
+        list_of_all_Enteries.setVisibility(View.VISIBLE);
 
-        spinner=(ProgressBar) findViewById(R.id.spinner);
+        doctorAnalysis.setVisible(true);
+        patientViewDetails.setVisible(false);
+        patientReport.setVisible(false);
 
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_activity_main);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-        patientList=new ArrayList<Entry>();
-        allPatients=new ArrayList<Entry>();
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        View headerLayout = navigationView.getHeaderView(0);
-        Menu menu =navigationView.getMenu();
-        MenuItem doctorAnalysis = menu.findItem(R.id.doctorAnalysis);
-        MenuItem patientViewDetails = menu.findItem(R.id.patientViewDetails);
-        MenuItem patientReport = menu.findItem(R.id.patientReport);
-
-        usernameTxt = (TextView) headerLayout.findViewById(R.id.usernameTxt);
-        emailTxt = (TextView) headerLayout.findViewById(R.id.emailTxt);
-        userImageView = (ImageView) headerLayout.findViewById(R.id.imageView);
-
-        usernameTxt.setText(getIntent().getStringExtra("displayName"));
-        emailTxt.setText(getIntent().getStringExtra("displayEmail"));
-        emptyTextView = (TextView) findViewById(R.id.empty_view);
-        Bundle B = getIntent().getExtras();
-        patient = B.getParcelable("patient");
-
-        if(isNetworkAvailable(getBaseContext()))
-        {
-            spinner.setVisibility(View.VISIBLE);
-        }
-        else
-        {
-            spinner.setVisibility(View.GONE);
-            emptyTextView.setText(R.string.no_internet_connection);
-        }
-
-        if(getIntent().getStringExtra("displayImage")!=null) {
-            Picasso.with(this).load(Uri.parse(getIntent().getStringExtra("displayImage"))).into(userImageView);
-        }
-
-        //******************FIREBASE BEGINS HERE*******************
-        if(LoginActivity.USER != null) {
-            if (LoginActivity.USER.equals("Doctor")) {
-                patient_home.setVisibility(View.GONE);
-                list_of_all_Enteries.setVisibility(View.VISIBLE);
-                empty = true;
-                //firebase reference
-                mDoctorsDatabaseReference = FirebaseMethods.getFirebaseReference("doctors");
-                //setting list view
-                mPatientListView = (ListView) findViewById(R.id.listView);
-                mEmptyPatientLayout = (LinearLayout) findViewById(R.id.empty_layout);
-                mEmptyPatientImage = (ImageView) findViewById(R.id.empty_image_view);
-                mEmptyPatientTextView1 = (TextView) findViewById(R.id.empty_textView_1);
-                mEmptyPatientTextView2 = (TextView) findViewById(R.id.empty_textView_2);
-
-                doctorAnalysis.setVisible(true);
-                patientViewDetails.setVisible(false);
-                patientReport.setVisible(false);
-
-                /// /fetching data from firebase
-                firebaseDataFetch();
-                mPatientListView.setEmptyView(emptyTextView);
-
-
-                mPatientListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        Intent intent = new Intent(MainActivity.this, ReportActivity.class);
-                        Entry temp = patientList.get(i);
-                        Bundle B = new Bundle();
-                        B.putParcelable("ClickedEntry", (Parcelable) temp);
-                        intent.putExtras(B);
-                        startActivity(intent);
-                    }
-                });
-
-                FloatingActionButton newEntryFab = (FloatingActionButton) findViewById(R.id.fab);
-                newEntryFab.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent i = new Intent(MainActivity.this, NewEntryActivity.class);
-                        startActivity(i);
-                    }
-                });
-            } else if (LoginActivity.USER.equals("Patient")) {
-
-                list_of_all_Enteries.setVisibility(View.GONE);
-                patient_home.setVisibility(View.VISIBLE);
-
-
-                doctorAnalysis.setVisible(false);
-                patientViewDetails.setVisible(true);
-                patientReport.setVisible(true);
+        firebaseDataFetch();
+        mPatientListView.setEmptyView(emptyTextView);
+        mPatientListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(MainActivity.this, ReportActivity.class);
+                Entry temp = patientList.get(i);
+                Bundle B = new Bundle();
+                B.putParcelable("ClickedEntry", (Parcelable) temp);
+                intent.putExtras(B);
+                startActivity(intent);
             }
-        }
+        });
+
+        newEntryFab = (FloatingActionButton) findViewById(R.id.fab);
+        newEntryFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(MainActivity.this, NewEntryActivity.class);
+                startActivity(i);
+            }
+        });
+
+        search_icon.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_activity_main);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -232,17 +251,11 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
+        inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
         searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView search_icon = (SearchView) menu.findItem(R.id.search_icon).getActionView();
-        if(LoginActivity.USER != null) {
-            if (LoginActivity.USER.equals("Doctor")) {
-                search_icon.setVisibility(View.VISIBLE);
-            } else if (LoginActivity.USER.equals("Patient")) {
-                search_icon.setVisibility(View.GONE);
-            }
-        }
+        search_icon = (SearchView) menu.findItem(R.id.search_icon).getActionView();
+
         return true;
     }
 
@@ -436,40 +449,21 @@ public class MainActivity extends AppCompatActivity
         mValueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    if (patient.getDoctor_key().equals(child.getKey())) {
-                        Doctor currentDoctor = child.getValue(Doctor.class);
-                        if (currentDoctor.getMail_id() != null) {
-                            HashMap<String, Entry> patients = currentDoctor.getPatients();
-                            if (patients != null) {
-                                Set<String> ks = patients.keySet();
-                                for (String key : ks) {
-                                    if (key.equals(patient.getEntry_key())) {
-                                        Intent intent = new Intent(MainActivity.this, ReportActivity.class);
-                                        Entry temp = patients.get(key);
-                                        Bundle B = new Bundle();
-                                        B.putParcelable("ClickedEntry", (Parcelable) temp);
-                                        intent.putExtras(B);
-                                        startActivity(intent);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                patient = dataSnapshot.getValue(Patient.class);
+                spinner.setVisibility(View.GONE);
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
         };
+        mPatientDatabaseRefernce.addListenerForSingleValueEvent(mValueEventListener);
     }
 
     //****************SEARCH METHODS**************
     //2 mothods for searching
     @Override
     public boolean onQueryTextSubmit(String newText) {
-
         return false;
     }
 
@@ -552,7 +546,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public void deletepatient(Entry patient ) {
+    public void deletepatient(Entry patient) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         Query nameQuery = ref.child("doctors").child(MainActivity.currentdoctorKey).child("patients").orderByChild("name").equalTo(patient.getName());
 

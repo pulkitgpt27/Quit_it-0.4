@@ -139,7 +139,6 @@ public class LoginActivity extends AppCompatActivity {
 
 
         googleButton.setOnClickListener(new Button.OnClickListener(){
-
             @Override
             public void onClick(View view) {
                 signIn();
@@ -147,65 +146,64 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
         login.setOnClickListener(new Button.OnClickListener() {
+                 @Override
+                 public void onClick(View v) {
+                     String mail = email.getText().toString();
+                     String pass = password.getText().toString();
+                     if(mail.equals("") || pass.equals("")){
+                         toastmessage("You didnt filled all the feilds");
+                     }
+                     else {
+                         mFirebaseAuth.signInWithEmailAndPassword(mail, pass)
+                                 .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                                      @Override
-                                     public void onClick(View v) {
-                                         String mail = email.getText().toString();
-                                         String pass = password.getText().toString();
-                                         if(mail.equals("") || pass.equals("")){
-                                             toastmessage("You didnt filled all the feilds");
-                                         }
-                                         else {
-                                             mFirebaseAuth.signInWithEmailAndPassword(mail, pass)
-                                                     .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-                                                         @Override
-                                                         public void onComplete(@NonNull Task<AuthResult> task) {
-                                                             // If sign in fails, display a message to the user. If sign in succeeds
-                                                             // the auth state listener will be notified and logic to handle the
-                                                             // signed in user can be handled in the listener.
-                                                             if (!task.isSuccessful()) {
-                                                                 // there was an error
-                                                                 toastmessage(task.getException().getMessage());
-                                                             } else {
-                                                                 //Check Type of User
-                                                                 final FirebaseUser user=mFirebaseAuth.getCurrentUser();
-                                                                 FirebaseDatabase.getInstance().getReference().child("usertype").child(mFirebaseAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
-                                                                     @Override
-                                                                     public void onDataChange(DataSnapshot dataSnapshot) {
-                                                                         UserType userType = dataSnapshot.getValue(UserType.class);
-                                                                         if (userType!=null && userType.getType().equals("Patient")) {
-                                                                             USER = "Patient";
-                                                                             displayName = user.getDisplayName();
-                                                                             displayEmail = user.getEmail();
-                                                                             if(user.getPhotoUrl() != null)
-                                                                                 imageUri = user.getPhotoUrl().toString();
-                                                                             toastmessage("Successfylly signed in with type " + USER + " mail:"+ user.getEmail());
-                                                                             onSignedInInitialize(user.getDisplayName());
-                                                                             return;
-                                                                         } else {
-                                                                             USER = "Doctor";
-                                                                             displayName = user.getDisplayName();
-                                                                             displayEmail = user.getEmail();
-                                                                             if(user.getPhotoUrl() != null)
-                                                                                 imageUri = user.getPhotoUrl().toString();
-                                                                             toastmessage("Successfylly signed in with type " + USER + " mail:"+ user.getEmail());
-                                                                             onSignedInInitialize(user.getDisplayName());
-                                                                             return;
-                                                                         }
-                                                                     }
-
-                                                                     @Override
-                                                                     public void onCancelled(DatabaseError databaseError) {
-
-                                                                     }
-                                                                 });
-
-
-                                                             }
-                                                         }
-                                                     });
+                                     public void onComplete(@NonNull Task<AuthResult> task) {
+                                         // If sign in fails, display a message to the user. If sign in succeeds
+                                         // the auth state listener will be notified and logic to handle the
+                                         // signed in user can be handled in the listener.
+                                         if (!task.isSuccessful()) {
+                                             // there was an error
+                                             toastmessage(task.getException().getMessage());
+                                         } else {
+                                             onSignedInInitialize(mFirebaseAuth.getCurrentUser().getDisplayName());
+                                             //Check Type of User
+//                                             final FirebaseUser user=mFirebaseAuth.getCurrentUser();
+//                                             FirebaseDatabase.getInstance().getReference().child("usertype").child(mFirebaseAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+//                                                 @Override
+//                                                 public void onDataChange(DataSnapshot dataSnapshot) {
+//                                                     UserType userType = dataSnapshot.getValue(UserType.class);
+//                                                     if (userType!=null && userType.getType().equals("Patient")) {
+//                                                         USER = "Patient";
+//                                                         displayName = user.getDisplayName();
+//                                                         displayEmail = user.getEmail();
+//                                                         if(user.getPhotoUrl() != null)
+//                                                             imageUri = user.getPhotoUrl().toString();
+//                                                         toastmessage("Successfylly signed in with type " + USER + " mail:"+ user.getEmail());
+//                                                         onSignedInInitialize(mFirebaseAuth.getCurrentUser().getDisplayName());
+//                                                         return;
+//                                                     } else {
+//                                                         USER = "Doctor";
+//                                                         displayName = user.getDisplayName();
+//                                                         displayEmail = user.getEmail();
+//                                                         if(user.getPhotoUrl() != null)
+//                                                             imageUri = user.getPhotoUrl().toString();
+//                                                         toastmessage("Successfylly signed in with type " + USER + " mail:"+ user.getEmail());
+//                                                         onSignedInInitialize(user.getDisplayName());
+//                                                         return;
+//                                                     }
+//                                                 }
+//
+//                                                 @Override
+//                                                 public void onCancelled(DatabaseError databaseError) {
+//
+//                                                 }
+//                                             });
                                          }
                                      }
-                                 }
+                                 });
+                     }
+                 }
+            }
         );
     }
 
