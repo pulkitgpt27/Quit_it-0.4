@@ -63,7 +63,7 @@
             android:label="Notification" />
         <activity android:name=".PatientRegistration"
             android:label="Patient Registration"
-            android:parentActivityName=".PatientLoginActivity"/>
+            android:parentActivityName=".LoginActivity"/>
 
         <receiver android:name=".AlarmReceiver"/>
     </application>

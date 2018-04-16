@@ -77,6 +77,7 @@ public class LoginActivity extends AppCompatActivity {
                 USER = "Patient";
                 Intent intent = new Intent(LoginActivity.this,PatientRegistration.class);
                 startActivity(intent);
+                finish();
             }
         });
         Button login = (Button) findViewById(R.id.btn_login);

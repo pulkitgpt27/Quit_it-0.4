@@ -227,6 +227,14 @@ public class PatientRegistration extends AppCompatActivity {
                     UserType user = new UserType();
                     user.setType("Patient");
                     UpdatePatientDatabaseReference.setValue(user);
+                    Intent i = new Intent(PatientRegistration.this, MainActivity.class);
+                    i.putExtra("displayName",patient.getUsername());
+                    i.putExtra("displayEmail",patient.getEmailId());
+                    Bundle B = new Bundle();
+                    B.putParcelable("patient", (Parcelable) patient);
+                    i.putExtras(B);
+                    startActivity(i);
+                    finish();
                 }
             });
                         /*if(!entry_key.equals(patient.getEntry_key()) || !doctor_key.equals(patient.getDoctor_key()))
@@ -247,14 +255,6 @@ public class PatientRegistration extends AppCompatActivity {
                             i.putExtra("CurrentPatient",patient);
                             finish();
                         }*/
-            Intent i = new Intent(PatientRegistration.this, MainActivity.class);
-            i.putExtra("displayName",patient.getUsername());
-            i.putExtra("displayEmail",patient.getEmailId());
-            Bundle B = new Bundle();
-            B.putParcelable("patient", (Parcelable) patient);
-            i.putExtras(B);
-            startActivity(i);
-            finish();
         } else {
             patient.setEntry_key(entry_key);
             patient.setDoctor_key(doctor_key);
@@ -274,10 +274,15 @@ public class PatientRegistration extends AppCompatActivity {
                     UserType user = new UserType();
                     user.setType("Patient");
                     UpdatePatientDatabaseReference.setValue(user);
+                    Intent i = new Intent(PatientRegistration.this, AskDoctorAffiliationActivity.class);
+                    Bundle B = new Bundle();
+                    B.putParcelable("patient", (Parcelable) patient);
+                    i.putExtras(B);
+                    startActivity(i);
+                    finish();
                 }
             });
-            startActivity((new Intent(PatientRegistration.this, AskDoctorAffiliationActivity.class)));
-            finish();
+
         }
     }
 
