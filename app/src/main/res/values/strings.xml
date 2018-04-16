@@ -2,7 +2,7 @@
     <string name="app_name">QuitIt</string>
 
     <!-- this is needed in JAVA CODE -->
-    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <!-- TODO: Remove or change this placeholder text -->

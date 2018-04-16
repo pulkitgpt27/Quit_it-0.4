@@ -164,12 +164,42 @@ public class LoginActivity extends AppCompatActivity {
                                                              // signed in user can be handled in the listener.
                                                              if (!task.isSuccessful()) {
                                                                  // there was an error
-                                                                 toastmessage("Credentials are wrong");
+                                                                 toastmessage(task.getException().getMessage());
                                                              } else {
+                                                                 //Check Type of User
+                                                                 final FirebaseUser user=mFirebaseAuth.getCurrentUser();
+                                                                 FirebaseDatabase.getInstance().getReference().child("usertype").child(mFirebaseAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+                                                                     @Override
+                                                                     public void onDataChange(DataSnapshot dataSnapshot) {
+                                                                         UserType userType = dataSnapshot.getValue(UserType.class);
+                                                                         if (userType!=null && userType.getType().equals("Patient")) {
+                                                                             USER = "Patient";
+                                                                             displayName = user.getDisplayName();
+                                                                             displayEmail = user.getEmail();
+                                                                             if(user.getPhotoUrl() != null)
+                                                                                 imageUri = user.getPhotoUrl().toString();
+                                                                             toastmessage("Successfylly signed in with type " + USER + " mail:"+ user.getEmail());
+                                                                             onSignedInInitialize(user.getDisplayName());
+                                                                             return;
+                                                                         } else {
+                                                                             USER = "Doctor";
+                                                                             displayName = user.getDisplayName();
+                                                                             displayEmail = user.getEmail();
+                                                                             if(user.getPhotoUrl() != null)
+                                                                                 imageUri = user.getPhotoUrl().toString();
+                                                                             toastmessage("Successfylly signed in with type " + USER + " mail:"+ user.getEmail());
+                                                                             onSignedInInitialize(user.getDisplayName());
+                                                                             return;
+                                                                         }
+                                                                     }
 
-                                                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                                                 startActivity(intent);
-                                                                 finish();
+                                                                     @Override
+                                                                     public void onCancelled(DatabaseError databaseError) {
+
+                                                                     }
+                                                                 });
+
+
                                                              }
                                                          }
                                                      });

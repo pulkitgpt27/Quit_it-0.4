@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">QuitIt</string>
+    <string name="navigation_drawer_open">"नेविगेशन ड्रॉवर खोलें "</string>
+    <string name="navigation_drawer_close">"नेविगेशन ड्रॉवर को बंद करें "</string>
+    <string name="hello_blank_fragment">"नमस्ते रिक्त टुकड़ा "</string>
+    <string name="disease_1">"मधुमेह "</string>
+    <string name="disease_2">"उच्च रक्त चाप "</string>
+    <string name="disease_3">"हृदय परेशानी "</string>
+    <string name="email">"ईमेल पता "</string>
+    <string name="contact_number">"मोबाइल नंबर "</string>
+    <string name="name">"नाम "</string>
+    <string name="sex">"लिंग : "</string>
+    <string name="businessEditTest">"व्यवसाय: "</string>
+    <string name="rupees">"रुपए में "</string>
+    <string name="age">आयु</string>
+    <string name="bussiness">व्यवसाय</string>
+    <string name="marital_status">"वैवाहिक स्थिति : "</string>
+    <string name="fractionSpent">"वेतन का अंश खर्च: "</string>
+    <string name="future_prompt">"एक चुनो : "</string>
+</resources>
