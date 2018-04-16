@@ -22,11 +22,20 @@
              />
 
         <EditText
-            android:id="@+id/dialogue_editText"
+            android:id="@+id/dialogue_smoke_edt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="@string/dialogue_hint1"
+            android:layout_marginTop="10dp"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/dialogue_chew_edt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/dialogue_hint2"
             android:layout_marginTop="10dp"
             android:inputType="number" />
 
