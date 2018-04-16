@@ -61,9 +61,6 @@
         <activity android:name=".MPChartExample"></activity>
         <activity android:name=".NotificationActivity"
             android:label="Notification" />
-        <activity android:name=".PatientLoginActivity"
-            android:label="Patient Login"
-            android:parentActivityName=".LoginActivity"/>
         <activity android:name=".PatientRegistration"
             android:label="Patient Registration"
             android:parentActivityName=".PatientLoginActivity"/>

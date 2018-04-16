@@ -26,6 +26,14 @@
             app:popupTheme="@style/AppThemeNoBar.PopupOverlay" />
     </android.support.design.widget.AppBarLayout>
 
+    <ProgressBar
+        android:layout_width="wrap_content"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner"
+        android:layout_gravity="center"
+        />
+
     <ListView
         android:id="@+id/listView"
         android:layout_marginTop="?attr/actionBarSize"
@@ -34,13 +42,6 @@
         android:background="@android:color/white"
         />
 
-    <ProgressBar
-        android:layout_width="wrap_content"
-        style="@style/Widget.AppCompat.ProgressBar"
-        android:layout_height="wrap_content"
-        android:id="@+id/spinner"
-        android:layout_gravity="center"
-        />
     <TextView
         android:id="@+id/empty_view"
         android:layout_width="wrap_content"
