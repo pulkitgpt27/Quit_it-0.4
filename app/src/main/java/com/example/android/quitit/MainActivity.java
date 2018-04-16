@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity
         this.setTheme(R.style.AppThemeNoBar);
         super.onCreate(savedInstanceState);
 
+
         setContentView(R.layout.activity_main); //changed due to navbar;
 
         list_of_all_Enteries = (View) findViewById(R.id.include_list_of_all_Entries);
