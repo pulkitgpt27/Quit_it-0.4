@@ -15,7 +15,8 @@ public class Patient implements Parcelable{
     private String password;
     private String doctor_key;
     private String entry_key;
-    private HashMap<String,Integer> day_map=new HashMap<String, Integer>();
+    private HashMap<String,Integer> day_map_smoke=new HashMap<String, Integer>();// String in "dd-mm-yyyyy"
+    private HashMap<String,Integer> day_map_chew=new HashMap<String, Integer>();
 
     //Constructors
     public Patient(Parcel in){
@@ -31,13 +32,12 @@ public class Patient implements Parcelable{
     };
 
     //getters
+    public HashMap<String, Integer> getDay_map_smoke() {
+        return day_map_smoke;
+    }
 
-    public HashMap<String, Integer> getDay_map() {
-//        if(getDay_map().size()==0)
-//        {
-//            day_map.put();
-//        }
-         return this.day_map;
+    public HashMap<String, Integer> getDay_map_chew() {
+        return day_map_chew;
     }
 
     public String getEmailId() {
@@ -66,10 +66,6 @@ public class Patient implements Parcelable{
     }
 
     //setters
-    public void addDay_map(String key,Integer value) {
-        day_map.put(key,value);
-    }
-
     public void setDoctor_key(String doctor_key) {
         this.doctor_key = doctor_key;
     }

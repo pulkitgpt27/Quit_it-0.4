@@ -93,6 +93,8 @@
     <string name="no_internet_connection">No internet connection</string>
     <string name="dialogueText">Daily Updates</string>
     <string name="save">Save</string>
-    <string name="dialogue_hint1">Todays Intake</string>
+    <string name="dialogue_hint1">Todays Cigarette Intake</string>
+    <string name="dialogue_hint2">Todays Tobacco Intake</string>
+
 
 </resources>
