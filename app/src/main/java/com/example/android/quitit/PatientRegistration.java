@@ -169,7 +169,7 @@ public class PatientRegistration extends AppCompatActivity {
 
         patient = new Patient();
         mPatientsDatabaseReference = FirebaseDatabase.getInstance().getReference().child("patients");
-        mUserDatabaseReference = FirebaseDatabase.getInstance().getReference().child("patients");
+        //mUserDatabaseReference = FirebaseDatabase.getInstance().getReference().child("patients");
         mDoctorsDatabaseReference = FirebaseDatabase.getInstance().getReference().child("doctors");
 
 
@@ -202,89 +202,6 @@ public class PatientRegistration extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    public void Update()
-    {
-        if (found == true) {
-            //SET THE THE VALUE OF ENTRY_KEY in PATIENT OBJECT
-            //INTENT TO PATIENT-HOME-SCREEN
-            patient.setEntry_key(entry_key);
-            patient.setDoctor_key(doctor_key);
-            mPatientsDatabaseReference.push().setValue(null, new DatabaseReference.CompletionListener() {
-                @Override
-                public void onComplete(DatabaseError databaseError,
-                                       DatabaseReference databaseReference) {
-                    final DatabaseReference UpdatePatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("patients").child(key);
-                    UpdatePatientDatabaseReference.setValue(patient);
-                    mUserDatabaseReference.push().setValue(null, new DatabaseReference.CompletionListener() {
-                        @Override
-                        public void onComplete(DatabaseError databaseError,
-                                               DatabaseReference databaseReference) {
-                            final DatabaseReference UpdatePatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("usertype").child(key);
-                            UserType user = new UserType();
-                            user.setType("Patient");
-                            UpdatePatientDatabaseReference.setValue(user);
-                            Intent i = new Intent(PatientRegistration.this, MainActivity.class);
-                            i.putExtra("displayName",patient.getUsername());
-                            i.putExtra("displayEmail",patient.getEmailId());
-                            Bundle B = new Bundle();
-                            B.putParcelable("patient", (Parcelable) patient);
-                            i.putExtras(B);
-                            startActivity(i);
-                            finish();
-                        }
-                    });
-                }
-            });
-
-                        /*if(!entry_key.equals(patient.getEntry_key()) || !doctor_key.equals(patient.getDoctor_key()))
-                        {
-                            patient.setDoctor_key(doctor_key);
-                            patient.setEntry_key(entry_key);
-                            mPatientsDatabaseReference.push().setValue(null, new DatabaseReference.CompletionListener() {
-                                @Override
-                                public void onComplete(DatabaseError databaseError,
-                                                       DatabaseReference databaseReference) {
-                                    final DatabaseReference UpdatePatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("patients").child(key);
-                                    UpdatePatientDatabaseReference.setValue(patient);
-                                }
-                            });
-                            Intent i = new Intent(PatientRegistration.this, MainActivity.class);
-                            i.putExtra("displayName",patient.getUsername());
-                            i.putExtra("displayEmail",patient.getEmailId());
-                            i.putExtra("CurrentPatient",patient);
-                            finish();
-                        }*/
-        } else {
-            patient.setEntry_key(entry_key);
-            patient.setDoctor_key(doctor_key);
-            mPatientsDatabaseReference.push().setValue(null, new DatabaseReference.CompletionListener() {
-                @Override
-                public void onComplete(DatabaseError databaseError,
-                                       DatabaseReference databaseReference) {
-                    final DatabaseReference UpdatePatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("patients").child(key);
-                    UpdatePatientDatabaseReference.setValue(patient);
-                    mUserDatabaseReference.push().setValue(null, new DatabaseReference.CompletionListener() {
-                        @Override
-                        public void onComplete(DatabaseError databaseError,
-                                               DatabaseReference databaseReference) {
-                            final DatabaseReference UpdatePatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("usertype").child(key);
-                            UserType user = new UserType();
-                            user.setType("Patient");
-                            UpdatePatientDatabaseReference.setValue(user);
-                            Intent i = new Intent(PatientRegistration.this, AskDoctorAffiliationActivity.class);
-                            Bundle B = new Bundle();
-                            B.putParcelable("patient", (Parcelable) patient);
-                            i.putExtras(B);
-                            startActivity(i);
-                            finish();
-                        }
-                    });
-                }
-            });
-
-        }
     }
 
     protected void registerUser(String username, String password) {
@@ -348,4 +265,45 @@ public class PatientRegistration extends AppCompatActivity {
         };
         mDoctorsDatabaseReference.addListenerForSingleValueEvent(mValueEventListener);
     }
+    public void Update()
+    {
+        if (found == true) {
+            //SET THE THE VALUE OF ENTRY_KEY in PATIENT OBJECT
+            //INTENT TO PATIENT-HOME-SCREEN
+            patient.setEntry_key(entry_key);
+            patient.setDoctor_key(doctor_key);
+            mPatientsDatabaseReference.child(key).setValue(patient, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                    final DatabaseReference UsertypeDatabaseReference = FirebaseDatabase.getInstance().getReference().child("usertype");
+                    UserType user = new UserType();
+                    user.setType("Patient");
+                    UsertypeDatabaseReference.child(key).setValue(user, new DatabaseReference.CompletionListener(){
+                        @Override
+                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                            Intent i = new Intent(PatientRegistration.this, MainActivity.class);
+                            i.putExtra("displayName",patient.getUsername());
+                            i.putExtra("displayEmail",patient.getEmailId());
+                            Bundle B = new Bundle();
+                            B.putParcelable("patient", (Parcelable) patient);
+                            i.putExtras(B);
+                            startActivity(i);
+                            finish();
+                        }
+                    });
+                }
+            });
+
+        } else {
+            patient.setEntry_key(entry_key);
+            patient.setDoctor_key(doctor_key);
+            Intent i = new Intent(PatientRegistration.this, AskDoctorAffiliationActivity.class);
+            Bundle B = new Bundle();
+            B.putParcelable("patient", (Parcelable) patient);
+            i.putExtras(B);
+            startActivity(i);
+            finish();
+        }
+    }
 }
+
