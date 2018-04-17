@@ -6,6 +6,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -35,11 +36,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.vision.text.Line;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
@@ -50,10 +60,23 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.lang.reflect.Array;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import static com.example.android.quitit.FirebaseMethods.getUserId;
 import static com.example.android.quitit.Utility.isNetworkAvailable;
@@ -100,18 +123,23 @@ public class MainActivity extends AppCompatActivity
     public static String currentdoctorKey;
     private GoogleApiClient mGoogleApiClient;
     private String USER;
+    private LineChart lifeExpectancyChart;
+    private String lifeExpectancyChartXAxis[];
+    private ArrayList<com.github.mikephil.charting.data.Entry> lifeExpectancyChartYAxis;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         this.setTheme(R.style.AppThemeNoBar);
         super.onCreate(savedInstanceState);
 
-
         setContentView(R.layout.activity_main); //changed due to navbar;
 
         list_of_all_Enteries = (View) findViewById(R.id.include_list_of_all_Entries);
         patient_home = (View) findViewById(R.id.include_patient_home);
         spinner=(ProgressBar) findViewById(R.id.spinner);
+
+        lifeExpectancyChart = (LineChart) findViewById(R.id.LifeExpectancyChart);
+        lifeExpectancyChartYAxis = new ArrayList<com.github.mikephil.charting.data.Entry>();
 
         empty = true;
 
@@ -485,14 +513,81 @@ public class MainActivity extends AppCompatActivity
                 patient = dataSnapshot.getValue(Patient.class);
                 currentdoctorKey = patient.getDoctor_key();
                 spinner.setVisibility(View.GONE);
-            }
 
+                Set<String> temp = patient.getDay_map_smoke().keySet();
+                lifeExpectancyChartXAxis = new String[temp.size()];
+                int j = 0;
+                for(String s: temp)
+                {
+                    lifeExpectancyChartXAxis[j] = s;
+                    j++;
+                }
+                DateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+                Date[] arrayOfDates = new Date[lifeExpectancyChartXAxis.length];
+                for (int index = 0; index < lifeExpectancyChartXAxis.length; index++) {
+                    try {
+                        arrayOfDates[index] = format.parse(lifeExpectancyChartXAxis[index]);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+                Arrays.sort(arrayOfDates);
+                for (int index = 0; index < lifeExpectancyChartXAxis.length; index++) {
+                    lifeExpectancyChartXAxis[index] = format.format(arrayOfDates[index]);
+                }
+                int i = 0;
+                for(String s: lifeExpectancyChartXAxis)
+                {
+                    lifeExpectancyChartYAxis.add(new com.github.mikephil.charting.data.Entry(i,patient.getDay_map_smoke().get(s)));
+                    i++;
+                }
+                PopulateChart();
+            }
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
         });
         //mPatientDatabaseRefernce.addListenerForSingleValueEvent(mValueEventListener);
+    }
+
+    private void PopulateChart() {
+        LineDataSet set1;
+
+        // create a dataset and give it a type
+        set1 = new LineDataSet(lifeExpectancyChartYAxis, "Smoke Consumption Frequency");
+        set1.setFillAlpha(110);
+        // set1.setFillColor(Color.RED);
+
+        // set the line to be drawn like this "- - - - - -"
+        // set1.enableDashedLine(10f, 5f, 0f);
+        // set1.enableDashedHighlightLine(10f, 5f, 0f);
+        set1.setColor(Color.BLACK);
+        set1.setCircleColor(Color.BLACK);
+        set1.setLineWidth(1f);
+        set1.setCircleRadius(3f);
+        set1.setDrawCircleHole(false);
+        set1.setValueTextSize(9f);
+        set1.setDrawFilled(false);
+
+        XAxis xAxis = lifeExpectancyChart.getXAxis();
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                return lifeExpectancyChartXAxis[(int) value]; // xVal is a string array
+            }
+        });
+
+        xAxis.setGranularity(1f);
+        xAxis.setDrawGridLines(false);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+        lifeExpectancyChart.setScaleEnabled(false);
+
+        LineData data = new LineData(set1);
+
+        // set data
+        lifeExpectancyChart.setData(data);
     }
 
     //****************SEARCH METHODS**************
