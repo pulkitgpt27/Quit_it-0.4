@@ -832,6 +832,7 @@ public class NewEntryActivity extends AppCompatActivity {
                                             $progress_parent.setVisibility(GONE);
                                             $progress_text.setVisibility(GONE);
                                             startActivity(new Intent(NewEntryActivity.this, MainActivity.class));
+                                            finish();
                                         }
                                     });
                                 }
@@ -859,6 +860,7 @@ public class NewEntryActivity extends AppCompatActivity {
                                     $progress_parent.setVisibility(GONE);
                                     $progress_text.setVisibility(GONE);
                                     startActivity(new Intent(NewEntryActivity.this, MainActivity.class));
+                                    finish();
                                 }
                             });
                         }
@@ -888,6 +890,7 @@ public class NewEntryActivity extends AppCompatActivity {
                                             $progress_parent.setVisibility(GONE);
                                             $progress_text.setVisibility(GONE);
                                             startActivity(new Intent(NewEntryActivity.this, MainActivity.class));
+                                            finish();
                                         }
                                     });
                                 }
@@ -910,6 +913,7 @@ public class NewEntryActivity extends AppCompatActivity {
                                             $progress_parent.setVisibility(GONE);
                                             $progress_text.setVisibility(GONE);
                                             startActivity(new Intent(NewEntryActivity.this, MainActivity.class));
+                                            finish();
                                         }
                                     });
                                 }
