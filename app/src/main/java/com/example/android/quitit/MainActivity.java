@@ -311,6 +311,7 @@ public class MainActivity extends AppCompatActivity
                 args.putString("ChartType","Smoking");
                 intent.putExtras(args);
                 startActivity(intent);
+                finish();
                 return true;
             case R.id.basisOfChewing:
                 intent = new Intent(MainActivity.this, AnalyticsMPChartChewing.class);
@@ -358,6 +359,7 @@ public class MainActivity extends AppCompatActivity
                             B.putParcelable("ClickedEntry", (Parcelable) temp);
                             intent.putExtras(B);
                             startActivity(intent);
+                            finish();
                         }
 
                         @Override
