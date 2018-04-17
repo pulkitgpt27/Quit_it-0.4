@@ -194,6 +194,7 @@ public class ReportActivity extends AppCompatActivity {
                                                intent.putExtra(Intent.EXTRA_SUBJECT,"Harms of tobacco");
                                                if(intent.resolveActivity(getPackageManager())!=null){
                                                    startActivity(intent);
+                                                   finish();
                                                }
                                            }
                                        }
@@ -232,6 +233,7 @@ public class ReportActivity extends AppCompatActivity {
                                 deletepatient();
                                 Intent i = new Intent(ReportActivity.this, MainActivity.class);
                                 startActivity(i);
+                                finish();
                             }})
                         .setNegativeButton(android.R.string.no, null).show();
 
@@ -262,6 +264,7 @@ public class ReportActivity extends AppCompatActivity {
                 B1.putParcelable("ClickedEntry", (Parcelable) temp2);
                 intent2.putExtras(B1);
                 startActivity(intent2);
+                finish();
                 return true;
         }
         return super.onOptionsItemSelected(item);

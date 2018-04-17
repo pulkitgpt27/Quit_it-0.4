@@ -41,6 +41,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -166,13 +167,14 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 UserType userType = dataSnapshot.getValue(UserType.class);
-                    if (userType!=null && userType.getType().equals("Patient")) {
-                        initiatePatientHome(mAuth.getCurrentUser().getUid());
-                    } else {
-                        mDoctorsDatabaseReference = FirebaseMethods.getFirebaseReference("doctors");
-                        Intent intentForMainActivity = getIntent();
-                        initiateDoctorHome(intentForMainActivity);
-                    }
+
+                if (userType!=null && userType.getType().equals("Patient")) {
+                    mPatientDatabaseRefernce = FirebaseDatabase.getInstance().getReference().child("patients").child(mAuth.getCurrentUser().getUid());
+                    initiatePatientHome(mAuth.getCurrentUser().getUid());
+                } else {
+                    mDoctorsDatabaseReference = FirebaseMethods.getFirebaseReference("doctors");
+                    initiateDoctorHome();
+                }
             }
 
             @Override
@@ -189,8 +191,8 @@ public class MainActivity extends AppCompatActivity
         Intent notificationIntent = new Intent(this, AlarmReceiver.class);
         PendingIntent broadcast = PendingIntent.getBroadcast(this, 100, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         Calendar calendar= Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY,22);//set time here
-        calendar.set(Calendar.MINUTE,30);
+        //calendar.set(Calendar.HOUR_OF_DAY,22);//set time here
+        calendar.set(Calendar.MINUTE,01);
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY,broadcast);
         //***************
 
@@ -201,10 +203,12 @@ public class MainActivity extends AppCompatActivity
         patientViewDetails.setVisible(true);
         patientReport.setVisible(true);
 
-        search_icon.setVisibility(View.GONE);
+        if(search_icon!=null) {
+            search_icon.setVisibility(View.GONE);
+        }
     }
 
-    protected void initiateDoctorHome(Intent intent){
+    protected void initiateDoctorHome(){
         patient_home.setVisibility(View.GONE);
         list_of_all_Enteries.setVisibility(View.VISIBLE);
 
@@ -223,15 +227,18 @@ public class MainActivity extends AppCompatActivity
                 B.putParcelable("ClickedEntry", (Parcelable) temp);
                 intent.putExtras(B);
                 startActivity(intent);
+                finish();
             }
         });
 
         newEntryFab = (FloatingActionButton) findViewById(R.id.fab);
+        newEntryFab.setVisibility(View.VISIBLE);
         newEntryFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(MainActivity.this, NewEntryActivity.class);
                 startActivity(i);
+                finish();
             }
         });
 
@@ -247,6 +254,7 @@ public class MainActivity extends AppCompatActivity
             intent.addCategory(Intent.CATEGORY_HOME);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
+            finish();
         }
     }
 
@@ -292,6 +300,7 @@ public class MainActivity extends AppCompatActivity
                 args.putString("ChartType","Chewing");
                 intent.putExtras(args);
                 startActivity(intent);
+                finish();
                 return true;
             case R.id.logout:
                 currentdoctorKey=null;
@@ -349,6 +358,7 @@ public class MainActivity extends AppCompatActivity
                         B.putParcelable("ClickedEntry", (Parcelable) temp);
                         intent.putExtras(B);
                         startActivity(intent);
+                        finish();
                     }
 
                     @Override
@@ -424,33 +434,37 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
                 if(found == false){
-                    //create new Doctor
-                    mDoctorsDatabaseReference
-                            .push()
-                            .setValue(null, new DatabaseReference.CompletionListener() {
-                                @Override
-                                public void onComplete(DatabaseError databaseError,
-                                                       DatabaseReference databaseReference) {
-                                    String uniqueKey = databaseReference.getKey();
-                                    DatabaseReference UpdatePatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("doctors").child(uniqueKey);
-                                    Doctor newDoctor = new Doctor(FirebaseMethods.getUserId());
-                                    currentdoctorKey = uniqueKey;
-                                    try {
-                                        UpdatePatientDatabaseReference.setValue(newDoctor);
-                                        mPatientListView.setVisibility(View.GONE);
-                                        mEmptyPatientTextView1.setVisibility(View.VISIBLE);
-                                        mEmptyPatientTextView2.setVisibility(View.VISIBLE);
-                                        mEmptyPatientImage.setVisibility(View.VISIBLE);
-                                        mEmptyPatientLayout.setVisibility(View.VISIBLE);
-                                        spinner.setVisibility(View.GONE);
-                                        Toast.makeText(getBaseContext(), "Welcome ,Doctor", Toast.LENGTH_SHORT).show();
-                                        Toast.makeText(getBaseContext(), "No Patients. Start by Adding some.", Toast.LENGTH_LONG).show();
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                    Log.e("Created", "New Doctor Added :" + newDoctor.getMail_id());
-                                }
-                            });
+                    for (UserInfo user: FirebaseAuth.getInstance().getCurrentUser().getProviderData()) {
+                        if (user.getProviderId().equals("google.com")) {
+                            //create new Doctor
+                            mDoctorsDatabaseReference
+                                    .push()
+                                    .setValue(null, new DatabaseReference.CompletionListener() {
+                                        @Override
+                                        public void onComplete(DatabaseError databaseError,
+                                                               DatabaseReference databaseReference) {
+                                            String uniqueKey = databaseReference.getKey();
+                                            DatabaseReference UpdatePatientDatabaseReference = FirebaseDatabase.getInstance().getReference().child("doctors").child(uniqueKey);
+                                            Doctor newDoctor = new Doctor(FirebaseMethods.getUserId());
+                                            currentdoctorKey = uniqueKey;
+                                            try {
+                                                UpdatePatientDatabaseReference.setValue(newDoctor);
+                                                mPatientListView.setVisibility(View.GONE);
+                                                mEmptyPatientTextView1.setVisibility(View.VISIBLE);
+                                                mEmptyPatientTextView2.setVisibility(View.VISIBLE);
+                                                mEmptyPatientImage.setVisibility(View.VISIBLE);
+                                                mEmptyPatientLayout.setVisibility(View.VISIBLE);
+                                                spinner.setVisibility(View.GONE);
+                                                Toast.makeText(getBaseContext(), "Welcome ,Doctor", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(getBaseContext(), "No Patients. Start by Adding some.", Toast.LENGTH_LONG).show();
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+                                            Log.e("Created", "New Doctor Added :" + newDoctor.getMail_id());
+                                        }
+                                    });
+                        }
+                    }
                 }
             }
             @Override
@@ -523,7 +537,6 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-
     //*****************Long press menu**************
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
@@ -559,6 +572,7 @@ public class MainActivity extends AppCompatActivity
                                 deletepatient(patientList.get(info.position));
                                 Intent i = new Intent(MainActivity.this, MainActivity.class);
                                 startActivity(i);
+                                finish();
                             }})
                         .setNegativeButton(android.R.string.no, null).show();
                 return true;
