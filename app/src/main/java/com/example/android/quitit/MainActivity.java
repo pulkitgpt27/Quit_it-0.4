@@ -514,34 +514,34 @@ public class MainActivity extends AppCompatActivity
                 currentdoctorKey = patient.getDoctor_key();
                 spinner.setVisibility(View.GONE);
 
-                Set<String> temp = patient.getDay_map_smoke().keySet();
-                lifeExpectancyChartXAxis = new String[temp.size()];
-                int j = 0;
-                for(String s: temp)
-                {
-                    lifeExpectancyChartXAxis[j] = s;
-                    j++;
-                }
-                DateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
-                Date[] arrayOfDates = new Date[lifeExpectancyChartXAxis.length];
-                for (int index = 0; index < lifeExpectancyChartXAxis.length; index++) {
-                    try {
-                        arrayOfDates[index] = format.parse(lifeExpectancyChartXAxis[index]);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
+                if(patient.getDay_map_smoke().size() != 0) {
+                    Set<String> temp = patient.getDay_map_smoke().keySet();
+                    lifeExpectancyChartXAxis = new String[temp.size()];
+                    int j = 0;
+                    for (String s : temp) {
+                        lifeExpectancyChartXAxis[j] = s;
+                        j++;
                     }
+                    DateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+                    Date[] arrayOfDates = new Date[lifeExpectancyChartXAxis.length];
+                    for (int index = 0; index < lifeExpectancyChartXAxis.length; index++) {
+                        try {
+                            arrayOfDates[index] = format.parse(lifeExpectancyChartXAxis[index]);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    Arrays.sort(arrayOfDates);
+                    for (int index = 0; index < lifeExpectancyChartXAxis.length; index++) {
+                        lifeExpectancyChartXAxis[index] = format.format(arrayOfDates[index]);
+                    }
+                    int i = 0;
+                    for (String s : lifeExpectancyChartXAxis) {
+                        lifeExpectancyChartYAxis.add(new com.github.mikephil.charting.data.Entry(i, patient.getDay_map_smoke().get(s)));
+                        i++;
+                    }
+                    PopulateChart();
                 }
-                Arrays.sort(arrayOfDates);
-                for (int index = 0; index < lifeExpectancyChartXAxis.length; index++) {
-                    lifeExpectancyChartXAxis[index] = format.format(arrayOfDates[index]);
-                }
-                int i = 0;
-                for(String s: lifeExpectancyChartXAxis)
-                {
-                    lifeExpectancyChartYAxis.add(new com.github.mikephil.charting.data.Entry(i,patient.getDay_map_smoke().get(s)));
-                    i++;
-                }
-                PopulateChart();
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
