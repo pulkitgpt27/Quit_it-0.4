@@ -26,7 +26,7 @@
             android:id="@+id/report_progress_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Downloading the Image. Please wait.. "
+            android:text="Downloading the Report. Please wait.. "
             android:textSize="12sp"
             android:textColor="@android:color/white"
             android:layout_gravity="center_horizontal"/>
