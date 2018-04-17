@@ -241,8 +241,8 @@ public class MainActivity extends AppCompatActivity
                 finish();
             }
         });
-
-        search_icon.setVisibility(View.VISIBLE);
+        if(search_icon!=null)
+            search_icon.setVisibility(View.VISIBLE);
     }
 
     @Override

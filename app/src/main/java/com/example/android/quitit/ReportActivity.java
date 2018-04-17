@@ -1,7 +1,6 @@
 package com.example.android.quitit;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,7 +10,6 @@ import android.os.Environment;
 import android.os.Parcelable;
 import android.print.PrintManager;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -73,7 +71,7 @@ public class ReportActivity extends AppCompatActivity {
         $progress_parent.setVisibility(View.INVISIBLE);
         $progress_text_view.setVisibility(View.INVISIBLE);
 
-        if(ClickedEntry.getImageUri() != null){
+        if(ClickedEntry.getImageUri()!=null && !ClickedEntry.getImageUri().isEmpty()){
         //else if(ClickedEntry.getImageUri().equals("")) {
             $progress_bar.setScaleY(3f);
             $progress_bar.setScaleX(5f);
@@ -113,7 +111,7 @@ public class ReportActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(getBaseContext(), "Error while Downloading the image.", Toast.LENGTH_SHORT);
-                        Log.e("FALIURE", "Booooo Booooo.");
+                        Log.e("FALIURE", "Error while Downloading the image.");
                         $face_image.setVisibility(View.GONE);
                         $image_text.setVisibility(View.GONE);
                     }
@@ -130,8 +128,8 @@ public class ReportActivity extends AppCompatActivity {
             $progress_parent.setVisibility(View.GONE);
             $progress_text_view.setVisibility(View.GONE);
             $progress_parent.getBackground().setAlpha(200);
-            $face_image.setVisibility(View.INVISIBLE);
-            $image_text.setVisibility(View.INVISIBLE);
+            $face_image.setVisibility(View.GONE);
+            $image_text.setVisibility(View.GONE);
         }
 
         //patient name
