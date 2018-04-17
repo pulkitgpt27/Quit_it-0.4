@@ -32,7 +32,7 @@
             android:parentActivityName=".LoginActivity" />
         <activity
             android:name=".MainActivity"
-            android:label="Records" />
+            android:label="Home" />
         <activity
             android:name=".NewEntryActivity"
             android:label="New Entry"
@@ -61,6 +61,7 @@
         <activity android:name=".MPChartExample"></activity>
         <activity android:name=".NotificationActivity"
             android:label="Notification" />
+
         <activity android:name=".PatientRegistration"
             android:label="Patient Registration"
             android:parentActivityName=".LoginActivity"/>

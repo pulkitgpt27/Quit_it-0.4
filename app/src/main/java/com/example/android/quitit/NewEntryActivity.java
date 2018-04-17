@@ -791,7 +791,7 @@ public class NewEntryActivity extends AppCompatActivity {
                     final String[] uniqueKey = {""};
                     String key = "";
 
-                    if(patientOfEntry!=null){
+                    if(patientOfEntry!=null){ //patientUSER
                         if(imageset) {
                             StorageReference photoref = mPhotoStorageReference.child(uri.getLastPathSegment());
                             photoref.putFile(uri).addOnProgressListener(NewEntryActivity.this, new OnProgressListener<UploadTask.TaskSnapshot>(){
@@ -827,15 +827,7 @@ public class NewEntryActivity extends AppCompatActivity {
                                             }
                                             Log.e("Updated", "New Patiend Added :" + patient.getId() + " with Image.");
                                             patientOfEntry.setEntry_key(uniqueKey[0]);
-                                            final DatabaseReference TEMP = FirebaseDatabase.getInstance()
-                                                    .getReference().child("patients").child(user.getUid());
-                                            TEMP.push().setValue(null, new DatabaseReference.CompletionListener(){
-                                                @Override
-                                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                                    TEMP.setValue(patientOfEntry);
-                                                    Toast.makeText(getBaseContext(),"Patientd updated with ENTRY-KEY",Toast.LENGTH_SHORT).show();
-                                                }
-                                            });
+                                            FirebaseMethods.updatePatient2(user.getUid(),patientOfEntry);
                                             $progress_bar.setVisibility(GONE);
                                             $progress_parent.setVisibility(GONE);
                                             $progress_text.setVisibility(GONE);
@@ -873,6 +865,7 @@ public class NewEntryActivity extends AppCompatActivity {
                                                 Toast.makeText(getBaseContext(),"Patientd updated with ENTRY-KEY",Toast.LENGTH_SHORT).show();
                                             }
                                         });
+                                        TEMP.setValue(null,patientOfEntry);
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
