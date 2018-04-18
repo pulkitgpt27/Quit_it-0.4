@@ -3,13 +3,18 @@ package com.example.android.quitit;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -103,5 +108,24 @@ public class AskDoctorAffiliationActivity extends AppCompatActivity {
             }
         };
         mDoctorsDatabaseReference.addListenerForSingleValueEvent(mValueEventListener);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        FirebaseAuth.getInstance().getCurrentUser().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    Toast.makeText(getBaseContext(),"User has been deleted.", Toast.LENGTH_SHORT);
+                    startActivity(new Intent(AskDoctorAffiliationActivity.this, PatientRegistration.class));
+                    finish();
+                }
+                else{
+                    Log.e("Error!","User was created in PatientRegistration. Registration" +
+                            "was incomplete");
+                }
+            }
+        });
     }
 }

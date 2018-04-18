@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
@@ -34,7 +35,9 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
@@ -1053,6 +1056,24 @@ public class NewEntryActivity extends AppCompatActivity {
                     Toast.makeText(NewEntryActivity.this, "Face undetected please try again!", Toast.LENGTH_SHORT).show();
                 }
             }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(patientOfEntry!=null)
+            FirebaseAuth.getInstance().getCurrentUser().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Toast.makeText(getBaseContext(),"User deleted. Registration undone.",0);
+                startActivity(new Intent(NewEntryActivity.this, PatientRegistration.class));
+                finish();
+            }
+        });
+        else {
+            startActivity(new Intent(NewEntryActivity.this, MainActivity.class));
+            finish();
         }
     }
 }
