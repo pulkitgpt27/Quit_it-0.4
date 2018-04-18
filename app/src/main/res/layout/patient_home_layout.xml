@@ -80,7 +80,7 @@
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@mipmap/ic_money"
+                            android:src="@mipmap/ic_currency"
                             android:layout_gravity="center_vertical"/>
                         <TextView
                             android:layout_weight="1"
