@@ -120,7 +120,7 @@ public class Patient implements Parcelable{
     }
 
     public void putInChewEntry(String key, int value){
-        this.day_map_smoke.put(key,value);
+        this.day_map_chew.put(key,value);
         return;
     }
 }
