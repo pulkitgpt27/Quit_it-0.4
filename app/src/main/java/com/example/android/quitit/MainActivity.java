@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity
     private NavigationView navigationView;
     private View headerLayout;
     private Menu menu;
-    private  SearchView search_icon;
+    private MenuItem search_icon;
     private MenuInflater inflater;
     private DrawerLayout drawer;
     private  TextView smoke_tv;
@@ -116,9 +116,9 @@ public class MainActivity extends AppCompatActivity
     public static String currentdoctorKey;
     private GoogleApiClient mGoogleApiClient;
     private String USER;
-    private LineChart lifeExpectancyChart;
-    private String lifeExpectancyChartXAxis[];
-    private ArrayList<com.github.mikephil.charting.data.Entry> lifeExpectancyChartYAxis;
+    private LineChart lifeExpectancyChart,lifeExpectancyChart2;
+    private String lifeExpectancyChartXAxis[],lifeExpectancyChart2XAxis[];
+    private ArrayList<com.github.mikephil.charting.data.Entry> lifeExpectancyChartYAxis,lifeExpectancyChart2YAxis;
     private TextView money_tv;
     private TextView life_tv;
     private TextView sal_tv;
@@ -135,7 +135,9 @@ public class MainActivity extends AppCompatActivity
         spinner=(ProgressBar) findViewById(R.id.spinner);
 
         lifeExpectancyChart = (LineChart) findViewById(R.id.LifeExpectancyChart);
+        lifeExpectancyChart2 = (LineChart) findViewById(R.id.LifeExpectancyChart2);
         lifeExpectancyChartYAxis = new ArrayList<com.github.mikephil.charting.data.Entry>();
+        lifeExpectancyChart2YAxis = new ArrayList<com.github.mikephil.charting.data.Entry>();
 
         empty = true;
 
@@ -245,7 +247,7 @@ public class MainActivity extends AppCompatActivity
         patientReport.setVisible(true);
 
         if(search_icon!=null) {
-            search_icon.setVisibility(View.GONE);
+            search_icon.setVisible(false);
         }
     }
 
@@ -284,7 +286,7 @@ public class MainActivity extends AppCompatActivity
         });
 
         if(search_icon!=null)
-            search_icon.setVisibility(View.VISIBLE);
+            search_icon.setVisible(true);
     }
 
     @Override
@@ -305,8 +307,7 @@ public class MainActivity extends AppCompatActivity
         inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
         searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        search_icon = (SearchView) menu.findItem(R.id.search_icon).getActionView();
-
+        search_icon = menu.findItem(R.id.search_icon);
         return true;
     }
 
@@ -320,7 +321,6 @@ public class MainActivity extends AppCompatActivity
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-
         }
     }
 
@@ -636,38 +636,90 @@ public class MainActivity extends AppCompatActivity
 
                         }
                     });
+                    if(patient.getDay_map_smoke().size() > 0 && patient.getDay_map_chew().size() > 0)
+                    {
+                        lifeExpectancyChart.setVisibility(View.VISIBLE);
+                        lifeExpectancyChart2.setVisibility(View.VISIBLE);
+                        lifeExpectancyChart.getLayoutParams().height = dpToPx(150);
+                        lifeExpectancyChart.requestLayout();
+                        lifeExpectancyChart2.getLayoutParams().height = dpToPx(150);
+                        lifeExpectancyChart2.requestLayout();
+                    }
+                    else if(patient.getDay_map_smoke().size() > 0)
+                    {
+                        lifeExpectancyChart.setVisibility(View.VISIBLE);
+                        lifeExpectancyChart2.setVisibility(View.GONE);
+                        lifeExpectancyChart.getLayoutParams().height = dpToPx(300);
+                        lifeExpectancyChart.requestLayout();
+                    }
+                    else if(patient.getDay_map_chew().size() > 0)
+                    {
+                        lifeExpectancyChart2.setVisibility(View.VISIBLE);
+                        lifeExpectancyChart.setVisibility(View.GONE);
+                        lifeExpectancyChart2.getLayoutParams().height = dpToPx(300);
+                        lifeExpectancyChart2.requestLayout();
+                    }
+
+
+                    if(patient.getDay_map_smoke().size() != 0) {
+                        Set<String> temp = patient.getDay_map_smoke().keySet();
+                        lifeExpectancyChartXAxis = new String[temp.size()];
+                        int j = 0;
+                        for (String s : temp) {
+                            lifeExpectancyChartXAxis[j] = s;
+                            j++;
+                        }
+                        DateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+                        Date[] arrayOfDates = new Date[lifeExpectancyChartXAxis.length];
+                        for (int index = 0; index < lifeExpectancyChartXAxis.length; index++) {
+                            try {
+                                arrayOfDates[index] = format.parse(lifeExpectancyChartXAxis[index]);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        Arrays.sort(arrayOfDates);
+                        for (int index = 0; index < lifeExpectancyChartXAxis.length; index++) {
+                            lifeExpectancyChartXAxis[index] = format.format(arrayOfDates[index]);
+                        }
+                        int i = 0;
+                        for (String s : lifeExpectancyChartXAxis) {
+                            lifeExpectancyChartYAxis.add(new com.github.mikephil.charting.data.Entry(i, patient.getDay_map_smoke().get(s)));
+                            i++;
+                        }
+                        PopulateChart();
+                    }
+                    if(patient.getDay_map_chew().size() != 0) {
+                        Set<String> temp = patient.getDay_map_chew().keySet();
+                        lifeExpectancyChart2XAxis = new String[temp.size()];
+                        int j = 0;
+                        for (String s : temp) {
+                            lifeExpectancyChart2XAxis[j] = s;
+                            j++;
+                        }
+                        DateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+                        Date[] arrayOfDates = new Date[lifeExpectancyChart2XAxis.length];
+                        for (int index = 0; index < lifeExpectancyChart2XAxis.length; index++) {
+                            try {
+                                arrayOfDates[index] = format.parse(lifeExpectancyChart2XAxis[index]);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        Arrays.sort(arrayOfDates);
+                        for (int index = 0; index < lifeExpectancyChart2XAxis.length; index++) {
+                            lifeExpectancyChart2XAxis[index] = format.format(arrayOfDates[index]);
+                        }
+                        int i = 0;
+                        for (String s : lifeExpectancyChart2XAxis) {
+                            lifeExpectancyChart2YAxis.add(new com.github.mikephil.charting.data.Entry(i, patient.getDay_map_chew().get(s)));
+                            i++;
+                        }
+                        PopulateChewChart();
+                    }
                 }
                 //by pulkit end
                 spinner.setVisibility(View.GONE);
-
-                if(patient.getDay_map_smoke().size() != 0) {
-                    Set<String> temp = patient.getDay_map_smoke().keySet();
-                    lifeExpectancyChartXAxis = new String[temp.size()];
-                    int j = 0;
-                    for (String s : temp) {
-                        lifeExpectancyChartXAxis[j] = s;
-                        j++;
-                    }
-                    DateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
-                    Date[] arrayOfDates = new Date[lifeExpectancyChartXAxis.length];
-                    for (int index = 0; index < lifeExpectancyChartXAxis.length; index++) {
-                        try {
-                            arrayOfDates[index] = format.parse(lifeExpectancyChartXAxis[index]);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    Arrays.sort(arrayOfDates);
-                    for (int index = 0; index < lifeExpectancyChartXAxis.length; index++) {
-                        lifeExpectancyChartXAxis[index] = format.format(arrayOfDates[index]);
-                    }
-                    int i = 0;
-                    for (String s : lifeExpectancyChartXAxis) {
-                        lifeExpectancyChartYAxis.add(new com.github.mikephil.charting.data.Entry(i, patient.getDay_map_smoke().get(s)));
-                        i++;
-                    }
-                    PopulateChart();
-                }
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -675,6 +727,52 @@ public class MainActivity extends AppCompatActivity
             }
         });
         //mPatientDatabaseRefernce.addListenerForSingleValueEvent(mValueEventListener);
+    }
+
+    public int dpToPx(int dp) {
+        float density = getResources()
+                .getDisplayMetrics()
+                .density;
+        return Math.round((float) dp * density);
+    }
+
+    private void PopulateChewChart() {
+        LineDataSet set1;
+
+        // create a dataset and give it a type
+        set1 = new LineDataSet(lifeExpectancyChart2YAxis, "Tobacco Consumption Frequency");
+        set1.setFillAlpha(110);
+        // set1.setFillColor(Color.RED);
+
+        // set the line to be drawn like this "- - - - - -"
+        // set1.enableDashedLine(10f, 5f, 0f);
+        // set1.enableDashedHighlightLine(10f, 5f, 0f);
+        set1.setColor(Color.BLACK);
+        set1.setCircleColor(Color.BLACK);
+        set1.setLineWidth(1f);
+        set1.setCircleRadius(3f);
+        set1.setDrawCircleHole(false);
+        set1.setValueTextSize(9f);
+        set1.setDrawFilled(false);
+
+        XAxis xAxis = lifeExpectancyChart2.getXAxis();
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                return lifeExpectancyChart2XAxis[(int) value % lifeExpectancyChart2XAxis.length]; // xVal is a string array
+            }
+        });
+
+        xAxis.setGranularity(1f);
+        xAxis.setDrawGridLines(false);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+        lifeExpectancyChart2.setScaleEnabled(false);
+
+        LineData data = new LineData(set1);
+
+        // set data
+        lifeExpectancyChart2.setData(data);
     }
 
     private void PopulateChart() {
@@ -700,7 +798,7 @@ public class MainActivity extends AppCompatActivity
         xAxis.setValueFormatter(new IAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
-                return lifeExpectancyChartXAxis[(int) value]; // xVal is a string array
+                return lifeExpectancyChartXAxis[(int) value % lifeExpectancyChartXAxis.length]; // xVal is a string array
             }
         });
 

@@ -28,6 +28,12 @@
 
     <style name="AppThemeNoBar.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="ToolBarStyle" parent="Theme.AppCompat">
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:textColorSecondary">@android:color/white</item>
+        <item name="actionMenuTextColor">@android:color/white</item>
+    </style>
+
     <!-- style for error in new EDITTEXT VIEW -->
     <style name="error_appearance" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/magnitude9</item>
