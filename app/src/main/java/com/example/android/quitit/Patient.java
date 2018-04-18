@@ -25,6 +25,8 @@ public class Patient implements Parcelable{
         password = in.readString();
         doctor_key = in.readString();
         entry_key = in.readString();
+        day_map_smoke = in.readHashMap(Integer.class.getClassLoader());
+        day_map_chew = in.readHashMap(Integer.class.getClassLoader());
     }
 
     public Patient(){
@@ -92,5 +94,17 @@ public class Patient implements Parcelable{
         parcel.writeString(this.password);
         parcel.writeString(this.doctor_key);
         parcel.writeString(this.entry_key);
+        parcel.writeMap(this.day_map_chew);
+        parcel.writeMap(this.day_map_smoke);
+    }
+
+    public void putInSmokeEntry(String key, int value){
+        this.day_map_smoke.put(key,value);
+        return;
+    }
+
+    public void putInChewEntry(String key, int value){
+        this.day_map_smoke.put(key,value);
+        return;
     }
 }

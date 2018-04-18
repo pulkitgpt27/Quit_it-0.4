@@ -10,21 +10,9 @@
     <string name="disease_1">Diabetes</string>
     <string name="disease_2">High BloodPressure</string>
     <string name="disease_3">Heart Problem</string>
-    <string name="disease_4">Disease 4</string>
-    <string name="disease_5">Disease5</string>
-    <string name="disease_6">Disease6</string>
-    <string name="disease_7">Disease7</string>
-    <string-array name="future_array">
-        <item>Aspiring to do a Job?</item>
-        <item>Thinking to start a family?</item>
-        <item>Item3</item>
-        <item>item4</item>
-        <item>item5</item>
-        <item>item6</item>
-        <item>item7</item>
-        <item>item8</item>
-    </string-array>
-    <string name="email">Email Address</string>
+    <string name="disease_4">Other</string>
+    <string name="disease_5">None</string>
+        <string name="email">Email Address</string>
     <string name="contact_number">Contact number</string>
 
     <string name="name">Name</string>
@@ -95,6 +83,60 @@
     <string name="save">Save</string>
     <string name="dialogue_hint1">Todays Cigarette Intake</string>
     <string name="dialogue_hint2">Todays Tobacco Intake</string>
+    <string name="what_do_you_consume">What do you consume?</string>
+    <string name="how_long_have_you_been_smoking">How long have you been smoking?</string>
+    <string name="years">Years</string>
+    <string name="months">Months</string>
+    <string name="in_rupees">In Rupees</string>
+    <string name="tobacco_chewed_in_a_day">Tobacco chewed in a day?</string>
+    <string name="uploading_your_response">Uploading your response.</string>
+    <string name="any_medical_history">Any Medical History :</string>
+    <string name="add_an_image_of_your_face">Add an image of Your Face.</string>
+    <string name="sex_colon">Sex :</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="other_sex">Other</string>
+    <string name="married">Married</string>
+    <string name="unmarried">Unmarried</string>
+    <string name="soon_to_be_married">Soon to be married</string>
+    <string name="fill_more">Fill More</string>
+    <string name="do_you_consume_tobacco_within_30_mins_after_waking_up">Do you consume Tobacco within 30 mins after waking up?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="any_one_in_your_family_consumes_tobacco">Any one in your family consumes Tobacco?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="how_did_you_start_this_habbit">How did you start this habbit?</string>
+    <string name="with_friends">With Friends</string>
+    <string name="for_hunger">For Hunger</string>
+    <string name="social_issues">Social Issues</string>
+    <string name="other">Other</string>
+    <string name="any_other_habit">Any Other Habit?</string>
+    <string name="drugs">Drugs</string>
+    <string name="alchohol">Alchohol</string>
+    <string name="aware_of_harms_from_tobacco">Aware of harms from Tobacco?</string>
+    <string name="which_of_the_following_diseases_are_you_aware_of_being_associated_with_tobacco_consumption">Which of the following diseases are you aware of being associated with Tobacco Consumption?</string>
+    <string name="cancer">Cancer</string>
+    <string name="lung_problems">Lung Problems</string>
+    <string name="breathing_problems">Breathing Problems</string>
+    <string name="tb">TB</string>
+    <string name="teeth_stains">Teeth Stains</string>
+    <string name="bad_breath_smelly_mouth">Bad breath/ Smelly mouth</string>
+    <string name="diabetes">Diabetes</string>
+    <string name="heart_related_problems">Heart Related Problems</string>
+    <string name="gum_problems">Gum Problems</string>
+    <string name="problems_related_to_reproduction">Problems related to Reproduction</string>
+    <string name="want_to_quit_tobacco">Want to quit Tobacco?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="any_particular_reason_behind_quitting">Any Particular Reason behind quitting?</string>
+    <string name="health">Health</string>
+    <string name="for_family">For Family</string>
+    <string name="because_its_a_money_waste">Because its a money waste</string>
+    <string name="ever_tried_quitting_before">Ever tried quitting before?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="when_do_you_usually_have_a_craving">When do you usually have a craving?</string>
 
 
 </resources>

@@ -52,6 +52,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import static android.view.View.GONE;
 import static java.lang.Integer.parseInt;
@@ -820,6 +821,7 @@ public class NewEntryActivity extends AppCompatActivity {
                                             final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                             uniqueKey[0] = databaseReference.getKey();
                                             patientOfEntry.setEntry_key(uniqueKey[0]);
+
                                             mPatientUsersDatabaseReference.child(user.getUid()).setValue(patientOfEntry, new DatabaseReference.CompletionListener() {
                                                 @Override
                                                 public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
@@ -848,6 +850,14 @@ public class NewEntryActivity extends AppCompatActivity {
                                     final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     uniqueKey[0] = databaseReference.getKey();
                                     patientOfEntry.setEntry_key(uniqueKey[0]);
+                                    Date currentDate = new Date();
+                                    String formattedDate = new SimpleDateFormat("dd-MM-yyyy").format(currentDate);
+                                    if(!patient.getSmokeText().isEmpty()){
+                                        patientOfEntry.putInSmokeEntry(formattedDate, patient.getSmoke_freq());
+                                    }
+                                    if(!patient.getChewText().isEmpty()){
+                                        patientOfEntry.putInChewEntry(formattedDate, patient.getChew_freq());
+                                    }
                                     mPatientUsersDatabaseReference.child(user.getUid()).setValue(patientOfEntry, new DatabaseReference.CompletionListener() {
                                         @Override
                                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
