@@ -2,7 +2,6 @@
 
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
@@ -25,7 +24,7 @@
             android:id="@+id/progress_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Uploading your response."
+            android:text="@string/uploading_your_response"
             android:textSize="12sp"
             android:textColor="@android:color/white"
             android:layout_gravity="center_horizontal"/>
@@ -43,10 +42,11 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <ImageView
+                    android:contentDescription="@string/add_an_image_of_your_face"
                     android:layout_gravity="center"
                     android:id="@+id/patientImageView"
                     android:layout_width="200dp"
@@ -55,6 +55,7 @@
                     android:src="@drawable/addimagecamera"
                     android:adjustViewBounds="true"
                     android:scaleType="fitCenter"
+                    android:padding= "50dp"
 					/>
 
                 <android.support.design.widget.TextInputLayout
@@ -105,7 +106,7 @@
                         android:layout_gravity="center"
                         android:layout_marginTop="6dp"
                         android:layout_weight="1"
-                        android:text="Sex :"
+                        android:text="@string/sex_colon"
                         android:textSize="18sp"
                         android:textStyle="italic" />
 
@@ -119,26 +120,29 @@
 
                         <RadioButton
                             android:id="@+id/sex_male"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="6dp"
-                            android:text="Male" />
+                            android:layout_marginTop="4dp"
+                            android:text="@string/male" />
 
                         <RadioButton
                             android:id="@+id/sex_female"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="6dp"
-                            android:layout_marginTop="6dp"
-                            android:text="Female" />
+                            android:layout_marginLeft="4dp"
+                            android:layout_marginTop="4dp"
+                            android:text="@string/female" />
 
                         <RadioButton
                             android:id="@+id/sex_other"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="6dp"
-                            android:layout_marginTop="6dp"
-                            android:text="Other" />
+                            android:layout_marginLeft="4dp"
+                            android:layout_marginTop="4dp"
+                            android:text="@string/other_sex" />
                     </RadioGroup>
 
                 </LinearLayout>
@@ -170,6 +174,7 @@
                     app:errorTextAppearance="@style/error_appearance">
 
                     <EditText
+                        android:inputType="textEmailAddress"
                         android:id="@+id/email_edit_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -187,6 +192,7 @@
                     app:errorTextAppearance="@style/error_appearance">
 
                     <EditText
+                        android:inputType="text"
                         android:id="@+id/address_edit_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -209,7 +215,7 @@
                         android:layout_gravity="top"
                         android:layout_marginTop="6dp"
                         android:layout_weight="1"
-                        android:text="Any Medical History :"
+                        android:text="@string/any_medical_history"
                         android:textSize="18sp"
                         android:textStyle="italic" />
 
@@ -252,20 +258,12 @@
                             android:text="@string/disease_4" />
 
                         <CheckBox
-                            android:id="@+id/disease_5"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="6dp"
-                            android:checked="false"
-                            android:text="@string/disease_5" />
-
-                        <CheckBox
                             android:id="@+id/no_disease"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
                             android:checked="false"
-                            android:text="Other/None" />
+                            android:text="@string/disease_5" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -283,7 +281,7 @@
                         android:layout_gravity="top"
                         android:layout_marginTop="6dp"
                         android:layout_weight="1"
-                        android:text="What do you consume? "
+                        android:text="@string/what_do_you_consume"
                         android:textSize="18sp"
                         android:textStyle="italic" />
 
@@ -327,7 +325,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:text="How long have you been smoking?"
+                        android:text="@string/how_long_have_you_been_smoking"
                         android:textSize="18sp"
                         android:visibility="gone" />
 
@@ -342,7 +340,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:hint="Years"
+                            android:hint="@string/years"
                             android:inputType="number"
                             android:visibility="gone" />
 
@@ -351,7 +349,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:hint="Months"
+                            android:hint="@string/months"
                             android:inputType="number"
                             android:visibility="gone" />
                     </LinearLayout>
@@ -374,7 +372,8 @@
                         android:layout_marginBottom="6dp"
                         android:hint="@string/cigarettes_one_day"
                         android:inputType="number"
-                        android:paddingLeft="24dp"
+                        android:paddingStart="24dp"
+                        android:paddingEnd="0dp"
                         android:visibility="gone" />
 
                     <TextView
@@ -392,9 +391,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:hint="In Rupees"
+                        android:hint="@string/in_rupees"
                         android:inputType="number"
-                        android:paddingLeft="24dp"
+                        android:paddingStart="24dp"
+                        android:paddingEnd="0dp"
                         android:visibility="gone" />
                 </LinearLayout>
 
@@ -428,7 +428,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:hint="Years"
+                            android:hint="@string/years"
                             android:inputType="number"
                             android:visibility="gone" />
 
@@ -437,7 +437,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:hint="Months"
+                            android:hint="@string/months"
                             android:inputType="number"
                             android:visibility="gone" />
                     </LinearLayout>
@@ -458,7 +458,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="6dp"
-                        android:hint="Tobacco chewed in a day?"
+                        android:hint="@string/tobacco_chewed_in_a_day"
                         android:inputType="number"
                         android:paddingLeft="24dp"
                         android:visibility="gone" />
@@ -478,7 +478,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:hint="In Rupees"
+                        android:hint="@string/in_rupees"
                         android:inputType="number"
                         android:paddingLeft="24dp"
                         android:visibility="gone" />
@@ -514,21 +514,21 @@
                             android:id="@+id/m_married"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Married" />
+                            android:text="@string/married" />
 
                         <RadioButton
                             android:id="@+id/m_unmarried"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
-                            android:text="Unmarried" />
+                            android:text="@string/unmarried" />
 
                         <RadioButton
                             android:id="@+id/m_soon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
-                            android:text="Soon to be married" />
+                            android:text="@string/soon_to_be_married" />
                     </RadioGroup>
                 </LinearLayout>
 
@@ -578,9 +578,9 @@
                         android:id="@+id/mySwitch"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:layout_alignParentTop="true"
-                        android:text="Fill More   "
+                        android:text="@string/fill_more"
                         android:textSize="18sp" />
                 </RelativeLayout>
 
@@ -600,7 +600,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="top"
                         android:layout_marginBottom="10dp"
-                        android:text="Do you consume Tobacco within 30 mins after waking up?"
+                        android:text="@string/do_you_consume_tobacco_within_30_mins_after_waking_up"
                         android:textSize="18sp"
                         android:textStyle="italic" />
 
@@ -622,7 +622,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="6dp"
-                                android:text="Yes" />
+                                android:text="@string/yes" />
 
                             <RadioButton
                                 android:id="@+id/no_morning"
@@ -630,7 +630,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="6dp"
                                 android:layout_marginTop="6dp"
-                                android:text="No" />
+                                android:text="@string/no" />
                         </RadioGroup>
                     </LinearLayout>
                 </LinearLayout>
@@ -651,7 +651,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="top"
                         android:layout_marginBottom="10dp"
-                        android:text="Any one in your family consumes Tobacco?"
+                        android:text="@string/any_one_in_your_family_consumes_tobacco"
                         android:textSize="18sp"
                         android:textStyle="italic" />
 
@@ -673,7 +673,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="6dp"
-                                android:text="Yes" />
+                                android:text="@string/yes" />
 
                             <RadioButton
                                 android:id="@+id/no_family"
@@ -681,7 +681,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="6dp"
                                 android:layout_marginTop="6dp"
-                                android:text="No" />
+                                android:text="@string/no" />
                         </RadioGroup>
                     </LinearLayout>
                 </LinearLayout>
@@ -703,7 +703,7 @@
                         android:layout_gravity="top"
                         android:layout_marginTop="6dp"
                         android:layout_weight="1"
-                        android:text="How did you start consuming?"
+                        android:text="@string/how_did_you_start_this_habbit"
                         android:textSize="18sp"
                         android:textStyle="italic" />
 
@@ -718,7 +718,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:checked="false"
-                            android:text="With Friends" />
+                            android:text="@string/with_friends" />
 
                         <CheckBox
                             android:id="@+id/habit_started_for_hunger"
@@ -726,7 +726,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
                             android:checked="false"
-                            android:text="For Hunger" />
+                            android:text="@string/for_hunger" />
 
                         <CheckBox
                             android:id="@+id/habbit_started_social_issues"
@@ -734,7 +734,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
                             android:checked="false"
-                            android:text="Social Issues" />
+                            android:text="@string/social_issues" />
 
                         <CheckBox
                             android:id="@+id/habit_started_other"
@@ -742,7 +742,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
                             android:checked="false"
-                            android:text="Other" />
+                            android:text="@string/other" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -762,7 +762,7 @@
                         android:layout_gravity="top"
                         android:layout_marginTop="6dp"
                         android:layout_weight="1"
-                        android:text="Any Other Habit?"
+                        android:text="@string/any_other_habit"
                         android:textSize="18sp"
                         android:textStyle="italic" />
 
@@ -777,7 +777,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:checked="false"
-                            android:text="Drugs" />
+                            android:text="@string/drugs" />
 
                         <CheckBox
                             android:id="@+id/alchohol_habit"
@@ -785,7 +785,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
                             android:checked="false"
-                            android:text="Alchohol" />
+                            android:text="@string/alchohol" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -805,7 +805,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="top"
                         android:layout_marginBottom="10dp"
-                        android:text="Aware of harms from Tobacco?"
+                        android:text="@string/aware_of_harms_from_tobacco"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -826,7 +826,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="6dp"
-                                android:text="Yes" />
+                                android:text="@string/yes" />
 
                             <RadioButton
                                 android:id="@+id/no_aware"
@@ -834,7 +834,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="6dp"
                                 android:layout_marginTop="6dp"
-                                android:text="No" />
+                                android:text="@string/no" />
                         </RadioGroup>
                     </LinearLayout>
                 </LinearLayout>
@@ -855,7 +855,7 @@
                         android:layout_gravity="top"
                         android:layout_marginTop="6dp"
                         android:layout_weight="1"
-                        android:text="Which of the following diseases are you aware of being associated with Tobacco Consumption?"
+                        android:text="@string/which_of_the_following_diseases_are_you_aware_of_being_associated_with_tobacco_consumption"
                         android:textSize="18sp"
                         android:textStyle="italic" />
 
@@ -870,7 +870,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:checked="false"
-                            android:text="Cancer" />
+                            android:text="@string/cancer" />
 
                         <CheckBox
                             android:id="@+id/disease_aware_2"
@@ -878,7 +878,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
                             android:checked="false"
-                            android:text="Lung Problems" />
+                            android:text="@string/lung_problems" />
 
                         <CheckBox
                             android:id="@+id/disease_aware_3"
@@ -886,7 +886,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
                             android:checked="false"
-                            android:text="Breathing Problems" />
+                            android:text="@string/breathing_problems" />
 
                         <CheckBox
                             android:id="@+id/disease_aware_4"
@@ -894,7 +894,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
                             android:checked="false"
-                            android:text="T.B." />
+                            android:text="@string/tb" />
 
                         <CheckBox
                             android:id="@+id/disease_aware_5"
@@ -902,7 +902,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
                             android:checked="false"
-                            android:text="Teeth Stains" />
+                            android:text="@string/teeth_stains" />
 
                         <CheckBox
                             android:id="@+id/disease_aware_6"
@@ -910,7 +910,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
                             android:checked="false"
-                            android:text="Bad breath/ Smelly mouth" />
+                            android:text="@string/bad_breath_smelly_mouth" />
 
                         <CheckBox
                             android:id="@+id/disease_aware_7"
@@ -918,7 +918,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
                             android:checked="false"
-                            android:text="Diabetes" />
+                            android:text="@string/diabetes" />
 
                         <CheckBox
                             android:id="@+id/disease_aware_8"
@@ -926,7 +926,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
                             android:checked="false"
-                            android:text="Heart Related Problems" />
+                            android:text="@string/heart_related_problems" />
 
                         <CheckBox
                             android:id="@+id/disease_aware_9"
@@ -934,7 +934,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
                             android:checked="false"
-                            android:text="Gum Problems" />
+                            android:text="@string/gum_problems" />
 
                         <CheckBox
                             android:id="@+id/disease_aware_10"
@@ -942,7 +942,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
                             android:checked="false"
-                            android:text="Problems related to Reproduction" />
+                            android:text="@string/problems_related_to_reproduction" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -962,7 +962,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="top"
                         android:layout_marginBottom="10dp"
-                        android:text="Want to quit Tobacco?"
+                        android:text="@string/want_to_quit_tobacco"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -985,7 +985,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="6dp"
-                                android:text="Yes" />
+                                android:text="@string/yes" />
 
                             <RadioButton
                                 android:id="@+id/no_quitting"
@@ -993,7 +993,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="6dp"
                                 android:layout_marginTop="6dp"
-                                android:text="No" />
+                                android:text="@string/no" />
                         </RadioGroup>
                     </LinearLayout>
                 </LinearLayout>
@@ -1014,7 +1014,7 @@
                         android:layout_gravity="top"
                         android:layout_marginTop="6dp"
                         android:layout_weight="1"
-                        android:text="Any Particular Reason behind quitting?"
+                        android:text="@string/any_particular_reason_behind_quitting"
                         android:textSize="18sp"
                         android:textStyle="italic" />
 
@@ -1029,7 +1029,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:checked="false"
-                            android:text="Health" />
+                            android:text="@string/health" />
 
                         <CheckBox
                             android:id="@+id/quitting_2"
@@ -1037,7 +1037,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
                             android:checked="false"
-                            android:text="For Family" />
+                            android:text="@string/for_family" />
 
                         <CheckBox
                             android:id="@+id/quitting_3"
@@ -1045,7 +1045,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
                             android:checked="false"
-                            android:text="Because its a money waste" />
+                            android:text="@string/because_its_a_money_waste" />
 
                         <CheckBox
                             android:id="@+id/quitting_4"
@@ -1053,7 +1053,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
                             android:checked="false"
-                            android:text="Other" />
+                            android:text="@string/other" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -1073,7 +1073,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="top"
                         android:layout_marginBottom="10dp"
-                        android:text="Ever tried quitting before?"
+                        android:text="@string/ever_tried_quitting_before"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -1095,7 +1095,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="6dp"
-                                android:text="Yes" />
+                                android:text="@string/yes" />
 
                             <RadioButton
                                 android:id="@+id/no_tred_quitting"
@@ -1103,7 +1103,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="6dp"
                                 android:layout_marginTop="6dp"
-                                android:text="No" />
+                                android:text="@string/no" />
                         </RadioGroup>
                     </LinearLayout>
                 </LinearLayout>
@@ -1124,7 +1124,7 @@
                         android:layout_gravity="top"
                         android:layout_marginTop="6dp"
                         android:layout_weight="1"
-                        android:text="When do you usually have a craving?"
+                        android:text="@string/when_do_you_usually_have_a_craving"
                         android:textSize="18sp"
                         android:textStyle="italic" />
 
