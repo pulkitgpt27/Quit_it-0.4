@@ -57,6 +57,8 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import org.w3c.dom.Text;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -109,13 +111,17 @@ public class MainActivity extends AppCompatActivity
     private  SearchView search_icon;
     private MenuInflater inflater;
     private DrawerLayout drawer;
-
+    private  TextView smoke_tv;
+    private  TextView chew_tv;
     public static String currentdoctorKey;
     private GoogleApiClient mGoogleApiClient;
     private String USER;
     private LineChart lifeExpectancyChart;
     private String lifeExpectancyChartXAxis[];
     private ArrayList<com.github.mikephil.charting.data.Entry> lifeExpectancyChartYAxis;
+    private TextView money_tv;
+    private TextView life_tv;
+    private TextView sal_tv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -214,6 +220,23 @@ public class MainActivity extends AppCompatActivity
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY,broadcast);
         //***************
 
+        TextView cur_month_tv=(TextView) findViewById(R.id.month_name_tv);
+        Calendar cal=Calendar.getInstance();
+        SimpleDateFormat month_date = new SimpleDateFormat("MMMM");
+        String month_name = month_date.format(cal.getTime());
+        cur_month_tv.setText(month_name);
+
+        smoke_tv = (TextView) findViewById(R.id.smoke_avg_tv);
+        chew_tv = (TextView) findViewById(R.id.chew_avg_tv);
+        money_tv =(TextView) findViewById(R.id.money_txt);
+        life_tv = (TextView) findViewById(R.id.life_txt);
+        sal_tv = (TextView) findViewById(R.id.sal_txt);
+
+        sal_tv.setVisibility(View.GONE);
+        life_tv.setVisibility(View.GONE);
+        smoke_tv.setVisibility(View.GONE);
+        chew_tv.setVisibility(View.GONE);
+        money_tv.setVisibility(View.GONE);
         firebasePatientDataFetch();
         list_of_all_Enteries.setVisibility(View.GONE);
         patient_home.setVisibility(View.VISIBLE);
@@ -505,6 +528,116 @@ public class MainActivity extends AppCompatActivity
             public void onDataChange(DataSnapshot dataSnapshot) {
                 patient = dataSnapshot.getValue(Patient.class);
                 currentdoctorKey = patient.getDoctor_key();
+                //getting entry
+                if(patient!=null) {
+                    FirebaseDatabase.getInstance().getReference().child("doctors").child(currentdoctorKey).child("patients").child(patient.getEntry_key()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            //for average
+                            Entry entry = dataSnapshot.getValue(Entry.class);
+                            if (entry != null) {
+                                if (!entry.getSmokeText().equals("")) {
+                                    if (patient.getDay_map_smoke().size() != 0) {
+                                        smoke_tv.setVisibility(View.VISIBLE);
+                                        float avg = 0;
+                                        int sum = 0;
+                                        Set<String> keys = patient.getDay_map_smoke().keySet();
+                                        for (String key : keys) {
+                                            sum += patient.getDay_map_smoke().get(key);
+                                        }
+                                        avg = (float) sum / patient.getDay_map_smoke().size();
+                                        String s = String.format("%.2f", avg);
+                                        smoke_tv.setText("" + s +" Cigs/day");
+                                    }
+                                } else {
+                                    smoke_tv.setVisibility(View.GONE);
+                                }
+                                if (!entry.getChewText().equals("")) {
+                                    if (!entry.getChewText().equals("")) {
+                                        if (patient.getDay_map_chew().size() != 0) {
+                                            chew_tv.setVisibility(View.VISIBLE);
+                                            float avg = 0;
+                                            int sum = 0;
+                                            Set<String> keys = patient.getDay_map_chew().keySet();
+                                            for (String key : keys) {
+                                                sum += patient.getDay_map_smoke().get(key);
+                                            }
+                                            avg = sum / patient.getDay_map_smoke().size();
+                                            String s = String.format("%.2f", avg);
+                                            chew_tv.setText(""+avg + "packs/day");
+                                        }
+                                    }
+                                }else {
+                                    chew_tv.setVisibility(View.GONE);
+                                }
+                            }
+                            //end
+
+                            //for money
+                            if(entry!=null)
+                            {
+                                if(!entry.getSmokeText().equals(""))
+                                {
+                                    money_tv.setVisibility(View.VISIBLE);
+                                    float total_money=0;
+
+                                    if (patient.getDay_map_smoke().size() != 0) {
+
+                                        Set<String> keys = patient.getDay_map_smoke().keySet();
+                                        for (String key : keys) {
+                                            total_money += (patient.getDay_map_smoke().get(key)*entry.getSmoke_cost());
+                                        }
+                                    }
+                                    money_tv.setText(""+total_money);
+                                }
+                            }
+                            //end
+                            //for minutes lost
+                            if(entry!=null)
+                            {
+                                if (!entry.getSmokeText().equals("")) {
+                                    life_tv.setVisibility(View.VISIBLE);
+                                    if (patient.getDay_map_smoke().size() != 0) {
+                                        smoke_tv.setVisibility(View.VISIBLE);
+                                        int sum = 0;
+                                        Set<String> keys = patient.getDay_map_smoke().keySet();
+                                        for (String key : keys) {
+                                            sum += patient.getDay_map_smoke().get(key);
+                                        }
+                                        life_tv.setText("" + (sum*9)+" mins");
+                                    }
+                                }
+                            }
+                            //end
+
+                            //for salary
+                            if(entry!=null)
+                            {
+                                if (!entry.getSmokeText().equals("")) {
+                                    if (patient.getDay_map_smoke().size() != 0) {
+                                        sal_tv.setVisibility(View.VISIBLE);
+                                        float spent = 0;
+                                        Set<String> keys = patient.getDay_map_smoke().keySet();
+                                        for (String key : keys) {
+                                            spent += (float)(patient.getDay_map_smoke().get(key)*entry.getSmoke_cost());
+                                        }
+                                        float earn=(float)(entry.getSalary());
+                                        float fraction=(float)(spent/earn)*100;
+                                        String s = String.format("%.2f", fraction);
+                                        sal_tv.setText("" +s+" %");
+                                    }
+                                }
+                            }
+                            //end
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+                //by pulkit end
                 spinner.setVisibility(View.GONE);
 
                 if(patient.getDay_map_smoke().size() != 0) {
