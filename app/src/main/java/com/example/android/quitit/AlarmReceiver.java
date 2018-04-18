@@ -7,13 +7,19 @@ import android.app.TaskStackBuilder;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
 
 /**
  * Created by pulkit gupta on 23/03/2018.
@@ -36,7 +42,8 @@ public class AlarmReceiver extends BroadcastReceiver{
         final String key=user.getUid();
         //for getting patient
         if(user!=null) {
-            FirebaseDatabase.getInstance().getReference().child("patients").child(key).addValueEventListener(new ValueEventListener() {
+
+            FirebaseDatabase.getInstance().getReference().child("patients").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     current_patient = dataSnapshot.getValue(Patient.class);
@@ -47,7 +54,45 @@ public class AlarmReceiver extends BroadcastReceiver{
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 current_entry = dataSnapshot.getValue(Entry.class);
+                                //for transfer of data
+                                if(isFirstDayofMonth(Calendar.getInstance()))
+                                {
+                                    Calendar cal=Calendar.getInstance();
+                                    SimpleDateFormat month_date = new SimpleDateFormat("MMMM");
+                                    cal.add(Calendar.MONTH,-1);
+                                    String month_name = month_date.format(cal.getTime());
 
+                                    Patient temp=new Patient();
+                                    if(!current_entry.getSmokeText().equals(""))
+                                        temp.setDay_map_smoke(current_patient.getDay_map_smoke());
+                                    if(!current_entry.getChewText().equals(""))
+                                        temp.setDay_map_chew(current_patient.getDay_map_chew());
+                                    final DatabaseReference mPatientdatabaseReference = FirebaseDatabase.getInstance().getReference().child("patients").child(key);
+
+                                    mPatientdatabaseReference.child("monthlydata").child(month_name).setValue(temp, new DatabaseReference.CompletionListener() {
+                                        @Override
+                                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                            if(!current_entry.getSmokeText().equals(""))
+                                                mPatientdatabaseReference.child("day_map_smoke").setValue(null, new DatabaseReference.CompletionListener() {
+                                                    @Override
+                                                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+
+                                                    }
+                                                });
+                                            if(!current_entry.getChewText().equals(""))
+                                                mPatientdatabaseReference.child("day_map_chew").setValue(null, new DatabaseReference.CompletionListener() {
+                                                    @Override
+                                                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+
+                                                    }
+                                                });
+                                        }
+                                    });
+
+
+
+                                }
+                                //end
                                 Intent notificationIntent = new Intent(context, NotificationActivity.class);
                                 notificationIntent.putExtra("entry", current_entry);
 
@@ -91,6 +136,15 @@ public class AlarmReceiver extends BroadcastReceiver{
         else{
             return;
         }
+
+    }
+
+    public boolean isFirstDayofMonth(Calendar calender){
+
+        if(calender == null)
+            return false;
+        int dayOfMonth = calender.get(Calendar.DAY_OF_MONTH);
+        return (dayOfMonth == 1);
     }
 
 }

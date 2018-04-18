@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,6 +18,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
@@ -70,42 +72,62 @@ public class NotificationActivity extends Activity {
                                     if((updated_val_smoke!=null && !updated_val_smoke.getText().toString().isEmpty()) || (updated_val_chew!=null && !updated_val_chew.getText().toString().isEmpty()))
                                     {
                                         final String key=user.getUid();
-                                        FirebaseDatabase.getInstance().getReference().child("patients").child(key).addValueEventListener(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                                current_patient = dataSnapshot.getValue(Patient.class);
-                                                if(current_patient!=null)
-                                                {
+                                        if(!current_entry.getSmokeText().equals("")) {
+                                            FirebaseDatabase.getInstance().getReference().child("patients").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    current_patient = dataSnapshot.getValue(Patient.class);
+                                                    if (current_patient != null) {
 
-                                                    Date cDate = new Date();
-                                                    String fDate = new SimpleDateFormat("dd-MM-yyyy").format(cDate);
-                                                    if(updated_val_smoke.getVisibility()==View.VISIBLE && !updated_val_smoke.getText().equals(""))
-                                                        current_patient.getDay_map_smoke().put(fDate,Integer.parseInt(String.valueOf(updated_val_smoke.getText())));
-                                                    if(updated_val_chew.getVisibility()==View.VISIBLE && !updated_val_chew.getText().equals(""))
-                                                        current_patient.getDay_map_chew().put(fDate,Integer.parseInt(String.valueOf(updated_val_chew.getText())));
+                                                        Date cDate = new Date();
+                                                        String fDate = new SimpleDateFormat("dd-MM-yyyy").format(cDate);
+                                                        if (updated_val_smoke.getVisibility() == View.VISIBLE && !updated_val_smoke.getText().equals("")){
+                                                            current_patient.getDay_map_smoke().put(fDate, Integer.parseInt(String.valueOf(updated_val_smoke.getText())));
+                                                            //Patient temp=new Patient();
+                                                            //temp.setDay_map_smoke(current_patient.getDay_map_smoke());
+                                                            FirebaseDatabase.getInstance().getReference().child("patients").child(key).child("day_map_smoke").child(fDate).setValue(Integer.parseInt(String.valueOf(updated_val_smoke.getText())), new DatabaseReference.CompletionListener() {
+                                                                @Override
+                                                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                                                    Log.e("hogaya","hogaya");
+                                                                }
+                                                            });
+                                                        }
+                                                        if (updated_val_chew.getVisibility() == View.VISIBLE && !updated_val_chew.getText().equals("")) {
+                                                            current_patient.getDay_map_chew().put(fDate, Integer.parseInt(String.valueOf(updated_val_chew.getText())));
+                                                            Patient temp=new Patient();
+                                                            temp.setDay_map_chew(current_patient.getDay_map_chew());
+                                                            FirebaseDatabase.getInstance().getReference().child("patients").child(key).child("day_map_chew").child(fDate).setValue(Integer.parseInt(String.valueOf(updated_val_chew.getText())), new DatabaseReference.CompletionListener() {
+                                                                @Override
+                                                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
 
-                                                    FirebaseMethods.updatePatient2(key,current_patient);
-                                                    Toast.makeText(NotificationActivity.this,"Value Updated SuccessFully",Toast.LENGTH_SHORT).show();
-                                                    dialog.dismiss();
-                                                    Intent intent = new Intent(NotificationActivity.this, MainActivity.class);
-                                                    intent.putExtra("displayName",current_patient.getUsername());
-                                                    intent.putExtra("displayEmail",current_patient.getEmailId());
-                                                    String displayImage = null;
-                                                    intent.putExtra("displayImage",displayImage);
-                                                    intent.putExtra("CurrentPatient",current_patient);
-                                                    startActivity(intent);
-                                                    finish();
-                                                    return;
+                                                                }
+                                                            });
+                                                        }
+
+                                                        //FirebaseMethods.updatePatient2(key, current_patient);
+                                                        Toast.makeText(NotificationActivity.this, "Value Updated SuccessFully", Toast.LENGTH_SHORT).show();
+                                                        dialog.dismiss();
+                                                        Intent intent = new Intent(NotificationActivity.this, MainActivity.class);
+                                                        intent.putExtra("displayName", current_patient.getUsername());
+                                                        intent.putExtra("displayEmail", current_patient.getEmailId());
+                                                        String displayImage = null;
+                                                        intent.putExtra("displayImage", displayImage);
+                                                        intent.putExtra("CurrentPatient", current_patient);
+                                                        startActivity(intent);
+                                                        finish();
+                                                        return;
+
+                                                    }
 
                                                 }
 
-                                            }
+                                                @Override
+                                                public void onCancelled(DatabaseError databaseError) {
 
-                                            @Override
-                                            public void onCancelled(DatabaseError databaseError) {
+                                                }
+                                            });
+                                        }
 
-                                            }
-                                        });
 
 
                                     }else
