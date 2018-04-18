@@ -221,6 +221,7 @@ public class MainActivity extends AppCompatActivity
         //***************
 
         TextView cur_month_tv=(TextView) findViewById(R.id.month_name_tv);
+
         Calendar cal=Calendar.getInstance();
         SimpleDateFormat month_date = new SimpleDateFormat("MMMM");
         String month_name = month_date.format(cal.getTime());
@@ -237,7 +238,9 @@ public class MainActivity extends AppCompatActivity
         smoke_tv.setVisibility(View.GONE);
         chew_tv.setVisibility(View.GONE);
         money_tv.setVisibility(View.GONE);
+
         firebasePatientDataFetch();
+
         list_of_all_Enteries.setVisibility(View.GONE);
         patient_home.setVisibility(View.VISIBLE);
         doctorAnalysis.setVisible(false);
@@ -526,11 +529,25 @@ public class MainActivity extends AppCompatActivity
         FirebaseDatabase.getInstance().getReference().child("patients").child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Log.d("Hello","for debug");
                 patient = dataSnapshot.getValue(Patient.class);
                 currentdoctorKey = patient.getDoctor_key();
                 //getting entry
+                dataSnapshot.getValue();
+                FirebaseDatabase.getInstance().getReference().child("patients").child(mAuth.getCurrentUser().getUid()).child("monthlydata").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        HashMap<String, Object> X = (HashMap<String, Object>) dataSnapshot.getValue();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
                 if(patient!=null) {
-                    FirebaseDatabase.getInstance().getReference().child("doctors").child(currentdoctorKey).child("patients").child(patient.getEntry_key()).addValueEventListener(new ValueEventListener() {
+                    FirebaseDatabase.getInstance().getReference().child("doctors").child(currentdoctorKey).child("patients").child(patient.getEntry_key()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             //for average
@@ -560,11 +577,11 @@ public class MainActivity extends AppCompatActivity
                                             int sum = 0;
                                             Set<String> keys = patient.getDay_map_chew().keySet();
                                             for (String key : keys) {
-                                                sum += patient.getDay_map_smoke().get(key);
+                                                sum += patient.getDay_map_chew().get(key);
                                             }
-                                            avg = sum / patient.getDay_map_smoke().size();
+                                            avg = sum / patient.getDay_map_chew().size();
                                             String s = String.format("%.2f", avg);
-                                            chew_tv.setText(""+avg + "packs/day");
+                                            chew_tv.setText(""+s + " packs/day");
                                         }
                                     }
                                 }else {
@@ -700,7 +717,7 @@ public class MainActivity extends AppCompatActivity
         xAxis.setValueFormatter(new IAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
-                return lifeExpectancyChartXAxis[(int) value]; // xVal is a string array
+                return lifeExpectancyChartXAxis[(int) value%lifeExpectancyChartXAxis.length]; // xVal is a string array
             }
         });
 
