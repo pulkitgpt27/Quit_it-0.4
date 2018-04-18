@@ -234,7 +234,6 @@
                     android:textAllCaps="false"
                     android:background="@color/colorPrimaryEQ"
                     android:textColor="@android:color/white"
-                    android:textStyle="bold"
                     />
 
                 <Button
@@ -251,8 +250,7 @@
                     android:textAllCaps="false"
                     android:background="@color/colorPrimaryEQ"
                     android:textColor="@android:color/white"
-                    android:text="Send Message"
-                    android:textStyle="bold"/>
+                    android:text="Send Message" />
 
             </LinearLayout>
         </LinearLayout>
