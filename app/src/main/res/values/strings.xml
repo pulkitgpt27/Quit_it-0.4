@@ -104,8 +104,6 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="any_one_in_your_family_consumes_tobacco">Any one in your family consumes Tobacco?</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
     <string name="how_did_you_start_this_habbit">How did you start this habbit?</string>
     <string name="with_friends">With Friends</string>
     <string name="for_hunger">For Hunger</string>
@@ -127,15 +125,11 @@
     <string name="gum_problems">Gum Problems</string>
     <string name="problems_related_to_reproduction">Problems related to Reproduction</string>
     <string name="want_to_quit_tobacco">Want to quit Tobacco?</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
     <string name="any_particular_reason_behind_quitting">Any Particular Reason behind quitting?</string>
     <string name="health">Health</string>
     <string name="for_family">For Family</string>
     <string name="because_its_a_money_waste">Because its a money waste</string>
     <string name="ever_tried_quitting_before">Ever tried quitting before?</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
     <string name="when_do_you_usually_have_a_craving">When do you usually have a craving?</string>
 
 
