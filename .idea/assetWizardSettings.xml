@@ -36,8 +36,8 @@
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
                                       <entry key="iconShape" value="NONE" />
-                                      <entry key="imageAsset" value="C:\Users\Ayush vaid\Downloads\icons8-rupee-60.png" />
-                                      <entry key="outputName" value="ic_currency" />
+                                      <entry key="imageAsset" value="C:\Users\Ayush vaid\Pictures\Quit-Clinics-logo.jpg" />
+                                      <entry key="outputName" value="icon" />
                                     </map>
                                   </option>
                                 </PersistentState>

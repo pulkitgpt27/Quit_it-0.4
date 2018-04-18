@@ -334,7 +334,7 @@ public class MainActivity extends AppCompatActivity
                 else{
                     month_name = month_date.format(cal.getTime());
                     FirebaseDatabase.getInstance().getReference().child("doctors").child(patient.getDoctor_key()).child("patients").child(patient.getEntry_key()).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
+                        @Override-
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             Entry ObjEntry = dataSnapshot.getValue(Entry.class);
                             if(!ObjEntry.getSmokeText().isEmpty()) {
