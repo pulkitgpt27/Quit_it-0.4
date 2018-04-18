@@ -826,10 +826,10 @@ public class NewEntryActivity extends AppCompatActivity {
                                             patientOfEntry.setEntry_key(uniqueKey[0]);
                                             Date currentDate = new Date();
                                             String formattedDate = new SimpleDateFormat("dd-MM-yyyy").format(currentDate);
-                                            if(!patient.getSmokeText().isEmpty()){
+                                            if(!patient.getSmokeText().equals("")){
                                                 patientOfEntry.putInSmokeEntry(formattedDate, patient.getSmoke_freq());
                                             }
-                                            if(!patient.getChewText().isEmpty()){
+                                            if(!patient.getChewText().equals("")){
                                                 patientOfEntry.putInChewEntry(formattedDate, patient.getChew_freq());
                                             }
                                             mPatientUsersDatabaseReference.child(user.getUid()).setValue(patientOfEntry, new DatabaseReference.CompletionListener() {
@@ -1083,7 +1083,7 @@ public class NewEntryActivity extends AppCompatActivity {
             FirebaseAuth.getInstance().getCurrentUser().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                Toast.makeText(getBaseContext(),"User deleted. Registration undone.",0);
+                Toast.makeText(getBaseContext(),"User deleted. Registration undone.",Toast.LENGTH_SHORT);
                 startActivity(new Intent(NewEntryActivity.this, PatientRegistration.class));
                 finish();
             }

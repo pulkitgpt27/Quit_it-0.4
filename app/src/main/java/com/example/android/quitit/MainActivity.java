@@ -127,6 +127,7 @@ public class MainActivity extends AppCompatActivity
     private Calendar cal;
     private SimpleDateFormat month_date;
     private String month_name;
+    private TextView cig_tv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -241,13 +242,14 @@ public class MainActivity extends AppCompatActivity
         month_date = new SimpleDateFormat("MMMM");
         month_name = month_date.format(cal.getTime());
         cur_month_tv.setText(month_name);
-
+        cig_tv = (TextView) findViewById(R.id.cigarette_txt);
         smoke_tv = (TextView) findViewById(R.id.smoke_avg_tv);
         chew_tv = (TextView) findViewById(R.id.chew_avg_tv);
         money_tv =(TextView) findViewById(R.id.money_txt);
         life_tv = (TextView) findViewById(R.id.life_txt);
         sal_tv = (TextView) findViewById(R.id.sal_txt);
 
+        cig_tv.setVisibility(View.GONE);
         sal_tv.setVisibility(View.GONE);
         life_tv.setVisibility(View.GONE);
         smoke_tv.setVisibility(View.GONE);
@@ -334,7 +336,7 @@ public class MainActivity extends AppCompatActivity
                 else{
                     month_name = month_date.format(cal.getTime());
                     FirebaseDatabase.getInstance().getReference().child("doctors").child(patient.getDoctor_key()).child("patients").child(patient.getEntry_key()).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override-
+                        @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             Entry ObjEntry = dataSnapshot.getValue(Entry.class);
                             if(!ObjEntry.getSmokeText().isEmpty()) {
@@ -670,6 +672,7 @@ public class MainActivity extends AppCompatActivity
                                 if (!entry.getSmokeText().equals("")) {
                                     if (patient.getDay_map_smoke().size() != 0) {
                                         smoke_tv.setVisibility(View.VISIBLE);
+                                        cig_tv.setVisibility(View.VISIBLE);
                                         float avg = 0;
                                         int sum = 0;
                                         Set<String> keys = patient.getDay_map_smoke().keySet();
@@ -678,6 +681,7 @@ public class MainActivity extends AppCompatActivity
                                         }
                                         avg = (float) sum / patient.getDay_map_smoke().size();
                                         String s = String.format("%.2f", avg);
+                                        cig_tv.setText(""+sum);
                                         smoke_tv.setText("" + s +" Cigs/day");
                                     }
                                 } else {
