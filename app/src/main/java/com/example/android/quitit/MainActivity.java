@@ -205,6 +205,7 @@ public class MainActivity extends AppCompatActivity
         mAuth = FirebaseAuth.getInstance();
         if(mAuth.getCurrentUser()==null)
             return;
+
         FirebaseDatabase.getInstance().getReference().child("usertype").child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -239,11 +240,12 @@ public class MainActivity extends AppCompatActivity
         //***************
 
         final TextView cur_month_tv=(TextView) findViewById(R.id.month_name_tv);
-
+        //setting month
         cal=Calendar.getInstance();
         month_date = new SimpleDateFormat("MMMM");
         month_name = month_date.format(cal.getTime());
         cur_month_tv.setText(month_name);
+        //end
         cig_tv = (TextView) findViewById(R.id.cigarette_txt);
         smoke_tv = (TextView) findViewById(R.id.smoke_avg_tv);
         chew_tv = (TextView) findViewById(R.id.chew_avg_tv);
@@ -321,8 +323,11 @@ public class MainActivity extends AppCompatActivity
         next_month_iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                cal = Calendar.getInstance();
-                if(cal.getTime().getMonth()-1 == Calendar.MONTH){
+                cal=Calendar.getInstance();
+                month_date = new SimpleDateFormat("MMMM");
+                month_name = month_date.format(cal.getTime());
+
+                if(cur_month_tv.getText().toString().equals(month_name)){
                     //current month
                     month_name = month_date.format(cal.getTime());
                     FirebaseDatabase.getInstance().getReference().child("doctors").child(patient.getDoctor_key()).child("patients").child(patient.getEntry_key()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -336,7 +341,20 @@ public class MainActivity extends AppCompatActivity
                     });
                 }
                 else{
-                    month_name = month_date.format(cal.getTime());
+                    month_name = cur_month_tv.getText().toString();
+                    cal=Calendar.getInstance();
+                    Date date = null;
+                    try {
+                        date = new SimpleDateFormat("MMMM",Locale.ENGLISH).parse(month_name);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    cal.setTime(date);
+                    cal.add(Calendar.MONTH,1);
+                    SimpleDateFormat outputFormat = new SimpleDateFormat("MMMM"); // 01-12
+                    cur_month_tv.setText(outputFormat.format(cal.getTime()));
+
+
                     FirebaseDatabase.getInstance().getReference().child("doctors").child(patient.getDoctor_key()).child("patients").child(patient.getEntry_key()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -378,7 +396,6 @@ public class MainActivity extends AppCompatActivity
                         }
                     });
                 }
-
                 //month_name = month_date.format(cal.getTime());
             }
         });
