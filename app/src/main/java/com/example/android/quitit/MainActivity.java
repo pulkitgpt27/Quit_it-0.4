@@ -203,6 +203,8 @@ public class MainActivity extends AppCompatActivity
         }
 
         mAuth = FirebaseAuth.getInstance();
+        if(mAuth.getCurrentUser()==null)
+            return;
         FirebaseDatabase.getInstance().getReference().child("usertype").child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -231,8 +233,8 @@ public class MainActivity extends AppCompatActivity
         Intent notificationIntent = new Intent(this, AlarmReceiver.class);
         PendingIntent broadcast = PendingIntent.getBroadcast(this, 100, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         Calendar calendar= Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY,22);//set time here
-        calendar.set(Calendar.MINUTE,30);
+        //calendar.set(Calendar.HOUR_OF_DAY,22);//set time here
+        calendar.set(Calendar.MINUTE,02);
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY,broadcast);
         //***************
 

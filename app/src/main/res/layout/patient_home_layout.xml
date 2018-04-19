@@ -142,7 +142,7 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@mipmap/ic_life"
+                        android:src="@mipmap/ic_salary"
                         android:layout_gravity="center_vertical"/>
                     <TextView
                         android:layout_weight="1"
