@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -16,6 +17,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -128,6 +130,7 @@ public class MainActivity extends AppCompatActivity
     private SimpleDateFormat month_date;
     private String month_name;
     private TextView cig_tv;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,7 +138,24 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main); //changed due to navbar;
-
+        //code changes for refresh
+         swipeRefreshLayout =(SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+         swipeRefreshLayout.setColorSchemeResources(R.color.swipe_1,R.color.swipe_2,R.color.swipe_3);
+         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+             @Override
+             public void onRefresh() {
+                 swipeRefreshLayout.setRefreshing(true);
+                 (new Handler()).postDelayed(new Runnable() {
+                     @Override
+                     public void run() {
+                         swipeRefreshLayout.setRefreshing(false);
+                         finish();
+                         startActivity(getIntent());
+                     }
+                 },3000);
+             }
+         });
+        //end
         list_of_all_Enteries = (View) findViewById(R.id.include_list_of_all_Entries);
         patient_home = (View) findViewById(R.id.include_patient_home);
         spinner=(ProgressBar) findViewById(R.id.spinner);
