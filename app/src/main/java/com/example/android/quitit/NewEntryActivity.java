@@ -899,7 +899,7 @@ public class NewEntryActivity extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                     patient = new Entry(name, age, sex, interest, med_history, contact, email, address, chewText, chew_days, chew_freq, chew_cost, smokeText, smoke_days, smoke_freq, smoke_cost, m_status, business, salary, formattedtime1, formattedDate1, morning_status,
-                                            family_status, habit_reason, habbit, aware_status, aware_diseases, quit_status, quit_reason, quit_before_status, craving_time, uniqueKey[0], message, uri.toString());
+                                            family_status, habit_reason, habbit, aware_status, aware_diseases, quit_status, quit_reason, quit_before_status, craving_time, uniqueKey[0], message, "");
                                     patient.setMessage(MessageActivity.getMessage(patient, chewer.isChecked(), smoker.isChecked()));
                                     mPatientDatabaseReference.push().setValue(patient, new DatabaseReference.CompletionListener() {
                                         @Override
