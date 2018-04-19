@@ -38,5 +38,7 @@
     <color name="textColorDetails">#B4BAC0</color>
 
     <color name="tree_brown">#388E3C</color>
-
+    <color name="swipe_1">#072aec</color>
+    <color name="swipe_2">#22e788</color>
+    <color name="swipe_3">#f7041c</color>
 </resources>
