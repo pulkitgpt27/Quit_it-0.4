@@ -1020,10 +1020,15 @@ public class NewEntryActivity extends AppCompatActivity {
                     return;
                 }
                 Frame frame = new Frame.Builder().setBitmap(bm).build();
-                SparseArray<Face> sparseArray = faceDetector.detect(frame);
+                SparseArray<Face> sparseArray = null;
+                try {
+                     sparseArray = faceDetector.detect(frame);
+                }catch (Exception e){
+                    Toast.makeText(this,e.getMessage(),Toast.LENGTH_SHORT).show();
+                }
 
                 float x1 = 0, y1 = 0, x2 = 0, y2 = 0;
-                if (sparseArray.size() == 1) {
+                if (sparseArray!=null && sparseArray.size() == 1) {
 
                     Face face = sparseArray.valueAt(0);
                     x1 = face.getPosition().x;
