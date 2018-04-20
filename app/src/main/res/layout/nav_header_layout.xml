@@ -16,7 +16,7 @@
         android:id="@+id/imageView"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        app:srcCompat="@drawable/icon"
+        app:srcCompat="@mipmap/icon"
         android:scaleType="fitCenter"/>
 
     <TextView
