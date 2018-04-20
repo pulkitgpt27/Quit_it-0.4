@@ -308,12 +308,15 @@ public class MainActivity extends AppCompatActivity
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     //dataSnapshot.getChildren();
                                     HashMap<String, Long> smoking_days_value = (HashMap<String, Long>) dataSnapshot.getValue();
-                                    HashMap<String,Integer> smoking_int_map = new HashMap<String, Integer>();
-                                    Set<String> ks = smoking_days_value.keySet();
-                                    for (String key : ks) {
-                                        smoking_int_map.put(key,Integer.parseInt(String.valueOf(smoking_days_value.get(key))));
+                                    if(smoking_days_value!=null) {
+                                        HashMap<String, Integer> smoking_int_map = new HashMap<String, Integer>();
+                                        Set<String> ks = smoking_days_value.keySet();
+                                        for (String key : ks) {
+                                            smoking_int_map.put(key, Integer.parseInt(String.valueOf(smoking_days_value.get(key))));
+                                        }
                                     }
-                                    cur_month_tv.setText(month_name);
+                                        cur_month_tv.setText(month_name);
+
                                     //create graph here using ObjectEntry and smoking_days_value
                                 }
 
