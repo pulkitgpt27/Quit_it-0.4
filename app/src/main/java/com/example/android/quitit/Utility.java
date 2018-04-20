@@ -58,7 +58,6 @@ public class Utility {
 
         Collections.sort(list, new Comparator<Entry>() {
             public int compare(Entry o1, Entry o2) {
-
                 try {
                     return o2.getDate().compareTo(o1.getDate());
                 } catch (ParseException e) {
@@ -73,7 +72,7 @@ public class Utility {
         // using LinkedHashMap to preserve the insertion order
         for (int i=0; i<list.size(); i++) {
             Entry entry = list.get(i);
-            sortedHashMap.put(entry.getId(), entry);
+            sortedHashMap.put(entry.getName()+entry.getMessage(), entry);
 
         }
 
