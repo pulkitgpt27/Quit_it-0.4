@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity
     private SimpleDateFormat month_date;
     private String month_name;
     private TextView cig_tv;
-    SwipeRefreshLayout swipeRefreshLayout;
+    MultiSwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,7 +139,8 @@ public class MainActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_main); //changed due to navbar;
         //code changes for refresh
-         swipeRefreshLayout =(SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+         swipeRefreshLayout =(MultiSwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+         swipeRefreshLayout.setSwipeableChildren(R.id.listView,R.id.empty_list);
          swipeRefreshLayout.setColorSchemeResources(R.color.swipe_1,R.color.swipe_2,R.color.swipe_3);
          swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
              @Override

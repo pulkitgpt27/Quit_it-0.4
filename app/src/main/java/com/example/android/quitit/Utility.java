@@ -72,7 +72,8 @@ public class Utility {
         // using LinkedHashMap to preserve the insertion order
         for (int i=0; i<list.size(); i++) {
             Entry entry = list.get(i);
-            sortedHashMap.put(entry.getName()+entry.getMessage(), entry);
+            sortedHashMap.put(""+i,
+                    entry);
 
         }
 

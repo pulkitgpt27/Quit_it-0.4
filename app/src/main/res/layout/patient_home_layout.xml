@@ -2,6 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/patient_home"
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -62,6 +63,12 @@
                 android:layout_marginRight="24dp"
                 android:text="Average"
                 android:textSize="24sp" />
+
+            <ListView
+                android:layout_width="0dp"
+                android:layout_height="5dp"
+                android:id="@+id/empty_list"/>
+
             <TextView
                 android:id="@+id/chew_avg_tv"
                 android:layout_width="wrap_content"

@@ -927,6 +927,7 @@ public class NewEntryActivity extends AppCompatActivity {
                                     mPatientDatabaseReference.push().setValue(patient, new DatabaseReference.CompletionListener() {
                                         @Override
                                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+
                                             Log.e("Updated", "New Patiend Added :" + patient.getId() + " with Image.");
                                             Toast.makeText(getBaseContext(),"Patient added in records.",Toast.LENGTH_SHORT);
                                             $progress_bar.setVisibility(GONE);
