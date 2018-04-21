@@ -904,6 +904,9 @@ public class NewEntryActivity extends AppCompatActivity {
                                     mPatientDatabaseReference.push().setValue(patient, new DatabaseReference.CompletionListener() {
                                         @Override
                                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                            uniqueKey[0] = databaseReference.getKey();
+                                            patient.setId(uniqueKey[0]);
+                                            FirebaseMethods.updatePatient(patient.getId(),patient);
                                             Log.e("Updated", "New Patiend Added :" + patient.getId() + " with Image.");
                                             Toast.makeText(getBaseContext(),"Patient added in records.",Toast.LENGTH_SHORT);
                                             $progress_bar.setVisibility(GONE);
@@ -928,6 +931,9 @@ public class NewEntryActivity extends AppCompatActivity {
                                         @Override
                                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
 
+                                            uniqueKey[0] = databaseReference.getKey();
+                                            patient.setId(uniqueKey[0]);
+                                            FirebaseMethods.updatePatient(patient.getId(),patient);
                                             Log.e("Updated", "New Patiend Added :" + patient.getId() + " with Image.");
                                             Toast.makeText(getBaseContext(),"Patient added in records.",Toast.LENGTH_SHORT);
                                             $progress_bar.setVisibility(GONE);
