@@ -308,16 +308,8 @@ public class MainActivity extends AppCompatActivity
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     //dataSnapshot.getChildren();
                                     HashMap<String, Long> smoking_days_value = (HashMap<String, Long>) dataSnapshot.getValue();
-                                    if(smoking_days_value!=null) {
-                                        HashMap<String, Integer> smoking_int_map = new HashMap<String, Integer>();
-                                        Set<String> ks = smoking_days_value.keySet();
-                                        for (String key : ks) {
-                                            smoking_int_map.put(key, Integer.parseInt(String.valueOf(smoking_days_value.get(key))));
-                                        }
-                                    }
-                                        cur_month_tv.setText(month_name);
-
-                                    //create graph here using ObjectEntry and smoking_days_value
+                                    cur_month_tv.setText(month_name);
+                                    drawSmokeGraph(smoking_days_value);
                                 }
 
                                 @Override
@@ -330,10 +322,12 @@ public class MainActivity extends AppCompatActivity
                                     child("monthlydata").child(month_name).child("day_map_chew").addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                    dataSnapshot.getChildren();
-                                    HashMap<String, Integer> chewing_days_value = (HashMap<String, Integer>) dataSnapshot.getValue();
+                                    //dataSnapshot.getChildren();
+                                    HashMap<String, Long> chewing_days_value = (HashMap<String, Long>) dataSnapshot.getValue();
 
+                                    cur_month_tv.setText(month_name);
                                     //create graph here using ObjectEntry and smoking_days_value
+                                    drawChewGraph(chewing_days_value);
                                 }
                                 @Override
                                 public void onCancelled(DatabaseError databaseError) {
@@ -392,10 +386,9 @@ public class MainActivity extends AppCompatActivity
                                         child("monthlydata").child(month_name).child("day_map_smoke").addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
-                                        dataSnapshot.getChildren();
-                                        HashMap<String, Integer> smoking_days_value = (HashMap<String, Integer>) dataSnapshot.getValue();
-
-                                        //create graph here using ObjectEntry and smoking_days_value
+                                        //dataSnapshot.getChildren();
+                                        HashMap<String, Long> smoking_days_value = (HashMap<String, Long>) dataSnapshot.getValue();
+                                        drawSmokeGraph(smoking_days_value);
                                     }
 
                                     @Override
@@ -408,10 +401,11 @@ public class MainActivity extends AppCompatActivity
                                         child("monthlydata").child(month_name).child("day_map_chew").addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
-                                        dataSnapshot.getChildren();
-                                        HashMap<String, Integer> chewing_days_value = (HashMap<String, Integer>) dataSnapshot.getValue();
+                                        //dataSnapshot.getChildren();
+                                        HashMap<String, Long> chewing_days_value = (HashMap<String, Long>) dataSnapshot.getValue();
 
                                         //create graph here using ObjectEntry and smoking_days_value
+                                        drawChewGraph(chewing_days_value);
                                     }
                                     @Override
                                     public void onCancelled(DatabaseError databaseError) {
@@ -427,6 +421,97 @@ public class MainActivity extends AppCompatActivity
                 //month_name = month_date.format(cal.getTime());
             }
         });
+    }
+
+    private void drawSmokeGraph(HashMap<String,Long> days)
+    {
+        if (days != null) {
+            HashMap<String, Integer> smoking_int_map = new HashMap<String, Integer>();
+            Set<String> ks = days.keySet();
+            for (String key : ks) {
+                smoking_int_map.put(key, Integer.parseInt(String.valueOf(days.get(key))));
+            }
+        }
+
+        //create graph here using ObjectEntry and smoking_days_value
+        if (days != null) {
+            Set<String> temp = days.keySet();
+            lifeExpectancyChartXAxis = new String[temp.size()];
+            int j = 0;
+            for (String s : temp) {
+                lifeExpectancyChartXAxis[j] = s;
+                j++;
+            }
+            DateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+            Date[] arrayOfDates = new Date[lifeExpectancyChartXAxis.length];
+            for (int index = 0; index < lifeExpectancyChartXAxis.length; index++) {
+                try {
+                    arrayOfDates[index] = format.parse(lifeExpectancyChartXAxis[index]);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+            Arrays.sort(arrayOfDates);
+            for (int index = 0; index < lifeExpectancyChartXAxis.length; index++) {
+                lifeExpectancyChartXAxis[index] = format.format(arrayOfDates[index]);
+            }
+            int i = 0;
+            lifeExpectancyChartYAxis.clear();
+            for (String s : lifeExpectancyChartXAxis) {
+                lifeExpectancyChartYAxis.add(new com.github.mikephil.charting.data.Entry(i, days.get(s)));
+                i++;
+            }
+            PopulateChart();
+        } else {
+            showToast();
+        }
+    }
+    private void drawChewGraph(HashMap<String,Long> days)
+    {
+        if (days != null) {
+            HashMap<String, Integer> smoking_int_map = new HashMap<String, Integer>();
+            Set<String> ks = days.keySet();
+            for (String key : ks) {
+                smoking_int_map.put(key, Integer.parseInt(String.valueOf(days.get(key))));
+            }
+        }
+        //cur_month_tv.setText(month_name);
+
+        //create graph here using ObjectEntry and smoking_days_value
+        if (days != null) {
+            Set<String> temp = days.keySet();
+            lifeExpectancyChart2XAxis = new String[temp.size()];
+            int j = 0;
+            for (String s : temp) {
+                lifeExpectancyChart2XAxis[j] = s;
+                j++;
+            }
+            DateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+            Date[] arrayOfDates = new Date[lifeExpectancyChart2XAxis.length];
+            for (int index = 0; index < lifeExpectancyChart2XAxis.length; index++) {
+                try {
+                    arrayOfDates[index] = format.parse(lifeExpectancyChart2XAxis[index]);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+            Arrays.sort(arrayOfDates);
+            for (int index = 0; index < lifeExpectancyChart2XAxis.length; index++) {
+                lifeExpectancyChart2XAxis[index] = format.format(arrayOfDates[index]);
+            }
+            int i = 0;
+            lifeExpectancyChart2YAxis.clear();
+            for (String s : lifeExpectancyChart2XAxis) {
+                lifeExpectancyChart2YAxis.add(new com.github.mikephil.charting.data.Entry(i, days.get(s)));
+                i++;
+            }
+            PopulateChewChart();
+        } else {
+            showToast();
+        }
+    }
+    private void showToast() {
+        Toast.makeText(this,"No Data Available!",Toast.LENGTH_SHORT).show();
     }
 
     protected void initiateDoctorHome(){
@@ -947,13 +1032,17 @@ public class MainActivity extends AppCompatActivity
         xAxis.setGranularity(1f);
         xAxis.setDrawGridLines(false);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setLabelRotationAngle(-45);
 
         lifeExpectancyChart2.setScaleEnabled(false);
+        lifeExpectancyChart2.getDescription().setText("");
 
         LineData data = new LineData(set1);
 
         // set data
         lifeExpectancyChart2.setData(data);
+        lifeExpectancyChart2.notifyDataSetChanged();
+        lifeExpectancyChart2.invalidate();
     }
 
     private void PopulateChart() {
@@ -986,13 +1075,17 @@ public class MainActivity extends AppCompatActivity
         xAxis.setGranularity(1f);
         xAxis.setDrawGridLines(false);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setLabelRotationAngle(-45);
 
         lifeExpectancyChart.setScaleEnabled(false);
+        lifeExpectancyChart.getDescription().setText("");
 
         LineData data = new LineData(set1);
 
         // set data
         lifeExpectancyChart.setData(data);
+        lifeExpectancyChart.notifyDataSetChanged();
+        lifeExpectancyChart.invalidate();
     }
 
     //****************SEARCH METHODS**************
