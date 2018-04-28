@@ -346,6 +346,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 cal=Calendar.getInstance();
+                //cal.add(Calendar.MONTH, -1);
                 month_date = new SimpleDateFormat("MMMM");
                 month_name = month_date.format(cal.getTime());
 
@@ -356,6 +357,11 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             //draw graph using patient object
+                            if(patient != null)
+                            {
+                                drawSmokeGraphWithInt(patient.getDay_map_smoke());
+                                cal.add(Calendar.MONTH, 1);
+                            }
                         }
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
@@ -363,7 +369,7 @@ public class MainActivity extends AppCompatActivity
                     });
                 }
                 else{
-                    month_name = cur_month_tv.getText().toString();
+                    //month_name = cur_month_tv.getText().toString();
                     cal=Calendar.getInstance();
                     Date date = null;
                     try {
@@ -425,13 +431,13 @@ public class MainActivity extends AppCompatActivity
 
     private void drawSmokeGraph(HashMap<String,Long> days)
     {
-        if (days != null) {
+        /*if (days != null) {
             HashMap<String, Integer> smoking_int_map = new HashMap<String, Integer>();
             Set<String> ks = days.keySet();
             for (String key : ks) {
                 smoking_int_map.put(key, Integer.parseInt(String.valueOf(days.get(key))));
             }
-        }
+        }*/
 
         //create graph here using ObjectEntry and smoking_days_value
         if (days != null) {
@@ -466,6 +472,42 @@ public class MainActivity extends AppCompatActivity
             showToast();
         }
     }
+
+    private void drawSmokeGraphWithInt(HashMap<String,Integer> days)
+    {
+        if (days != null) {
+            Set<String> temp = days.keySet();
+            lifeExpectancyChartXAxis = new String[temp.size()];
+            int j = 0;
+            for (String s : temp) {
+                lifeExpectancyChartXAxis[j] = s;
+                j++;
+            }
+            DateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+            Date[] arrayOfDates = new Date[lifeExpectancyChartXAxis.length];
+            for (int index = 0; index < lifeExpectancyChartXAxis.length; index++) {
+                try {
+                    arrayOfDates[index] = format.parse(lifeExpectancyChartXAxis[index]);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+            Arrays.sort(arrayOfDates);
+            for (int index = 0; index < lifeExpectancyChartXAxis.length; index++) {
+                lifeExpectancyChartXAxis[index] = format.format(arrayOfDates[index]);
+            }
+            int i = 0;
+            lifeExpectancyChartYAxis.clear();
+            for (String s : lifeExpectancyChartXAxis) {
+                lifeExpectancyChartYAxis.add(new com.github.mikephil.charting.data.Entry(i, days.get(s)));
+                i++;
+            }
+            PopulateChart();
+        } else {
+            showToast();
+        }
+    }
+
     private void drawChewGraph(HashMap<String,Long> days)
     {
         if (days != null) {
