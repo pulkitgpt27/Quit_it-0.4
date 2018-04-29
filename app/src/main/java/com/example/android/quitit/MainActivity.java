@@ -418,8 +418,22 @@ public class MainActivity extends AppCompatActivity
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         //dataSnapshot.getChildren();
-                                        HashMap<String, Long> smoking_days_value = (HashMap<String, Long>) dataSnapshot.getValue();
-                                        drawSmokeGraph(smoking_days_value);
+                                        if(month_name.equals(cur_month_tv.getText().toString()))
+                                        {
+                                            if(patient != null)
+                                            {
+                                                if(patient.getDay_map_smoke()!=null)
+                                                    drawSmokeGraphWithInt(patient.getDay_map_smoke());
+                                            }
+                                        }
+                                        else {
+                                            HashMap<String, Long> smoking_days_value = (HashMap<String, Long>) dataSnapshot.getValue();
+                                            if (smoking_days_value != null) {
+                                                drawSmokeGraph(smoking_days_value);
+                                            } else {
+                                                showToast();
+                                            }
+                                        }
                                     }
 
                                     @Override
@@ -433,10 +447,22 @@ public class MainActivity extends AppCompatActivity
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         //dataSnapshot.getChildren();
-                                        HashMap<String, Long> chewing_days_value = (HashMap<String, Long>) dataSnapshot.getValue();
-
-                                        //create graph here using ObjectEntry and smoking_days_value
-                                        drawChewGraph(chewing_days_value);
+                                        if(month_name.equals(cur_month_tv.getText().toString()))
+                                        {
+                                            if(patient != null)
+                                            {
+                                                if(patient.getDay_map_chew()!=null)
+                                                    drawChewGraphWithInt(patient.getDay_map_smoke());
+                                            }
+                                        }
+                                        else {
+                                            HashMap<String, Long> chewing_days_value = (HashMap<String, Long>) dataSnapshot.getValue();
+                                            if (chewing_days_value != null) {
+                                                //create graph here using ObjectEntry and smoking_days_value
+                                                drawChewGraph(chewing_days_value);
+                                            } else
+                                                showToast();
+                                        }
                                     }
                                     @Override
                                     public void onCancelled(DatabaseError databaseError) {
