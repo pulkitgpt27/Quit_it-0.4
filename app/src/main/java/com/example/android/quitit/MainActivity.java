@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity
         //code changes for refresh
          swipeRefreshLayout =(MultiSwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
          swipeRefreshLayout.setSwipeableChildren(R.id.listView,R.id.empty_list);
-         swipeRefreshLayout.setColorSchemeResources(R.color.swipe_1,R.color.swipe_2,R.color.swipe_3);
+         swipeRefreshLayout.setColorSchemeResources(R.color.magnitude1,R.color.magnitude2,R.color.magnitude7);
          swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
              @Override
              public void onRefresh() {
@@ -316,9 +316,9 @@ public class MainActivity extends AppCompatActivity
                                             cur_month_tv.setText(month_name);
                                             drawSmokeGraph(smoking_days_value);
                                         }
-                                        else
-                                        {
+                                        else {
                                             showToast();
+                                            cur_month_tv.setText(month_name);
                                         }
                                     }
 
@@ -336,11 +336,15 @@ public class MainActivity extends AppCompatActivity
                                         HashMap<String, Long> chewing_days_value = (HashMap<String, Long>) dataSnapshot.getValue();
                                         if(chewing_days_value != null) {
                                             cur_month_tv.setText(month_name);
+                                            lifeExpectancyChart.setVisibility(View.VISIBLE);
+                                            lifeExpectancyChart2.setVisibility(View.VISIBLE);
                                             //create graph here using ObjectEntry and smoking_days_value
                                             drawChewGraph(chewing_days_value);
                                         }
-                                        else
-                                        {
+                                        else {
+                                            lifeExpectancyChart.setVisibility(View.GONE);
+                                            lifeExpectancyChart2.setVisibility(View.GONE);
+                                            cur_month_tv.setText(month_name);
                                             showToast();
                                         }
                                     }
@@ -357,8 +361,7 @@ public class MainActivity extends AppCompatActivity
                         }
                     });
                 }
-                else
-                {
+                else{
                     cal.add(Calendar.MONTH, 1);
                 }
             }
@@ -379,13 +382,13 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             //draw graph using patient object
-                            if(patient != null)
-                            {
+                            if(patient != null){
                                 if(patient.getDay_map_smoke()!=null)
                                     drawSmokeGraphWithInt(patient.getDay_map_smoke());
                                 if(patient.getDay_map_chew()!=null)
                                     drawChewGraphWithInt(patient.getDay_map_chew());
-                                showToast();
+                                Toast.makeText(getBaseContext(),"Cant go into the future, \n You may have quit by then. ;) ",Toast.LENGTH_LONG).show();
+                                
                             }
                         }
                         @Override
@@ -408,25 +411,38 @@ public class MainActivity extends AppCompatActivity
                     cur_month_tv.setText(outputFormat.format(cal.getTime()));
                     month_name = outputFormat.format(cal.getTime());
 
-                    FirebaseDatabase.getInstance().getReference().child("doctors").child(patient.getDoctor_key()).child("patients").child(patient.getEntry_key()).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            Entry ObjEntry = dataSnapshot.getValue(Entry.class);
-                            if(!ObjEntry.getSmokeText().isEmpty()) {
-                                FirebaseDatabase.getInstance().getReference().child("patients").child(mAuth.getCurrentUser().getUid()).
-                                        child("monthlydata").child(month_name).child("day_map_smoke").addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        //dataSnapshot.getChildren();
-                                        if(month_name.equals(cur_month_tv.getText().toString()))
-                                        {
-                                            if(patient != null)
-                                            {
-                                                if(patient.getDay_map_smoke()!=null)
-                                                    drawSmokeGraphWithInt(patient.getDay_map_smoke());
-                                            }
-                                        }
-                                        else {
+                    Calendar cal_temp = Calendar.getInstance();
+                    String live_month = outputFormat.format(cal_temp.getTime());
+
+                    if(live_month.equals(month_name)){
+                        FirebaseDatabase.getInstance().getReference().child("doctors").child(patient.getDoctor_key()).child("patients").child(patient.getEntry_key()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                //draw graph using patient object
+                                if(patient != null){
+                                    if(patient.getDay_map_smoke()!=null)
+                                        drawSmokeGraphWithInt(patient.getDay_map_smoke());
+                                    if(patient.getDay_map_chew()!=null)
+                                        drawChewGraphWithInt(patient.getDay_map_chew());
+                                    showToast();
+                                }
+                            }
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                            }
+                        });
+                    }
+                    else{
+                        FirebaseDatabase.getInstance().getReference().child("doctors").child(patient.getDoctor_key()).child("patients").child(patient.getEntry_key()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                Entry ObjEntry = dataSnapshot.getValue(Entry.class);
+                                if(!ObjEntry.getSmokeText().isEmpty()) {
+                                    FirebaseDatabase.getInstance().getReference().child("patients").child(mAuth.getCurrentUser().getUid()).
+                                            child("monthlydata").child(month_name).child("day_map_smoke").addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            //dataSnapshot.getChildren();
                                             HashMap<String, Long> smoking_days_value = (HashMap<String, Long>) dataSnapshot.getValue();
                                             if (smoking_days_value != null) {
                                                 drawSmokeGraph(smoking_days_value);
@@ -434,28 +450,18 @@ public class MainActivity extends AppCompatActivity
                                                 showToast();
                                             }
                                         }
-                                    }
 
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-                                    }
-                                });
-                            }
-                            if(!ObjEntry.getChewText().isEmpty()) {
-                                FirebaseDatabase.getInstance().getReference().child("patients").child(mAuth.getCurrentUser().getUid()).
-                                        child("monthlydata").child(month_name).child("day_map_chew").addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        //dataSnapshot.getChildren();
-                                        if(month_name.equals(cur_month_tv.getText().toString()))
-                                        {
-                                            if(patient != null)
-                                            {
-                                                if(patient.getDay_map_chew()!=null)
-                                                    drawChewGraphWithInt(patient.getDay_map_smoke());
-                                            }
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
                                         }
-                                        else {
+                                    });
+                                }
+                                if(!ObjEntry.getChewText().isEmpty()) {
+                                    FirebaseDatabase.getInstance().getReference().child("patients").child(mAuth.getCurrentUser().getUid()).
+                                            child("monthlydata").child(month_name).child("day_map_chew").addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            //dataSnapshot.getChildren();
                                             HashMap<String, Long> chewing_days_value = (HashMap<String, Long>) dataSnapshot.getValue();
                                             if (chewing_days_value != null) {
                                                 //create graph here using ObjectEntry and smoking_days_value
@@ -463,17 +469,17 @@ public class MainActivity extends AppCompatActivity
                                             } else
                                                 showToast();
                                         }
-                                    }
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-                                    }
-                                });
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+                                        }
+                                    });
+                                }
                             }
-                        }
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                        }
-                    });
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                            }
+                        });
+                    }
                 }
             }
         });
@@ -489,6 +495,7 @@ public class MainActivity extends AppCompatActivity
             }
         }*/
 
+        lifeExpectancyChart.setVisibility(View.VISIBLE);
         //create graph here using ObjectEntry and smoking_days_value
 
             Set<String> temp = days.keySet();
@@ -522,6 +529,7 @@ public class MainActivity extends AppCompatActivity
 
     private void drawSmokeGraphWithInt(HashMap<String,Integer> days)
     {
+            lifeExpectancyChart.setVisibility(View.VISIBLE);
             Set<String> temp = days.keySet();
             lifeExpectancyChartXAxis = new String[temp.size()];
             int j = 0;
@@ -562,6 +570,7 @@ public class MainActivity extends AppCompatActivity
         }*/
         //cur_month_tv.setText(month_name);
 
+        lifeExpectancyChart2.setVisibility(View.VISIBLE);
         //create graph here using ObjectEntry and smoking_days_value
             Set<String> temp = days.keySet();
             lifeExpectancyChart2XAxis = new String[temp.size()];
@@ -603,6 +612,7 @@ public class MainActivity extends AppCompatActivity
         }*/
         //cur_month_tv.setText(month_name);
 
+        lifeExpectancyChart2.setVisibility(View.VISIBLE);
         //create graph here using ObjectEntry and smoking_days_value
 
             Set<String> temp = days.keySet();
@@ -955,7 +965,7 @@ public class MainActivity extends AppCompatActivity
                                             }
                                             avg = sum / patient.getDay_map_chew().size();
                                             String s = String.format("%.2f", avg);
-                                            chew_tv.setText(""+s + " packs/day");
+                                            chew_tv.setText(""+s + " Packs/day");
                                         }
                                     }
                                 }else {
@@ -1030,23 +1040,23 @@ public class MainActivity extends AppCompatActivity
                     {
                         lifeExpectancyChart.setVisibility(View.VISIBLE);
                         lifeExpectancyChart2.setVisibility(View.VISIBLE);
-                        lifeExpectancyChart.getLayoutParams().height = dpToPx(150);
+                        lifeExpectancyChart.getLayoutParams().height = dpToPx(400);
                         lifeExpectancyChart.requestLayout();
-                        lifeExpectancyChart2.getLayoutParams().height = dpToPx(150);
+                        lifeExpectancyChart2.getLayoutParams().height = dpToPx(400);
                         lifeExpectancyChart2.requestLayout();
                     }
                     else if(patient.getDay_map_smoke().size() > 0)
                     {
                         lifeExpectancyChart.setVisibility(View.VISIBLE);
                         lifeExpectancyChart2.setVisibility(View.GONE);
-                        lifeExpectancyChart.getLayoutParams().height = dpToPx(300);
+                        lifeExpectancyChart.getLayoutParams().height = dpToPx(400);
                         lifeExpectancyChart.requestLayout();
                     }
                     else if(patient.getDay_map_chew().size() > 0)
                     {
                         lifeExpectancyChart2.setVisibility(View.VISIBLE);
                         lifeExpectancyChart.setVisibility(View.GONE);
-                        lifeExpectancyChart2.getLayoutParams().height = dpToPx(300);
+                        lifeExpectancyChart2.getLayoutParams().height = dpToPx(400);
                         lifeExpectancyChart2.requestLayout();
                     }
 
