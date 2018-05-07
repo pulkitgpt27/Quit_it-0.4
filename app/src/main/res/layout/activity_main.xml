@@ -6,7 +6,9 @@
     android:id="@+id/swipeRefreshLayout"
     tools:context="com.example.android.quitit.MainActivity"
      android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    android:layout_width="wrap_content"
+    >
+
 
 <android.support.v4.widget.DrawerLayout
     android:layout_width="match_parent"

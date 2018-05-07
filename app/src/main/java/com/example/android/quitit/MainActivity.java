@@ -29,11 +29,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -139,9 +141,24 @@ public class MainActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_main); //changed due to navbar;
         //code changes for refresh
-         swipeRefreshLayout =(MultiSwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-         swipeRefreshLayout.setSwipeableChildren(R.id.listView,R.id.empty_list);
-         swipeRefreshLayout.setColorSchemeResources(R.color.magnitude1,R.color.magnitude2,R.color.magnitude7);
+
+        final ScrollView sv=(ScrollView) findViewById(R.id.scroll_patient_home);
+        sv.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                int scrollY = sv.getScrollY(); //for verticalScrollView
+                if (scrollY == 0)
+                    swipeRefreshLayout.setEnabled(true);
+                else
+                    swipeRefreshLayout.setEnabled(false);
+            }
+        });
+        swipeRefreshLayout =(MultiSwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+         swipeRefreshLayout.setSwipeableChildren(R.id.listView,R.id.empty_list,R.id.patient_home);
+         swipeRefreshLayout.setColorSchemeResources(R.color.swipe_1,R.color.swipe_2,R.color.swipe_3);
+        swipeRefreshLayout.setProgressViewOffset(false,
+                getResources().getDimensionPixelSize(R.dimen.refresher_offset),
+                getResources().getDimensionPixelSize(R.dimen.refresher_offset_end));
          swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
              @Override
              public void onRefresh() {
@@ -255,7 +272,7 @@ public class MainActivity extends AppCompatActivity
         Intent notificationIntent = new Intent(this, AlarmReceiver.class);
         PendingIntent broadcast = PendingIntent.getBroadcast(this, 100, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         Calendar calendar= Calendar.getInstance();
-        //calendar.set(Calendar.HOUR_OF_DAY,22);//set time here
+        calendar.set(Calendar.HOUR_OF_DAY,22);//set time here
         calendar.set(Calendar.MINUTE,02);
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY,broadcast);
         //***************
