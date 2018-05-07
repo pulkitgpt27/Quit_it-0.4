@@ -29,11 +29,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -139,7 +141,18 @@ public class MainActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_main); //changed due to navbar;
         //code changes for refresh
-         swipeRefreshLayout =(MultiSwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+        final ScrollView sv=(ScrollView) findViewById(R.id.scroll_patient_home);
+        sv.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                int scrollY = sv.getScrollY(); //for verticalScrollView
+                if (scrollY == 0)
+                    swipeRefreshLayout.setEnabled(true);
+                else
+                    swipeRefreshLayout.setEnabled(false);
+            }
+        });
+        swipeRefreshLayout =(MultiSwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
          swipeRefreshLayout.setSwipeableChildren(R.id.listView,R.id.empty_list,R.id.patient_home);
          swipeRefreshLayout.setColorSchemeResources(R.color.swipe_1,R.color.swipe_2,R.color.swipe_3);
         swipeRefreshLayout.setProgressViewOffset(false,
