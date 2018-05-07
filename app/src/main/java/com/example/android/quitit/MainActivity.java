@@ -251,7 +251,7 @@ public class MainActivity extends AppCompatActivity
 
                 if (userType!=null && userType.getType().equals("Patient")) {
                     mPatientDatabaseRefernce = FirebaseDatabase.getInstance().getReference().child("patients").child(mAuth.getCurrentUser().getUid());
-                        initiatePatientHome(mAuth.getCurrentUser().getUid());
+                    initiatePatientHome(mAuth.getCurrentUser().getUid());
                 } else {
                     mDoctorsDatabaseReference = FirebaseMethods.getFirebaseReference("doctors");
                     initiateDoctorHome();
@@ -331,7 +331,6 @@ public class MainActivity extends AppCompatActivity
                                         HashMap<String, Long> smoking_days_value = (HashMap<String, Long>) dataSnapshot.getValue();
                                         if(smoking_days_value != null) {
                                             cur_month_tv.setText(month_name);
-                                            calculateAverages(smoking_days_value,null);
                                             drawSmokeGraph(smoking_days_value);
                                         }
                                         else {
@@ -357,7 +356,6 @@ public class MainActivity extends AppCompatActivity
                                             lifeExpectancyChart.setVisibility(View.VISIBLE);
                                             lifeExpectancyChart2.setVisibility(View.VISIBLE);
                                             //create graph here using ObjectEntry and smoking_days_value
-                                            calculateAverages(null,chewing_days_value);
                                             drawChewGraph(chewing_days_value);
                                         }
                                         else {
@@ -401,23 +399,13 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             //draw graph using patient object
-
-                            if(patient != null)
-                            {
-                                if(patient.getDay_map_smoke()!=null) {
-                                    calculateAveragesInt(patient.getDay_map_smoke(),null);
-
+                            if(patient != null){
+                                if(patient.getDay_map_smoke()!=null)
                                     drawSmokeGraphWithInt(patient.getDay_map_smoke());
-                                }
-                                if(patient.getDay_map_chew()!=null) {
-                                    calculateAveragesInt(null,patient.getDay_map_chew());
+                                if(patient.getDay_map_chew()!=null)
                                     drawChewGraphWithInt(patient.getDay_map_chew());
-                                }
-                                showToast();
-
                                 Toast.makeText(getBaseContext(),"Cant go into the future, \n You may have quit by then. ;) ",Toast.LENGTH_LONG).show();
                                 
-
                             }
                         }
                         @Override
@@ -440,28 +428,6 @@ public class MainActivity extends AppCompatActivity
                     cur_month_tv.setText(outputFormat.format(cal.getTime()));
                     month_name = outputFormat.format(cal.getTime());
 
-
-                    FirebaseDatabase.getInstance().getReference().child("doctors").child(patient.getDoctor_key()).child("patients").child(patient.getEntry_key()).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            Entry ObjEntry = dataSnapshot.getValue(Entry.class);
-                            if(!ObjEntry.getSmokeText().isEmpty()) {
-                                FirebaseDatabase.getInstance().getReference().child("patients").child(mAuth.getCurrentUser().getUid()).
-                                        child("monthlydata").child(month_name).child("day_map_smoke").addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        //dataSnapshot.getChildren();
-                                        if(month_name.equals(cur_month_tv.getText().toString()))
-                                        {
-                                            if(patient != null)
-                                            {
-                                                if(patient.getDay_map_smoke()!=null) {
-                                                    calculateAveragesInt(patient.getDay_map_smoke(),null);
-                                                    drawSmokeGraphWithInt(patient.getDay_map_smoke());
-                                                }
-                                            }
-                                        }
-                                        else {
                     Calendar cal_temp = Calendar.getInstance();
                     String live_month = outputFormat.format(cal_temp.getTime());
 
@@ -496,33 +462,12 @@ public class MainActivity extends AppCompatActivity
                                             //dataSnapshot.getChildren();
                                             HashMap<String, Long> smoking_days_value = (HashMap<String, Long>) dataSnapshot.getValue();
                                             if (smoking_days_value != null) {
-                                                calculateAveragesInt(patient.getDay_map_smoke(),null);
                                                 drawSmokeGraph(smoking_days_value);
                                             } else {
                                                 showToast();
                                             }
                                         }
 
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-                                    }
-                                });
-                            }
-                            if(!ObjEntry.getChewText().isEmpty()) {
-                                FirebaseDatabase.getInstance().getReference().child("patients").child(mAuth.getCurrentUser().getUid()).
-                                        child("monthlydata").child(month_name).child("day_map_chew").addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        //dataSnapshot.getChildren();
-                                        if(month_name.equals(cur_month_tv.getText().toString()))
-                                        {
-                                            if(patient != null)
-                                            {
-                                                if(patient.getDay_map_chew()!=null) {
-                                                    calculateAveragesInt(patient.getDay_map_smoke(),null);
-                                                    drawChewGraphWithInt(patient.getDay_map_smoke());
-                                                }
-                                            }
                                         @Override
                                         public void onCancelled(DatabaseError databaseError) {
                                         }
@@ -537,7 +482,6 @@ public class MainActivity extends AppCompatActivity
                                             HashMap<String, Long> chewing_days_value = (HashMap<String, Long>) dataSnapshot.getValue();
                                             if (chewing_days_value != null) {
                                                 //create graph here using ObjectEntry and smoking_days_value
-                                                calculateAverages(null,chewing_days_value);
                                                 drawChewGraph(chewing_days_value);
                                             } else
                                                 showToast();
@@ -1102,7 +1046,6 @@ public class MainActivity extends AppCompatActivity
                                 }
                             }
                             //end
-
                         }
 
                         @Override
@@ -1203,7 +1146,12 @@ public class MainActivity extends AppCompatActivity
         //mPatientDatabaseRefernce.addListenerForSingleValueEvent(mValueEventListener);
     }
 
-
+    public int dpToPx(int dp) {
+        float density = getResources()
+                .getDisplayMetrics()
+                .density;
+        return Math.round((float) dp * density);
+    }
 
     private void PopulateChewChart() {
         LineDataSet set1;
@@ -1394,231 +1342,5 @@ public class MainActivity extends AppCompatActivity
             }
         });
     }
-
-    public int dpToPx(int dp) {
-        float density = getResources()
-                .getDisplayMetrics()
-                .density;
-        return Math.round((float) dp * density);
-    }
-
-    public void calculateAverages(final HashMap<String,Long> smoke_monthlydata,final HashMap<String,Long> chew_monthlydata)
-    {
-        if(patient!=null) {
-            FirebaseDatabase.getInstance().getReference().child("doctors").child(currentdoctorKey).child("patients").child(patient.getEntry_key()).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    //for average
-                    Entry entry = dataSnapshot.getValue(Entry.class);
-                    if (entry != null) {
-                        if (!entry.getSmokeText().equals("")) {
-                            if (smoke_monthlydata!=null && smoke_monthlydata.size() != 0) {
-                                smoke_tv.setVisibility(View.VISIBLE);
-                                cig_tv.setVisibility(View.VISIBLE);
-                                float avg = 0;
-                                int sum = 0;
-                                Set<String> keys = smoke_monthlydata.keySet();
-                                for (String key : keys) {
-                                    sum += smoke_monthlydata.get(key);
-                                }
-                                avg = (float) sum / smoke_monthlydata.size();
-                                String s = String.format("%.2f", avg);
-                                cig_tv.setText("" + sum);
-                                smoke_tv.setText("" + s + " Cigs/day");
-                            }
-                        } else {
-                            smoke_tv.setVisibility(View.GONE);
-                        }
-                        if (!entry.getChewText().equals("")) {
-                            if (!entry.getChewText().equals("")) {
-                                if (chew_monthlydata!=null &&chew_monthlydata.size() != 0) {
-                                    chew_tv.setVisibility(View.VISIBLE);
-                                    float avg = 0;
-                                    int sum = 0;
-                                    Set<String> keys = chew_monthlydata.keySet();
-                                    for (String key : keys) {
-                                        sum += chew_monthlydata.get(key);
-                                    }
-                                    avg = sum / chew_monthlydata.size();
-                                    String s = String.format("%.2f", avg);
-                                    chew_tv.setText("" + s + " packs/day");
-                                }
-                            }
-                        } else {
-                            chew_tv.setVisibility(View.GONE);
-                        }
-                    }
-                    //end
-                    //for money
-                    if (entry != null) {
-                        if (!entry.getSmokeText().equals("")) {
-                            money_tv.setVisibility(View.VISIBLE);
-                            float total_money = 0;
-
-                            if (smoke_monthlydata!=null && smoke_monthlydata.size() != 0) {
-
-                                Set<String> keys = smoke_monthlydata.keySet();
-                                for (String key : keys) {
-                                    total_money += (smoke_monthlydata.get(key) * entry.getSmoke_cost());
-                                }
-                            }
-                            money_tv.setText("" + total_money);
-                        }
-                    }
-                    //end
-                    //for minutes lost
-                    if (entry != null) {
-                        if (!entry.getSmokeText().equals("")) {
-                            life_tv.setVisibility(View.VISIBLE);
-                            if (smoke_monthlydata!=null && smoke_monthlydata.size() != 0) {
-                                smoke_tv.setVisibility(View.VISIBLE);
-                                int sum = 0;
-                                Set<String> keys = smoke_monthlydata.keySet();
-                                for (String key : keys) {
-                                    sum += smoke_monthlydata.get(key);
-                                }
-                                life_tv.setText("" + (sum * 9) + " mins");
-                            }
-                        }
-                    }
-                    //end
-
-                    //for salary
-                    if (entry != null) {
-                        if (smoke_monthlydata!=null && !smoke_monthlydata.equals("")) {
-                            if (smoke_monthlydata!=null && smoke_monthlydata.size() != 0) {
-                                sal_tv.setVisibility(View.VISIBLE);
-                                float spent = 0;
-                                Set<String> keys = smoke_monthlydata.keySet();
-                                for (String key : keys) {
-                                    spent += (float) (smoke_monthlydata.get(key) * entry.getSmoke_cost());
-                                }
-                                float earn = (float) (entry.getSalary());
-                                float fraction = (float) (spent / earn) * 100;
-                                String s = String.format("%.2f", fraction);
-                                sal_tv.setText("" + s + " %");
-                            }
-                        }
-                    }
-                    //end
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-        }
-    }
-
-    public void calculateAveragesInt(final HashMap<String,Integer> smoke_monthlydata,final HashMap<String,Integer> chew_monthlydata)
-    {
-        if(patient!=null) {
-            FirebaseDatabase.getInstance().getReference().child("doctors").child(currentdoctorKey).child("patients").child(patient.getEntry_key()).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    //for average
-                    Entry entry = dataSnapshot.getValue(Entry.class);
-                    if (entry != null) {
-                        if (!entry.getSmokeText().equals("")) {
-                            if (smoke_monthlydata!=null && smoke_monthlydata.size() != 0) {
-                                smoke_tv.setVisibility(View.VISIBLE);
-                                cig_tv.setVisibility(View.VISIBLE);
-                                float avg = 0;
-                                int sum = 0;
-                                Set<String> keys = smoke_monthlydata.keySet();
-                                for (String key : keys) {
-                                    sum += smoke_monthlydata.get(key);
-                                }
-                                avg = (float) sum / smoke_monthlydata.size();
-                                String s = String.format("%.2f", avg);
-                                cig_tv.setText("" + sum);
-                                smoke_tv.setText("" + s + " Cigs/day");
-                            }
-                        } else {
-                            smoke_tv.setVisibility(View.GONE);
-                        }
-                        if (!entry.getChewText().equals("")) {
-                            if (!entry.getChewText().equals("")) {
-                                if (chew_monthlydata!=null &&chew_monthlydata.size() != 0) {
-                                    chew_tv.setVisibility(View.VISIBLE);
-                                    float avg = 0;
-                                    int sum = 0;
-                                    Set<String> keys = chew_monthlydata.keySet();
-                                    for (String key : keys) {
-                                        sum += chew_monthlydata.get(key);
-                                    }
-                                    avg = sum / chew_monthlydata.size();
-                                    String s = String.format("%.2f", avg);
-                                    chew_tv.setText("" + s + " packs/day");
-                                }
-                            }
-                        } else {
-                            chew_tv.setVisibility(View.GONE);
-                        }
-                    }
-                    //end
-                    //for money
-                    if (entry != null) {
-                        if (!entry.getSmokeText().equals("")) {
-                            money_tv.setVisibility(View.VISIBLE);
-                            float total_money = 0;
-
-                            if (smoke_monthlydata!=null && smoke_monthlydata.size() != 0) {
-
-                                Set<String> keys = smoke_monthlydata.keySet();
-                                for (String key : keys) {
-                                    total_money += (smoke_monthlydata.get(key) * entry.getSmoke_cost());
-                                }
-                            }
-                            money_tv.setText("" + total_money);
-                        }
-                    }
-                    //end
-                    //for minutes lost
-                    if (entry != null) {
-                        if (!entry.getSmokeText().equals("")) {
-                            life_tv.setVisibility(View.VISIBLE);
-                            if (smoke_monthlydata!=null && smoke_monthlydata.size() != 0) {
-                                smoke_tv.setVisibility(View.VISIBLE);
-                                int sum = 0;
-                                Set<String> keys = smoke_monthlydata.keySet();
-                                for (String key : keys) {
-                                    sum += smoke_monthlydata.get(key);
-                                }
-                                life_tv.setText("" + (sum * 9) + " mins");
-                            }
-                        }
-                    }
-                    //end
-
-                    //for salary
-                    if (entry != null) {
-                        if (smoke_monthlydata!=null && !smoke_monthlydata.equals("")) {
-                            if (smoke_monthlydata!=null && smoke_monthlydata.size() != 0) {
-                                sal_tv.setVisibility(View.VISIBLE);
-                                float spent = 0;
-                                Set<String> keys = smoke_monthlydata.keySet();
-                                for (String key : keys) {
-                                    spent += (float) (smoke_monthlydata.get(key) * entry.getSmoke_cost());
-                                }
-                                float earn = (float) (entry.getSalary());
-                                float fraction = (float) (spent / earn) * 100;
-                                String s = String.format("%.2f", fraction);
-                                sal_tv.setText("" + s + " %");
-                            }
-                        }
-                    }
-                    //end
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-        }
-    }
-
 
 }
