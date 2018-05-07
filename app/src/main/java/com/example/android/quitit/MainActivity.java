@@ -306,11 +306,13 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 cal.add(Calendar.MONTH, -1);
                 month_name = month_date.format(cal.getTime());
+
                 Calendar currMonthCal = Calendar.getInstance();
                 String curr_month = month_date.format(currMonthCal.getTime());
+
                 if (!curr_month.equals(month_name)) {
-                    final boolean[] smoker_data_load = {true};
-                    final boolean[] chewer_data_load = {true};
+                    final boolean[] smoker_data_load = {false};
+                    final boolean[] chewer_data_load = {false};
                     FirebaseDatabase.getInstance().getReference().child("doctors").child(patient.getDoctor_key()).child("patients").child(patient.getEntry_key()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -330,12 +332,13 @@ public class MainActivity extends AppCompatActivity
                                             data_unavailable_tv.setVisibility(View.GONE);
                                             data_unavailable_tv2.setVisibility(View.GONE);
                                             lifeExpectancyChart.setVisibility(View.VISIBLE);
+
                                             cur_month_tv.setText(month_name);
                                             drawSmokeGraph(smoking_days_value);
                                         }
                                         else {
                                             smoker_data_load[0] = false;
-                                            lifeExpectancyChart.setVisibility(View.GONE);
+                                            //lifeExpectancyChart.setVisibility(View.GONE);
                                             showToast();
                                             cur_month_tv.setText(month_name);
                                             dataUnavailableVisible(smoker_data_load[0],chewer_data_load[0]);
@@ -368,7 +371,7 @@ public class MainActivity extends AppCompatActivity
                                         }
                                         else {
                                             chewer_data_load[0] = false;
-                                            lifeExpectancyChart2.setVisibility(View.GONE);
+                                            //lifeExpectancyChart2.setVisibility(View.GONE);
                                             cur_month_tv.setText(month_name);
                                             dataUnavailableVisible(smoker_data_load[0],chewer_data_load[0]);
                                             showToast();
@@ -491,8 +494,8 @@ public class MainActivity extends AppCompatActivity
                         });
                     }
                     else{
-                        final boolean[] smoker_data_load = {true};
-                        final boolean[] chewer_data_load = {true};
+                        final boolean[] smoker_data_load = {false};
+                        final boolean[] chewer_data_load = {false};
                         FirebaseDatabase.getInstance().getReference().child("doctors").child(patient.getDoctor_key()).child("patients").child(patient.getEntry_key()).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -1420,7 +1423,7 @@ public class MainActivity extends AppCompatActivity
 
     public void dataUnavailableVisible(boolean a, boolean b){
         if(!a && !b){
-            smoke_tv.setVisibility(View.GONE);
+             smoke_tv.setVisibility(View.GONE);
             chew_tv.setVisibility(View.GONE);
             lifeExpectancyChart.setVisibility(View.GONE);
             lifeExpectancyChart2.setVisibility(View.GONE);
