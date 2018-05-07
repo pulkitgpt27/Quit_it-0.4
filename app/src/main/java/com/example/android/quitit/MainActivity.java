@@ -29,11 +29,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -143,23 +145,38 @@ public class MainActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_main); //changed due to navbar;
         //code changes for refresh
-         swipeRefreshLayout =(MultiSwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-         swipeRefreshLayout.setSwipeableChildren(R.id.listView,R.id.empty_list);
-         swipeRefreshLayout.setColorSchemeResources(R.color.magnitude1,R.color.magnitude2,R.color.magnitude7);
-         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-             @Override
-             public void onRefresh() {
-                 swipeRefreshLayout.setRefreshing(true);
-                 (new Handler()).postDelayed(new Runnable() {
-                     @Override
-                     public void run() {
-                         swipeRefreshLayout.setRefreshing(false);
-                         finish();
-                         startActivity(getIntent());
-                     }
-                 },3000);
-             }
-         });
+
+        final ScrollView sv=(ScrollView) findViewById(R.id.scroll_patient_home);
+        sv.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                int scrollY = sv.getScrollY(); //for verticalScrollView
+                if (scrollY == 0)
+                    swipeRefreshLayout.setEnabled(true);
+                else
+                    swipeRefreshLayout.setEnabled(false);
+            }
+        });
+        swipeRefreshLayout =(MultiSwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setSwipeableChildren(R.id.listView,R.id.empty_list,R.id.patient_home);
+        swipeRefreshLayout.setColorSchemeResources(R.color.swipe_1,R.color.swipe_2,R.color.swipe_3);
+        swipeRefreshLayout.setProgressViewOffset(false,
+                getResources().getDimensionPixelSize(R.dimen.refresher_offset),
+                getResources().getDimensionPixelSize(R.dimen.refresher_offset_end));
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(true);
+                (new Handler()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(false);
+                        finish();
+                        startActivity(getIntent());
+                    }
+                },3000);
+            }
+        });
         //end
         list_of_all_Enteries = (View) findViewById(R.id.include_list_of_all_Entries);
         patient_home = (View) findViewById(R.id.include_patient_home);
@@ -263,7 +280,7 @@ public class MainActivity extends AppCompatActivity
         Intent notificationIntent = new Intent(this, AlarmReceiver.class);
         PendingIntent broadcast = PendingIntent.getBroadcast(this, 100, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         Calendar calendar= Calendar.getInstance();
-        //calendar.set(Calendar.HOUR_OF_DAY,22);//set time here
+        calendar.set(Calendar.HOUR_OF_DAY,22);//set time here
         calendar.set(Calendar.MINUTE,02);
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY,broadcast);
         //***************
@@ -334,6 +351,7 @@ public class MainActivity extends AppCompatActivity
                                             lifeExpectancyChart.setVisibility(View.VISIBLE);
 
                                             cur_month_tv.setText(month_name);
+                                            calculateAverages(smoking_days_value,null);
                                             drawSmokeGraph(smoking_days_value);
                                         }
                                         else {
@@ -364,9 +382,11 @@ public class MainActivity extends AppCompatActivity
                                             cur_month_tv.setText(month_name);
                                             lifeExpectancyChart2.setVisibility(View.VISIBLE);
                                             //create graph here using ObjectEntry and smoking_days_value
+
                                             data_unavailable_iv.setVisibility(View.GONE);
                                             data_unavailable_tv.setVisibility(View.GONE);
                                             data_unavailable_tv2.setVisibility(View.GONE);
+                                            calculateAverages(null,chewing_days_value);
                                             drawChewGraph(chewing_days_value);
                                         }
                                         else {
@@ -411,13 +431,17 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             //draw graph using patient object
-                            if(patient != null){
-                                if(patient.getDay_map_smoke()!=null)
+                            if(patient != null)
+                            {
+                                if(patient.getDay_map_smoke()!=null) {
+                                    calculateAveragesInt(patient.getDay_map_smoke(),null);
                                     drawSmokeGraphWithInt(patient.getDay_map_smoke());
-                                if(patient.getDay_map_chew()!=null)
+                                }
+                                if(patient.getDay_map_chew()!=null) {
+                                    calculateAveragesInt(null,patient.getDay_map_chew());
                                     drawChewGraphWithInt(patient.getDay_map_chew());
-                                Toast.makeText(getBaseContext(),"Cant go into the future, \n You may have quit by then. ;) ",Toast.LENGTH_LONG).show();
-                                
+                                    Toast.makeText(getBaseContext(),"Cant go into the future, \n You may have quit by then. ;) ",Toast.LENGTH_LONG).show();
+                                }
                             }
                         }
                         @Override
@@ -450,6 +474,7 @@ public class MainActivity extends AppCompatActivity
                                 //draw graph using patient object
                                 if(patient != null){
                                     if(patient.getDay_map_smoke()!=null) {
+                                      calculateAveragesInt(patient.getDay_map_smoke(),null);
                                         drawSmokeGraphWithInt(patient.getDay_map_smoke());
                                         data_unavailable_iv.setVisibility(View.GONE);
                                         data_unavailable_tv.setVisibility(View.GONE);
@@ -468,6 +493,7 @@ public class MainActivity extends AppCompatActivity
                                         lifeExpectancyChart.setVisibility(View.GONE);
                                     }
                                     if(patient.getDay_map_chew()!=null) {
+                                      calculateAveragesInt(patient.getDay_map_chew(),null);
                                         drawChewGraphWithInt(patient.getDay_map_chew());
                                         data_unavailable_iv.setVisibility(View.GONE);
                                         data_unavailable_tv.setVisibility(View.GONE);
@@ -509,6 +535,7 @@ public class MainActivity extends AppCompatActivity
                                             HashMap<String, Long> smoking_days_value = (HashMap<String, Long>) dataSnapshot.getValue();
                                             if (smoking_days_value != null) {
                                                 smoker_data_load[0] = true;
+                                                calculateAveragesInt(patient.getDay_map_smoke(),null);
                                                 drawSmokeGraph(smoking_days_value);
                                                 smoke_tv.setVisibility(View.VISIBLE);
                                                 chew_tv.setVisibility(View.VISIBLE);
@@ -539,6 +566,7 @@ public class MainActivity extends AppCompatActivity
                                                 chewer_data_load[0] = true;
                                                 smoke_tv.setVisibility(View.VISIBLE);
                                                 chew_tv.setVisibility(View.VISIBLE);
+                                                calculateAverages(null,chewing_days_value);
                                                 drawChewGraph(chewing_days_value);
                                                 data_unavailable_iv.setVisibility(View.GONE);
                                                 data_unavailable_tv.setVisibility(View.GONE);
@@ -582,68 +610,68 @@ public class MainActivity extends AppCompatActivity
         lifeExpectancyChart.setVisibility(View.VISIBLE);
         //create graph here using ObjectEntry and smoking_days_value
 
-            Set<String> temp = days.keySet();
-            lifeExpectancyChartXAxis = new String[temp.size()];
-            int j = 0;
-            for (String s : temp) {
-                lifeExpectancyChartXAxis[j] = s;
-                j++;
+        Set<String> temp = days.keySet();
+        lifeExpectancyChartXAxis = new String[temp.size()];
+        int j = 0;
+        for (String s : temp) {
+            lifeExpectancyChartXAxis[j] = s;
+            j++;
+        }
+        DateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+        Date[] arrayOfDates = new Date[lifeExpectancyChartXAxis.length];
+        for (int index = 0; index < lifeExpectancyChartXAxis.length; index++) {
+            try {
+                arrayOfDates[index] = format.parse(lifeExpectancyChartXAxis[index]);
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
-            DateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
-            Date[] arrayOfDates = new Date[lifeExpectancyChartXAxis.length];
-            for (int index = 0; index < lifeExpectancyChartXAxis.length; index++) {
-                try {
-                    arrayOfDates[index] = format.parse(lifeExpectancyChartXAxis[index]);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            }
-            Arrays.sort(arrayOfDates);
-            for (int index = 0; index < lifeExpectancyChartXAxis.length; index++) {
-                lifeExpectancyChartXAxis[index] = format.format(arrayOfDates[index]);
-            }
-            int i = 0;
-            lifeExpectancyChartYAxis.clear();
-            for (String s : lifeExpectancyChartXAxis) {
-                lifeExpectancyChartYAxis.add(new com.github.mikephil.charting.data.Entry(i, days.get(s)));
-                i++;
-            }
-            PopulateChart();
+        }
+        Arrays.sort(arrayOfDates);
+        for (int index = 0; index < lifeExpectancyChartXAxis.length; index++) {
+            lifeExpectancyChartXAxis[index] = format.format(arrayOfDates[index]);
+        }
+        int i = 0;
+        lifeExpectancyChartYAxis.clear();
+        for (String s : lifeExpectancyChartXAxis) {
+            lifeExpectancyChartYAxis.add(new com.github.mikephil.charting.data.Entry(i, days.get(s)));
+            i++;
+        }
+        PopulateChart();
     }
 
-    private void drawSmokeGraphWithInt(HashMap<String,Integer> days)
-    {
+    private void drawSmokeGraphWithInt(HashMap<String,Integer> days){
         data_unavailable_iv.setVisibility(View.GONE);
         data_unavailable_tv.setVisibility(View.GONE);
         data_unavailable_tv2.setVisibility(View.GONE);
         lifeExpectancyChart.setVisibility(View.VISIBLE);
-            Set<String> temp = days.keySet();
-            lifeExpectancyChartXAxis = new String[temp.size()];
-            int j = 0;
-            for (String s : temp) {
-                lifeExpectancyChartXAxis[j] = s;
-                j++;
-            }
-            DateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
-            Date[] arrayOfDates = new Date[lifeExpectancyChartXAxis.length];
-            for (int index = 0; index < lifeExpectancyChartXAxis.length; index++) {
-                try {
-                    arrayOfDates[index] = format.parse(lifeExpectancyChartXAxis[index]);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            }
-            Arrays.sort(arrayOfDates);
-            for (int index = 0; index < lifeExpectancyChartXAxis.length; index++) {
-                lifeExpectancyChartXAxis[index] = format.format(arrayOfDates[index]);
-            }
-            int i = 0;
-            lifeExpectancyChartYAxis.clear();
-            for (String s : lifeExpectancyChartXAxis) {
-                lifeExpectancyChartYAxis.add(new com.github.mikephil.charting.data.Entry(i, days.get(s)));
-                i++;
-            }
-            PopulateChart();
+            
+        Set<String> temp = days.keySet();
+        lifeExpectancyChartXAxis = new String[temp.size()];
+        int j = 0;
+        for (String s : temp) {
+            lifeExpectancyChartXAxis[j] = s;
+            j++;
+        }
+        DateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+        Date[] arrayOfDates = new Date[lifeExpectancyChartXAxis.length];
+        for (int index = 0; index < lifeExpectancyChartXAxis.length; index++) {
+            try {
+                arrayOfDates[index] = format.parse(lifeExpectancyChartXAxis[index]);
+            } catch (ParseException e) {
+                e.printStackTrace();
+           }
+        }
+        Arrays.sort(arrayOfDates);
+        for (int index = 0; index < lifeExpectancyChartXAxis.length; index++) {
+            lifeExpectancyChartXAxis[index] = format.format(arrayOfDates[index]);
+        }
+        int i = 0;
+        lifeExpectancyChartYAxis.clear();
+        for (String s : lifeExpectancyChartXAxis) {
+            lifeExpectancyChartYAxis.add(new com.github.mikephil.charting.data.Entry(i, days.get(s)));
+            i++;
+        }
+        PopulateChart();
     }
 
     private void drawChewGraph(HashMap<String,Long> days)
@@ -662,33 +690,33 @@ public class MainActivity extends AppCompatActivity
         data_unavailable_tv2.setVisibility(View.GONE);
         lifeExpectancyChart2.setVisibility(View.VISIBLE);
         //create graph here using ObjectEntry and smoking_days_value
-            Set<String> temp = days.keySet();
-            lifeExpectancyChart2XAxis = new String[temp.size()];
-            int j = 0;
-            for (String s : temp) {
-                lifeExpectancyChart2XAxis[j] = s;
-                j++;
+        Set<String> temp = days.keySet();
+        lifeExpectancyChart2XAxis = new String[temp.size()];
+        int j = 0;
+        for (String s : temp) {
+            lifeExpectancyChart2XAxis[j] = s;
+            j++;
+        }
+        DateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+        Date[] arrayOfDates = new Date[lifeExpectancyChart2XAxis.length];
+        for (int index = 0; index < lifeExpectancyChart2XAxis.length; index++) {
+            try {
+                arrayOfDates[index] = format.parse(lifeExpectancyChart2XAxis[index]);
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
-            DateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
-            Date[] arrayOfDates = new Date[lifeExpectancyChart2XAxis.length];
-            for (int index = 0; index < lifeExpectancyChart2XAxis.length; index++) {
-                try {
-                    arrayOfDates[index] = format.parse(lifeExpectancyChart2XAxis[index]);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            }
-            Arrays.sort(arrayOfDates);
-            for (int index = 0; index < lifeExpectancyChart2XAxis.length; index++) {
-                lifeExpectancyChart2XAxis[index] = format.format(arrayOfDates[index]);
-            }
-            int i = 0;
-            lifeExpectancyChart2YAxis.clear();
-            for (String s : lifeExpectancyChart2XAxis) {
-                lifeExpectancyChart2YAxis.add(new com.github.mikephil.charting.data.Entry(i, days.get(s)));
-                i++;
-            }
-            PopulateChewChart();
+        }
+        Arrays.sort(arrayOfDates);
+        for (int index = 0; index < lifeExpectancyChart2XAxis.length; index++) {
+            lifeExpectancyChart2XAxis[index] = format.format(arrayOfDates[index]);
+        }
+        int i = 0;
+        lifeExpectancyChart2YAxis.clear();
+        for (String s : lifeExpectancyChart2XAxis) {
+            lifeExpectancyChart2YAxis.add(new com.github.mikephil.charting.data.Entry(i, days.get(s)));
+            i++;
+        }
+        PopulateChewChart();
     }
 
     private void drawChewGraphWithInt(HashMap<String,Integer> days)
@@ -707,33 +735,33 @@ public class MainActivity extends AppCompatActivity
         lifeExpectancyChart2.setVisibility(View.VISIBLE);
         //create graph here using ObjectEntry and smoking_days_value
 
-            Set<String> temp = days.keySet();
-            lifeExpectancyChart2XAxis = new String[temp.size()];
-            int j = 0;
-            for (String s : temp) {
-                lifeExpectancyChart2XAxis[j] = s;
-                j++;
+        Set<String> temp = days.keySet();
+        lifeExpectancyChart2XAxis = new String[temp.size()];
+        int j = 0;
+        for (String s : temp) {
+            lifeExpectancyChart2XAxis[j] = s;
+            j++;
+        }
+        DateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+        Date[] arrayOfDates = new Date[lifeExpectancyChart2XAxis.length];
+        for (int index = 0; index < lifeExpectancyChart2XAxis.length; index++) {
+            try {
+                arrayOfDates[index] = format.parse(lifeExpectancyChart2XAxis[index]);
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
-            DateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
-            Date[] arrayOfDates = new Date[lifeExpectancyChart2XAxis.length];
-            for (int index = 0; index < lifeExpectancyChart2XAxis.length; index++) {
-                try {
-                    arrayOfDates[index] = format.parse(lifeExpectancyChart2XAxis[index]);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            }
-            Arrays.sort(arrayOfDates);
-            for (int index = 0; index < lifeExpectancyChart2XAxis.length; index++) {
-                lifeExpectancyChart2XAxis[index] = format.format(arrayOfDates[index]);
-            }
-            int i = 0;
-            lifeExpectancyChart2YAxis.clear();
-            for (String s : lifeExpectancyChart2XAxis) {
-                lifeExpectancyChart2YAxis.add(new com.github.mikephil.charting.data.Entry(i, days.get(s)));
-                i++;
-            }
-            PopulateChewChart();
+        }
+        Arrays.sort(arrayOfDates);
+        for (int index = 0; index < lifeExpectancyChart2XAxis.length; index++) {
+            lifeExpectancyChart2XAxis[index] = format.format(arrayOfDates[index]);
+        }
+        int i = 0;
+        lifeExpectancyChart2YAxis.clear();
+        for (String s : lifeExpectancyChart2XAxis) {
+            lifeExpectancyChart2YAxis.add(new com.github.mikephil.charting.data.Entry(i, days.get(s)));
+            i++;
+        }
+        PopulateChewChart();
     }
 
     private void showToast() {
@@ -882,23 +910,23 @@ public class MainActivity extends AppCompatActivity
                 return true;
             case R.id.patientReport:
                 if(patient != null)
-                FirebaseDatabase.getInstance().getReference().child("doctors").child(patient.getDoctor_key()).child("patients").child(patient.getEntry_key()).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        Entry temp = dataSnapshot.getValue(Entry.class);
-                        Intent intent = new Intent(MainActivity.this, ReportActivity.class);
-                        Bundle B = new Bundle();
-                        B.putParcelable("ClickedEntry", (Parcelable) temp);
-                        intent.putExtras(B);
-                        startActivity(intent);
-                        finish();
-                    }
+                    FirebaseDatabase.getInstance().getReference().child("doctors").child(patient.getDoctor_key()).child("patients").child(patient.getEntry_key()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Entry temp = dataSnapshot.getValue(Entry.class);
+                            Intent intent = new Intent(MainActivity.this, ReportActivity.class);
+                            Bundle B = new Bundle();
+                            B.putParcelable("ClickedEntry", (Parcelable) temp);
+                            intent.putExtras(B);
+                            startActivity(intent);
+                            finish();
+                        }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
 
-                    }
-                });
+                        }
+                    });
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -1121,6 +1149,7 @@ public class MainActivity extends AppCompatActivity
                                 }
                             }
                             //end
+
                         }
 
                         @Override
@@ -1224,12 +1253,7 @@ public class MainActivity extends AppCompatActivity
         //mPatientDatabaseRefernce.addListenerForSingleValueEvent(mValueEventListener);
     }
 
-    public int dpToPx(int dp) {
-        float density = getResources()
-                .getDisplayMetrics()
-                .density;
-        return Math.round((float) dp * density);
-    }
+
 
     private void PopulateChewChart() {
         LineDataSet set1;
@@ -1430,6 +1454,230 @@ public class MainActivity extends AppCompatActivity
             data_unavailable_iv.setVisibility(View.VISIBLE);
             data_unavailable_tv.setVisibility(View.VISIBLE);
             data_unavailable_tv2.setVisibility(View.VISIBLE);
+        }
+    }
+    public int dpToPx(int dp) {
+        float density = getResources()
+                .getDisplayMetrics()
+                .density;
+        return Math.round((float) dp * density);
+    }
+
+    public void calculateAverages(final HashMap<String,Long> smoke_monthlydata,final HashMap<String,Long> chew_monthlydata)
+    {
+        if(patient!=null) {
+            FirebaseDatabase.getInstance().getReference().child("doctors").child(currentdoctorKey).child("patients").child(patient.getEntry_key()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    //for average
+                    Entry entry = dataSnapshot.getValue(Entry.class);
+                    if (entry != null) {
+                        if (!entry.getSmokeText().equals("")) {
+                            if (smoke_monthlydata!=null && smoke_monthlydata.size() != 0) {
+                                smoke_tv.setVisibility(View.VISIBLE);
+                                cig_tv.setVisibility(View.VISIBLE);
+                                float avg = 0;
+                                int sum = 0;
+                                Set<String> keys = smoke_monthlydata.keySet();
+                                for (String key : keys) {
+                                    sum += smoke_monthlydata.get(key);
+                                }
+                                avg = (float) sum / smoke_monthlydata.size();
+                                String s = String.format("%.2f", avg);
+                                cig_tv.setText("" + sum);
+                                smoke_tv.setText("" + s + " Cigs/day");
+                            }
+                        } else {
+                            smoke_tv.setVisibility(View.GONE);
+                        }
+                        if (!entry.getChewText().equals("")) {
+                            if (!entry.getChewText().equals("")) {
+                                if (chew_monthlydata!=null &&chew_monthlydata.size() != 0) {
+                                    chew_tv.setVisibility(View.VISIBLE);
+                                    float avg = 0;
+                                    int sum = 0;
+                                    Set<String> keys = chew_monthlydata.keySet();
+                                    for (String key : keys) {
+                                        sum += chew_monthlydata.get(key);
+                                    }
+                                    avg = sum / chew_monthlydata.size();
+                                    String s = String.format("%.2f", avg);
+                                    chew_tv.setText("" + s + " packs/day");
+                                }
+                            }
+                        } else {
+                            chew_tv.setVisibility(View.GONE);
+                        }
+                    }
+                    //end
+                    //for money
+                    if (entry != null) {
+                        if (!entry.getSmokeText().equals("")) {
+                            money_tv.setVisibility(View.VISIBLE);
+                            float total_money = 0;
+
+                            if (smoke_monthlydata!=null && smoke_monthlydata.size() != 0) {
+
+                                Set<String> keys = smoke_monthlydata.keySet();
+                                for (String key : keys) {
+                                    total_money += (smoke_monthlydata.get(key) * entry.getSmoke_cost());
+                                }
+                            }
+                            money_tv.setText("" + total_money);
+                        }
+                    }
+                    //end
+                    //for minutes lost
+                    if (entry != null) {
+                        if (!entry.getSmokeText().equals("")) {
+                            life_tv.setVisibility(View.VISIBLE);
+                            if (smoke_monthlydata!=null && smoke_monthlydata.size() != 0) {
+                                smoke_tv.setVisibility(View.VISIBLE);
+                                int sum = 0;
+                                Set<String> keys = smoke_monthlydata.keySet();
+                                for (String key : keys) {
+                                    sum += smoke_monthlydata.get(key);
+                                }
+                                life_tv.setText("" + (sum * 9) + " mins");
+                            }
+                        }
+                    }
+                    //end
+
+                    //for salary
+                    if (entry != null) {
+                        if (smoke_monthlydata!=null && !smoke_monthlydata.equals("")) {
+                            if (smoke_monthlydata!=null && smoke_monthlydata.size() != 0) {
+                                sal_tv.setVisibility(View.VISIBLE);
+                                float spent = 0;
+                                Set<String> keys = smoke_monthlydata.keySet();
+                                for (String key : keys) {
+                                    spent += (float) (smoke_monthlydata.get(key) * entry.getSmoke_cost());
+                                }
+                                float earn = (float) (entry.getSalary());
+                                float fraction = (float) (spent / earn) * 100;
+                                String s = String.format("%.2f", fraction);
+                                sal_tv.setText("" + s + " %");
+                            }
+                        }
+                    }
+                    //end
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+    }
+
+    public void calculateAveragesInt(final HashMap<String,Integer> smoke_monthlydata,final HashMap<String,Integer> chew_monthlydata)
+    {
+        if(patient!=null) {
+            FirebaseDatabase.getInstance().getReference().child("doctors").child(currentdoctorKey).child("patients").child(patient.getEntry_key()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    //for average
+                    Entry entry = dataSnapshot.getValue(Entry.class);
+                    if (entry != null) {
+                        if (!entry.getSmokeText().equals("")) {
+                            if (smoke_monthlydata!=null && smoke_monthlydata.size() != 0) {
+                                smoke_tv.setVisibility(View.VISIBLE);
+                                cig_tv.setVisibility(View.VISIBLE);
+                                float avg = 0;
+                                int sum = 0;
+                                Set<String> keys = smoke_monthlydata.keySet();
+                                for (String key : keys) {
+                                    sum += smoke_monthlydata.get(key);
+                                }
+                                avg = (float) sum / smoke_monthlydata.size();
+                                String s = String.format("%.2f", avg);
+                                cig_tv.setText("" + sum);
+                                smoke_tv.setText("" + s + " Cigs/day");
+                            }
+                        } else {
+                            smoke_tv.setVisibility(View.GONE);
+                        }
+                        if (!entry.getChewText().equals("")) {
+                            if (!entry.getChewText().equals("")) {
+                                if (chew_monthlydata!=null &&chew_monthlydata.size() != 0) {
+                                    chew_tv.setVisibility(View.VISIBLE);
+                                    float avg = 0;
+                                    int sum = 0;
+                                    Set<String> keys = chew_monthlydata.keySet();
+                                    for (String key : keys) {
+                                        sum += chew_monthlydata.get(key);
+                                    }
+                                    avg = sum / chew_monthlydata.size();
+                                    String s = String.format("%.2f", avg);
+                                    chew_tv.setText("" + s + " packs/day");
+                                }
+                            }
+                        } else {
+                            chew_tv.setVisibility(View.GONE);
+                        }
+                    }
+                    //end
+                    //for money
+                    if (entry != null) {
+                        if (!entry.getSmokeText().equals("")) {
+                            money_tv.setVisibility(View.VISIBLE);
+                            float total_money = 0;
+
+                            if (smoke_monthlydata!=null && smoke_monthlydata.size() != 0) {
+
+                                Set<String> keys = smoke_monthlydata.keySet();
+                                for (String key : keys) {
+                                    total_money += (smoke_monthlydata.get(key) * entry.getSmoke_cost());
+                                }
+                            }
+                            money_tv.setText("" + total_money);
+                        }
+                    }
+                    //end
+                    //for minutes lost
+                    if (entry != null) {
+                        if (!entry.getSmokeText().equals("")) {
+                            life_tv.setVisibility(View.VISIBLE);
+                            if (smoke_monthlydata!=null && smoke_monthlydata.size() != 0) {
+                                smoke_tv.setVisibility(View.VISIBLE);
+                                int sum = 0;
+                                Set<String> keys = smoke_monthlydata.keySet();
+                                for (String key : keys) {
+                                    sum += smoke_monthlydata.get(key);
+                                }
+                                life_tv.setText("" + (sum * 9) + " mins");
+                            }
+                        }
+                    }
+                    //end
+
+                    //for salary
+                    if (entry != null) {
+                        if (smoke_monthlydata!=null && !smoke_monthlydata.equals("")) {
+                            if (smoke_monthlydata!=null && smoke_monthlydata.size() != 0) {
+                                sal_tv.setVisibility(View.VISIBLE);
+                                float spent = 0;
+                                Set<String> keys = smoke_monthlydata.keySet();
+                                for (String key : keys) {
+                                    spent += (float) (smoke_monthlydata.get(key) * entry.getSmoke_cost());
+                                }
+                                float earn = (float) (entry.getSalary());
+                                float fraction = (float) (spent / earn) * 100;
+                                String s = String.format("%.2f", fraction);
+                                sal_tv.setText("" + s + " %");
+                            }
+                        }
+                    }
+                    //end
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
         }
     }
 }
