@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:id="@+id/patient_home"
     android:orientation="vertical"
+    android:background="@android:color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <!--<android.support.design.widget.AppBarLayout
@@ -28,7 +29,8 @@
             android:orientation="vertical">
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                >
                 <ImageView
                     android:id="@+id/previous_month"
                     android:layout_marginLeft="8dp"
@@ -165,11 +167,47 @@
 
             </TableLayout>
 
+            <LinearLayout
+                android:id="@+id/empty_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#FFFFFF"
+                android:orientation="vertical">
+                <android.support.v7.widget.AppCompatImageView
+                    android:visibility="gone"
+                    android:id="@+id/data_unavailable_image_view"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_height="300dp"
+                    android:layout_width="300dp"
+                    android:src="@drawable/ic_data_unavailable"
+                    android:paddingBottom="0dp"
+                    >
+                </android.support.v7.widget.AppCompatImageView>
+                <TextView
+                    android:visibility="gone"
+                    android:id="@+id/data_unavailable_textView_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="Sorry!"
+                    android:fontFamily="sans-serif-condensed"
+                    android:textSize="24sp"/>
+                <TextView
+                    android:visibility="gone"
+                    android:id="@+id/data_unavailable_textview_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="We have no records for this month."
+                    android:fontFamily="sans-serif-condensed"
+                    android:textSize="18sp"/>
+            </LinearLayout>
+
 
             <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/LifeExpectancyChart"
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="600dp"
                 android:layout_marginBottom="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp">
@@ -178,7 +216,7 @@
             <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/LifeExpectancyChart2"
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="600dp"
                 android:layout_marginBottom="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp">
