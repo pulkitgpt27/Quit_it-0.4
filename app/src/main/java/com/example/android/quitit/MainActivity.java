@@ -140,8 +140,11 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main); //changed due to navbar;
         //code changes for refresh
          swipeRefreshLayout =(MultiSwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-         swipeRefreshLayout.setSwipeableChildren(R.id.listView,R.id.empty_list);
+         swipeRefreshLayout.setSwipeableChildren(R.id.listView,R.id.empty_list,R.id.patient_home);
          swipeRefreshLayout.setColorSchemeResources(R.color.swipe_1,R.color.swipe_2,R.color.swipe_3);
+        swipeRefreshLayout.setProgressViewOffset(false,
+                getResources().getDimensionPixelSize(R.dimen.refresher_offset),
+                getResources().getDimensionPixelSize(R.dimen.refresher_offset_end));
          swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
              @Override
              public void onRefresh() {
@@ -255,7 +258,7 @@ public class MainActivity extends AppCompatActivity
         Intent notificationIntent = new Intent(this, AlarmReceiver.class);
         PendingIntent broadcast = PendingIntent.getBroadcast(this, 100, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         Calendar calendar= Calendar.getInstance();
-        //calendar.set(Calendar.HOUR_OF_DAY,22);//set time here
+        calendar.set(Calendar.HOUR_OF_DAY,22);//set time here
         calendar.set(Calendar.MINUTE,02);
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY,broadcast);
         //***************
