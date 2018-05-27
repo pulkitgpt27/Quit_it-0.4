@@ -15,12 +15,56 @@
       },
       "oauth_client": [
         {
+          "client_id": "435044736040-t86j3i4gkhl47ulr4d6km3g862o07aj3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.android.quitit",
+            "certificate_hash": "b8ce178a25a870c3a7615242daaab7e385bb223f"
+          }
+        },
+        {
+          "client_id": "435044736040-r9oh5f0vjj3e4duf0hs3ach2esik1kl6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.android.quitit",
+            "certificate_hash": "8769add93a7e3309c04ea161042ce7b0b472f384"
+          }
+        },
+        {
+          "client_id": "435044736040-fmtpivm2ub7tp99s4djvsunn6oq3ssgf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.android.quitit",
+            "certificate_hash": "b2bd9523edc2722ddc85aa4fe409dfc112429c7c"
+          }
+        },
+        {
+          "client_id": "435044736040-bqo41knnmo8lfmrl22c3r44jc4eqc348.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.android.quitit",
+            "certificate_hash": "4c2c548bf8e68aac6a45e6411a8ef8a2e4051aa9"
+          }
+        },
+        {
+          "client_id": "435044736040-0bqkrh2479be4c8100hm7kjha662u25g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.android.quitit",
+            "certificate_hash": "554d335f4c39b79023657dd74aff73da76d7f46e"
+          }
+        },
+        {
           "client_id": "435044736040-5b6mrbv3dnlmrd8ea3koa3shqomlc6su.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.android.quitit",
             "certificate_hash": "eef31a8e7b5807467a84efedf384b90efbd04a04"
           }
+        },
+        {
+          "client_id": "435044736040-n0t48ru5htfpqdf7ksc4nk97qoi4pph8.apps.googleusercontent.com",
+          "client_type": 3
         },
         {
           "client_id": "435044736040-n0t48ru5htfpqdf7ksc4nk97qoi4pph8.apps.googleusercontent.com",
